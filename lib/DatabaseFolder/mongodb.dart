@@ -28,6 +28,35 @@ class MongoDatabase {
     }
   }
 
+  static userTerdaftar() async {
+    userCollection = db.collection(USER_COLLECTION);
+    var conn = await userCollection.find().toList();
+    try {
+      print(conn[0]);
+      if (conn[0]['id'] != "") {
+        return conn;
+      } else {
+        return "failed";
+      }
+    } catch (e) {
+      return "failed";
+    }
+  }
+
+  static updateStatusUser(id, status) async {
+    var userCollection = db.collection(USER_COLLECTION);
+
+    var update = await userCollection.updateOne(
+        where.eq('_id', id), modify.set('banned', status));
+
+    if (!update.isSuccess) {
+      print('Error detected in record insertion');
+      return 'fail';
+    } else {
+      return 'oke';
+    }
+  }
+
   static UserPATerdaftar(idPA) async {
     var userUmumCollection = db.collection(USER_UMUM_COLLECTION);
     final pipeline = AggregationPipelineBuilder()
