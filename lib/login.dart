@@ -74,7 +74,7 @@ class Login extends StatelessWidget {
                             margin: EdgeInsets.only(top: 85),
                             child: Center(
                               child: Text(
-                                'Halo,Imam Katolik!',
+                                'Welcome Admin',
                                 style: GoogleFonts.davidLibre(
                                   textStyle: TextStyle(
                                       fontSize: 30,
