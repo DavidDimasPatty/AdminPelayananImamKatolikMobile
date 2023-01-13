@@ -1,4 +1,5 @@
 import 'package:admin_pelayanan_katolik/FadeAnimation.dart';
+import 'package:admin_pelayanan_katolik/daftarGereja.dart';
 import 'package:admin_pelayanan_katolik/daftarUser.dart';
 import 'package:flutter/material.dart';
 //import 'package:pelayanan_iman_katolik/forgetPassword.dart';
@@ -16,7 +17,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
         title: Text("Welcome Admin"),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
@@ -86,11 +87,10 @@ class HomePage extends StatelessWidget {
             InkWell(
               borderRadius: new BorderRadius.circular(24),
               onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) => Komuni(names, iduser, idGereja)),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DaftarGereja(id)),
+                );
               },
               child: Container(
                   margin: EdgeInsets.only(right: 15, left: 15, bottom: 20),

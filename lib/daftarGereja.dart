@@ -4,14 +4,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'DatabaseFolder/mongodb.dart';
 import 'homePage.dart';
 
-class DaftarUser extends StatefulWidget {
+class DaftarGereja extends StatefulWidget {
   final id;
-  DaftarUser(this.id);
+  DaftarGereja(this.id);
   @override
-  _DaftarUser createState() => _DaftarUser(this.id);
+  _DaftarGereja createState() => _DaftarGereja(this.id);
 }
 
-class _DaftarUser extends State<DaftarUser> {
+class _DaftarGereja extends State<DaftarGereja> {
   var names;
   var emails;
   var distance;
@@ -20,10 +20,10 @@ class _DaftarUser extends State<DaftarUser> {
   List dummyTemp = [];
 
   final id;
-  _DaftarUser(this.id);
+  _DaftarGereja(this.id);
 
   Future<List> callDb() async {
-    return await MongoDatabase.userTerdaftar();
+    return await MongoDatabase.gerejaTerdaftar();
   }
 
   @override
@@ -41,7 +41,7 @@ class _DaftarUser extends State<DaftarUser> {
     if (query.isNotEmpty) {
       List<Map<String, dynamic>> listOMaps = <Map<String, dynamic>>[];
       for (var item in dummyTemp) {
-        if (item['name']
+        if (item['nama']
             .toString()
             .toLowerCase()
             .contains(query.toLowerCase())) {
@@ -62,11 +62,11 @@ class _DaftarUser extends State<DaftarUser> {
   }
 
   void updateKegiatan(idKegiatan, status) async {
-    var hasil = await MongoDatabase.updateStatusUser(idKegiatan, status);
+    var hasil = await MongoDatabase.updateStatusGereja(idKegiatan, status);
 
     if (hasil == "fail") {
       Fluttertoast.showToast(
-          msg: "Gagal Banned User",
+          msg: "Gagal Banned Gereja",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 2,
@@ -75,7 +75,7 @@ class _DaftarUser extends State<DaftarUser> {
           fontSize: 16.0);
     } else {
       Fluttertoast.showToast(
-          msg: "Berhasil Banned User",
+          msg: "Berhasil Banned Gereja",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 2,
@@ -105,7 +105,7 @@ class _DaftarUser extends State<DaftarUser> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
-        title: Text('Daftar User'),
+        title: Text('Daftar Gereja'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.account_circle_rounded),
@@ -183,7 +183,7 @@ class _DaftarUser extends State<DaftarUser> {
                       //Color(Colors.blue);
 
                       Text(
-                        "Nama :" + i['name'],
+                        "Nama: " + i['nama'],
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 20.0,
@@ -191,8 +191,11 @@ class _DaftarUser extends State<DaftarUser> {
                         textAlign: TextAlign.left,
                       ),
                       Text(
-                        'Tanggal Daftar: ' +
-                            i['tanggalDaftar'].toString().substring(0, 10),
+                        'Paroki: ' + i['paroki'].toString(),
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                      Text(
+                        'Address: ' + i['address'].toString(),
                         style: TextStyle(color: Colors.white, fontSize: 12),
                       ),
                       if (i['banned'] == 0)
@@ -211,7 +214,7 @@ class _DaftarUser extends State<DaftarUser> {
                           child: RaisedButton(
                               textColor: Colors.white,
                               color: Colors.lightBlue,
-                              child: Text("Banned User"),
+                              child: Text("Banned Gereja"),
                               shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(30.0),
                               ),
@@ -221,8 +224,8 @@ class _DaftarUser extends State<DaftarUser> {
                                   builder: (BuildContext context) =>
                                       AlertDialog(
                                     title: const Text('Confirm Banned'),
-                                    content:
-                                        const Text('Yakin ingin ban user ini?'),
+                                    content: const Text(
+                                        'Yakin ingin ban Gereja ini?'),
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () =>
@@ -247,7 +250,7 @@ class _DaftarUser extends State<DaftarUser> {
                           child: RaisedButton(
                               textColor: Colors.white,
                               color: Colors.lightBlue,
-                              child: Text("Unbanned User"),
+                              child: Text("Unbanned Gereja"),
                               shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(30.0),
                               ),
@@ -258,7 +261,7 @@ class _DaftarUser extends State<DaftarUser> {
                                       AlertDialog(
                                     title: const Text('Confirm Unbanned'),
                                     content: const Text(
-                                        'Yakin ingin Unbanned user ini?'),
+                                        'Yakin ingin Unbanned Gereja ini?'),
                                     actions: <Widget>[
                                       TextButton(
                                         onPressed: () =>
