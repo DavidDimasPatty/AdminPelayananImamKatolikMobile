@@ -5,6 +5,7 @@ const MONGO_CONN_URL =
 //const MONGO_CONN_URL = dotenv.env['email'].toString();
 const USER_COLLECTION = "user";
 const IMAM_COLLECTION = "imam";
+const ADMIN_COLLECTION = "admin";
 const GEREJA_COLLECTION = "Gereja";
 const JADWAL_GEREJA_COLLECTION = "jadwalGereja";
 const TIKET_COLLECTION = "tiket";
