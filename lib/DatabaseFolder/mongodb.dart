@@ -15,7 +15,7 @@ class MongoDatabase {
   static findUser(email, password) async {
     userCollection = db.collection(ADMIN_COLLECTION);
     var conn = await userCollection
-        .find({'email': email, 'password': password}).toList();
+        .find({'user': email, 'password': password}).toList();
     try {
       print(conn[0]);
       if (conn[0]['id'] != "") {

@@ -1,5 +1,4 @@
 import 'package:admin_pelayanan_katolik/FadeAnimation.dart';
-import 'package:admin_pelayanan_katolik/homepage.dart';
 import 'package:flutter/material.dart';
 //import 'package:pelayanan_iman_katolik/forgetPassword.dart';
 //import 'package:pelayanan_iman_katolik/singup.dart';
@@ -8,8 +7,9 @@ import 'DatabaseFolder/mongodb.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class Login extends StatelessWidget {
+class HomePage extends StatelessWidget {
   @override
+  HomePage(id);
   Widget build(BuildContext context) {
     TextEditingController emailController = new TextEditingController();
     TextEditingController passwordController = new TextEditingController();
@@ -176,13 +176,14 @@ class Login extends StatelessWidget {
 
                                     if (ret != "failed") {
                                       print(ret);
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => HomePage(
-                                                  ret[0]['_id'],
-                                                )),
-                                      );
+                                      // Navigator.pushReplacement(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //       builder: (context) => HomePage(
+                                      //           ret[0]['name'],
+                                      //           ret[0]['_id'],
+                                      //           ret[0]['idGereja'])),
+                                      // );
                                     } else {
                                       Fluttertoast.showToast(
                                           msg: "Email dan Password Salah",
