@@ -43,6 +43,30 @@ class MongoDatabase {
     }
   }
 
+  static callJumlah() async {
+    userCollection = db.collection(USER_COLLECTION);
+    var conn = await userCollection.find().length;
+
+    userCollection = db.collection(USER_COLLECTION);
+    var connBan = await userCollection.find({'banned': 1}).length;
+
+    userCollection = db.collection(USER_COLLECTION);
+    var connUn = await userCollection.find({'banned': 0}).length;
+
+    return [conn, connUn, connBan];
+  }
+
+  static callJumlahGereja() async {
+    var gerejaCollection = db.collection(GEREJA_COLLECTION);
+    var conn = await gerejaCollection.find().length;
+
+    var connBan = await gerejaCollection.find({'banned': 1}).length;
+
+    var connUn = await gerejaCollection.find({'banned': 0}).length;
+
+    return [conn, connUn, connBan];
+  }
+
   static gerejaTerdaftar() async {
     userCollection = db.collection(GEREJA_COLLECTION);
     var conn = await userCollection.find().toList();
