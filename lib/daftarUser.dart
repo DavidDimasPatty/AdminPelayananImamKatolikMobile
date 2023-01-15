@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/Agen/messages.dart';
 import 'package:anim_search_bar/anim_search_bar.dart';
@@ -76,8 +78,21 @@ class _DaftarUser extends State<DaftarUser> {
     }
   }
 
-  void updateKegiatan(idKegiatan, status) async {
-    var hasil = await MongoDatabase.updateStatusUser(idKegiatan, status);
+  void updateUser(idKegiatan, status) async {
+    Messages msg = new Messages();
+    msg.addReceiver("agenPencarian");
+    msg.setContent([
+      ["update user"],
+      [idKegiatan],
+      [status]
+    ]);
+    var hasil;
+    await msg.send().then((res) async {
+      print("masuk");
+      print(await AgenPage().receiverTampilan());
+    });
+    await Future.delayed(Duration(seconds: 1));
+    hasil = await AgenPage().receiverTampilan();
 
     if (hasil == "fail") {
       Fluttertoast.showToast(
@@ -224,7 +239,7 @@ class _DaftarUser extends State<DaftarUser> {
                                       ),
                                       TextButton(
                                         onPressed: () async {
-                                          updateKegiatan(i["_id"], 1);
+                                          updateUser(i["_id"], 1);
                                           Navigator.pop(context);
                                         },
                                         child: const Text('Ya'),
@@ -260,7 +275,7 @@ class _DaftarUser extends State<DaftarUser> {
                                       ),
                                       TextButton(
                                         onPressed: () async {
-                                          updateKegiatan(i["_id"], 0);
+                                          updateUser(i["_id"], 0);
                                           Navigator.pop(context);
                                         },
                                         child: const Text('Ya'),

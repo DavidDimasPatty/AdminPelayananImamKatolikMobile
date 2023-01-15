@@ -76,8 +76,21 @@ class _DaftarGereja extends State<DaftarGereja> {
     }
   }
 
-  void updateKegiatan(idKegiatan, status) async {
-    var hasil = await MongoDatabase.updateStatusGereja(idKegiatan, status);
+  void updateGereja(idKegiatan, status) async {
+    Messages msg = new Messages();
+    msg.addReceiver("agenPencarian");
+    msg.setContent([
+      ["update gereja"],
+      [idKegiatan],
+      [status]
+    ]);
+    var hasil;
+    await msg.send().then((res) async {
+      print("masuk");
+      print(await AgenPage().receiverTampilan());
+    });
+    await Future.delayed(Duration(seconds: 1));
+    hasil = await AgenPage().receiverTampilan();
 
     if (hasil == "fail") {
       Fluttertoast.showToast(
@@ -227,7 +240,7 @@ class _DaftarGereja extends State<DaftarGereja> {
                                       ),
                                       TextButton(
                                         onPressed: () async {
-                                          updateKegiatan(i["_id"], 1);
+                                          updateGereja(i["_id"], 1);
                                           Navigator.pop(context);
                                         },
                                         child: const Text('Ya'),
@@ -263,7 +276,7 @@ class _DaftarGereja extends State<DaftarGereja> {
                                       ),
                                       TextButton(
                                         onPressed: () async {
-                                          updateKegiatan(i["_id"], 0);
+                                          updateGereja(i["_id"], 0);
                                           Navigator.pop(context);
                                         },
                                         child: const Text('Ya'),
