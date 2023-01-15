@@ -18,48 +18,28 @@ class AgenPencarian {
     var data = msg.receive();
     action() async {
       try {
-        if (data.runtimeType == List<List<dynamic>>) {
-          if (data[0][0] == "cari Baptis") {
-            var userBaptisCollection =
-                MongoDatabase.db.collection(BAPTIS_COLLECTION);
-            await userBaptisCollection
-                .find({'idGereja': data[1][0], 'status': 0})
-                .toList()
-                .then((result) async {
-                  msg.addReceiver("agenPage");
-                  msg.setContent(result);
-                  await msg.send();
-                });
-          }
-
+        print("cari user 1");
+        print(data.runtimeType);
+        if (data.runtimeType == List<List<String>>) {
           if (data[0][0] == "cari user") {
+            print("cari user");
             var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
-            var conn = await userCollection.find().toList();
-            try {
-              print(conn[0]);
-              if (conn[0]['id'] != "") {
-                return conn;
-              } else {
-                return "failed";
-              }
-            } catch (e) {
-              return "failed";
-            }
+            var conn =
+                await userCollection.find().toList().then((result) async {
+              msg.addReceiver("agenPage");
+              msg.setContent(result);
+              await msg.send();
+            });
           }
 
           if (data[0][0] == "cari gereja") {
             var userCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
-            var conn = await userCollection.find().toList();
-            try {
-              print(conn[0]);
-              if (conn[0]['id'] != "") {
-                return conn;
-              } else {
-                return "failed";
-              }
-            } catch (e) {
-              return "failed";
-            }
+            var conn =
+                await userCollection.find().toList().then((result) async {
+              msg.addReceiver("agenPage");
+              msg.setContent(result);
+              await msg.send();
+            });
           }
 
           if (data[0][0] == "cari jumlah user") {
@@ -115,29 +95,37 @@ class AgenPencarian {
 
           if (data[0][0] == "update user") {
             var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
-
-            var update = await userCollection.updateOne(
-                where.eq('_id', data[1][0]), modify.set('banned', data[2][0]));
-
-            if (!update.isSuccess) {
-              print('Error detected in record insertion');
-              return 'fail';
-            } else {
-              return 'oke';
+            try {
+              var update = await userCollection
+                  .updateOne(where.eq('_id', data[1][0]),
+                      modify.set('banned', data[2][0]))
+                  .then((result) async {
+                msg.addReceiver("agenPage");
+                msg.setContent('oke');
+                await msg.send();
+              });
+            } catch (e) {
+              msg.addReceiver("agenPage");
+              msg.setContent('fail');
+              await msg.send();
             }
           }
 
           if (data[0][0] == "update gereja") {
             var userCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
-
-            var update = await userCollection.updateOne(
-                where.eq('_id', data[1][0]), modify.set('banned', data[2][0]));
-
-            if (!update.isSuccess) {
-              print('Error detected in record insertion');
-              return 'fail';
-            } else {
-              return 'oke';
+            try {
+              var update = await userCollection
+                  .updateOne(where.eq('_id', data[1][0]),
+                      modify.set('banned', data[2][0]))
+                  .then((result) async {
+                msg.addReceiver("agenPage");
+                msg.setContent('oke');
+                await msg.send();
+              });
+            } catch (e) {
+              msg.addReceiver("agenPage");
+              msg.setContent('fail');
+              await msg.send();
             }
           }
         }

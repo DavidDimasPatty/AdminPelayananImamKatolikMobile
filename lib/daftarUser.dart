@@ -1,3 +1,5 @@
+import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
+import 'package:admin_pelayanan_katolik/Agen/messages.dart';
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -23,7 +25,20 @@ class _DaftarUser extends State<DaftarUser> {
   _DaftarUser(this.id);
 
   Future<List> callDb() async {
-    return await MongoDatabase.userTerdaftar();
+    Messages msg = new Messages();
+    msg.addReceiver("agenPencarian");
+    msg.setContent([
+      ["cari user"]
+    ]);
+    List hasil = [];
+    await msg.send().then((res) async {
+      print("masuk");
+      print(await AgenPage().receiverTampilan());
+    });
+    await Future.delayed(Duration(seconds: 1));
+    hasil = await AgenPage().receiverTampilan();
+
+    return hasil;
   }
 
   @override
@@ -106,28 +121,6 @@ class _DaftarUser extends State<DaftarUser> {
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
         title: Text('Daftar User'),
-        // actions: <Widget>[
-        //   IconButton(
-        //     icon: const Icon(Icons.account_circle_rounded),
-        //     onPressed: () {
-        //       // Navigator.push(
-        //       //   context,
-        //       //   MaterialPageRoute(
-        //       //       builder: (context) => Profile(names, idUser, idGereja)),
-        //       // );
-        //     },
-        //   ),
-        //   IconButton(
-        //     icon: const Icon(Icons.settings),
-        //     onPressed: () {
-        //       // Navigator.push(
-        //       //   context,
-        //       //   MaterialPageRoute(
-        //       //       builder: (context) => Settings(names, emails, idUser)),
-        //       // );
-        //     },
-        //   ),
-        // ],
       ),
       body: ListView(children: [
         ListView(
@@ -284,57 +277,6 @@ class _DaftarUser extends State<DaftarUser> {
           ],
         ),
       ]),
-      // bottomNavigationBar: Container(
-      //     decoration: BoxDecoration(
-      //       borderRadius: BorderRadius.only(
-      //           topRight: Radius.circular(30), topLeft: Radius.circular(30)),
-      //       boxShadow: [
-      //         BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
-      //       ],
-      //     ),
-      //     child: ClipRRect(
-      //       borderRadius: BorderRadius.only(
-      //         topLeft: Radius.circular(30.0),
-      //         topRight: Radius.circular(30.0),
-      //       ),
-      //       child: BottomNavigationBar(
-      //         type: BottomNavigationBarType.fixed,
-      //         showUnselectedLabels: true,
-      //         unselectedItemColor: Colors.blue,
-      //         items: <BottomNavigationBarItem>[
-      //           BottomNavigationBarItem(
-      //             icon: Icon(Icons.home, color: Color.fromARGB(255, 0, 0, 0)),
-      //             label: "Home",
-      //           ),
-      //           BottomNavigationBarItem(
-      //             icon: Icon(Icons.token, color: Color.fromARGB(255, 0, 0, 0)),
-      //             label: "Histori",
-      //           )
-      //         ],
-      //         onTap: (index) {
-      //           if (index == 1) {
-      //             // Navigator.push(
-      //             //   context,
-      //             //   MaterialPageRoute(
-      //             //       builder: (context) => History(names, idUser, idGereja)),
-      //             // );
-      //           } else if (index == 0) {
-      //             Navigator.push(
-      //               context,
-      //               MaterialPageRoute(builder: (context) => HomePage(id)),
-      //             );
-      //           }
-      //         },
-      //       ),
-      //     )),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: new FloatingActionButton(
-      //   onPressed: () {
-      //     openCamera();
-      //   },
-      //   tooltip: 'Increment',
-      //   child: new Icon(Icons.camera_alt_rounded),
-      // ),
     );
   }
 }
