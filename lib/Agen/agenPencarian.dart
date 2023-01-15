@@ -18,8 +18,6 @@ class AgenPencarian {
     var data = msg.receive();
     action() async {
       try {
-        print("cari user 1");
-        print(data.runtimeType);
         if (data.runtimeType == List<List<String>>) {
           if (data[0][0] == "cari user") {
             print("cari user");
@@ -43,14 +41,20 @@ class AgenPencarian {
           }
 
           if (data[0][0] == "cari jumlah user") {
+            print("masukkkkk!!@");
             var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
             var conn = await userCollection.find().length;
 
             var connBan = await userCollection.find({'banned': 1}).length;
 
-            var connUn = await userCollection.find({'banned': 0}).length;
-
-            return [conn, connUn, connBan];
+            var connUn = await userCollection
+                .find({'banned': 0})
+                .length
+                .then((result) async {
+                  msg.addReceiver("agenPage");
+                  msg.setContent([conn, result, connBan]);
+                  await msg.send();
+                });
           }
 
           if (data[0][0] == "cari jumlah gereja") {
@@ -60,9 +64,14 @@ class AgenPencarian {
 
             var connBan = await gerejaCollection.find({'banned': 1}).length;
 
-            var connUn = await gerejaCollection.find({'banned': 0}).length;
-
-            return [conn, connUn, connBan];
+            var connUn = await gerejaCollection
+                .find({'banned': 0})
+                .length
+                .then((result) async {
+                  msg.addReceiver("agenPage");
+                  msg.setContent([conn, result, connBan]);
+                  await msg.send();
+                });
           }
         }
       } catch (e) {

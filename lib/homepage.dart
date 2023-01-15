@@ -1,3 +1,5 @@
+import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
+import 'package:admin_pelayanan_katolik/Agen/messages.dart';
 import 'package:admin_pelayanan_katolik/FadeAnimation.dart';
 import 'package:admin_pelayanan_katolik/daftarGereja.dart';
 import 'package:admin_pelayanan_katolik/daftarUser.dart';
@@ -9,16 +11,49 @@ import 'DatabaseFolder/mongodb.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class HomePage extends StatelessWidget {
-  var id;
+class HomePage extends StatefulWidget {
+  final id;
   HomePage(this.id);
+  @override
+  _HomePage createState() => _HomePage(this.id);
+}
+
+class _HomePage extends State<HomePage> {
+  var id;
+  _HomePage(this.id);
 
   Future callJumlah() async {
-    return await MongoDatabase.callJumlah();
+    Messages msg = new Messages();
+    msg.addReceiver("agenPencarian");
+    msg.setContent([
+      ["cari jumlah user"]
+    ]);
+    List hasil = [];
+    await msg.send().then((res) async {
+      print("masuk");
+      print(await AgenPage().receiverTampilan());
+    });
+    await Future.delayed(Duration(seconds: 1));
+    hasil = await AgenPage().receiverTampilan();
+
+    return hasil;
   }
 
   Future callJumlahGereja() async {
-    return await MongoDatabase.callJumlahGereja();
+    Messages msg = new Messages();
+    msg.addReceiver("agenPencarian");
+    msg.setContent([
+      ["cari jumlah gereja"]
+    ]);
+    List hasil = [];
+    await msg.send().then((res) async {
+      print("masuk");
+      print(await AgenPage().receiverTampilan());
+    });
+    await Future.delayed(Duration(seconds: 1));
+    hasil = await AgenPage().receiverTampilan();
+
+    return hasil;
   }
 
   @override

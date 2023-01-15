@@ -31,6 +31,9 @@ class AgenPage {
         if (data.runtimeType == String) {
           setDataTampilan(data);
         }
+        if (data.runtimeType == List<dynamic>) {
+          setDataTampilan(data);
+        }
       } catch (error) {
         return 0;
       }
