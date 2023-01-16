@@ -45,14 +45,6 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  void initState() {
-    super.initState();
-
-    setState(() {
-      callJumlah();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
