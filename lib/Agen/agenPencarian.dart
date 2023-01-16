@@ -81,16 +81,22 @@ class AgenPencarian {
     action() async {
       try {
         if (data.runtimeType == List<List<dynamic>>) {
-          if (data[0][0] == "cari Baptis") {
-            var userBaptisCollection =
-                MongoDatabase.db.collection(BAPTIS_COLLECTION);
-            await userBaptisCollection
-                .find({'idGereja': data[1][0], 'status': 0})
+          if (data[0][0] == "cari admin") {
+            var userCollection = MongoDatabase.db.collection(ADMIN_COLLECTION);
+            var conn = await userCollection
+                .find({'user': data[1][0], 'password': data[2][0]})
                 .toList()
                 .then((result) async {
-                  msg.addReceiver("agenPage");
-                  msg.setContent(result);
-                  await msg.send();
+                  print(result);
+                  if (result != 0) {
+                    msg.addReceiver("agenPage");
+                    msg.setContent(result);
+                    await msg.send();
+                  } else {
+                    msg.addReceiver("agenPage");
+                    msg.setContent(result);
+                    await msg.send();
+                  }
                 });
           }
 

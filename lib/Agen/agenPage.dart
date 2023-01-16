@@ -22,6 +22,8 @@ class AgenPage {
   ResponsBehaviour() async {
     Messages msg = Messages();
     var data = msg.receive();
+    print("ini");
+    print(data.runtimeType);
     action() async {
       try {
         if (data.runtimeType == List<Map<String, Object?>>) {
@@ -31,6 +33,9 @@ class AgenPage {
           setDataTampilan(data);
         }
         if (data.runtimeType == List<dynamic>) {
+          setDataTampilan(data);
+        }
+        if (data.runtimeType == List<List<dynamic>>) {
           setDataTampilan(data);
         }
       } catch (error) {

@@ -116,6 +116,7 @@ class _DaftarGereja extends State<DaftarGereja> {
           dummyTemp.clear();
           daftarUser.addAll(result);
           dummyTemp.addAll(result);
+          filterSearchResults(editingController.text);
         });
       });
     }

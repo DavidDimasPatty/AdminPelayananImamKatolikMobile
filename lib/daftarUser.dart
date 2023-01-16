@@ -118,6 +118,7 @@ class _DaftarUser extends State<DaftarUser> {
           dummyTemp.clear();
           daftarUser.addAll(result);
           dummyTemp.addAll(result);
+          filterSearchResults(editingController.text);
         });
       });
     }
@@ -164,14 +165,7 @@ class _DaftarUser extends State<DaftarUser> {
             for (var i in daftarUser)
               InkWell(
                 borderRadius: new BorderRadius.circular(24),
-                onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) =>
-                  //           KrismaUser(names, idUser, idGereja, i['_id'])),
-                  // );
-                },
+                onTap: () {},
                 child: Container(
                     margin: EdgeInsets.only(right: 15, left: 15, bottom: 20),
                     decoration: BoxDecoration(
@@ -188,8 +182,6 @@ class _DaftarUser extends State<DaftarUser> {
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                     child: Column(children: <Widget>[
-                      //Color(Colors.blue);
-
                       Text(
                         "Nama :" + i['name'],
                         style: TextStyle(
@@ -240,6 +232,7 @@ class _DaftarUser extends State<DaftarUser> {
                                       TextButton(
                                         onPressed: () async {
                                           updateUser(i["_id"], 1);
+
                                           Navigator.pop(context);
                                         },
                                         child: const Text('Ya'),
