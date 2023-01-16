@@ -22,7 +22,6 @@ class AgenPage {
   ResponsBehaviour() async {
     Messages msg = Messages();
     var data = msg.receive();
-
     action() async {
       try {
         if (data.runtimeType == List<Map<String, Object?>>) {

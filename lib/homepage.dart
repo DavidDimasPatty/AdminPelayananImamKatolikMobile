@@ -26,7 +26,7 @@ class _HomePage extends State<HomePage> {
     Messages msg = new Messages();
     msg.addReceiver("agenPencarian");
     msg.setContent([
-      ["cari jumlah user"]
+      ["cari jumlah"]
     ]);
     List hasil = [];
     await msg.send().then((res) async {
@@ -34,26 +34,17 @@ class _HomePage extends State<HomePage> {
       print(await AgenPage().receiverTampilan());
     });
     await Future.delayed(Duration(seconds: 1));
-    hasil = await AgenPage().receiverTampilan();
+    hasil = AgenPage().receiverTampilan();
 
     return hasil;
   }
 
-  Future callJumlahGereja() async {
-    Messages msg = new Messages();
-    msg.addReceiver("agenPencarian");
-    msg.setContent([
-      ["cari jumlah gereja"]
-    ]);
-    List hasil = [];
-    await msg.send().then((res) async {
-      print("masuk");
-      print(await AgenPage().receiverTampilan());
-    });
-    await Future.delayed(Duration(seconds: 1));
-    hasil = await AgenPage().receiverTampilan();
+  void initState() {
+    super.initState();
 
-    return hasil;
+    setState(() {
+      print(callJumlah());
+    });
   }
 
   @override
@@ -77,321 +68,322 @@ class _HomePage extends State<HomePage> {
                 future: callJumlah(),
                 builder: (context, AsyncSnapshot snapshot) {
                   try {
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      margin: EdgeInsets.symmetric(horizontal: 20.0),
-                      clipBehavior: Clip.antiAlias,
-                      color: Colors.white,
-                      elevation: 20.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 7.0, vertical: 22.0),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    "Total User Mendaftar",
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 17.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 5.0,
-                                  ),
-                                  Text(
-                                    snapshot.data[0].toString(),
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 17.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(children: <Widget>[
-                                    Expanded(
-                                      child: Card(
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 5.0),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
-                                        ),
-                                        clipBehavior: Clip.antiAlias,
-                                        color: Colors.white,
-                                        elevation: 20.0,
-                                        child: Row(
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                  Text(
-                                                    "User Unbanned",
-                                                    style: TextStyle(
-                                                      color: Colors.blue,
-                                                      fontSize: 15.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                  Text(
-                                                    snapshot.data[1].toString(),
-                                                    style: TextStyle(
-                                                      color: Colors.blue,
-                                                      fontSize: 16.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
+                    return Column(
+                      children: <Widget>[
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          margin: EdgeInsets.symmetric(horizontal: 20.0),
+                          clipBehavior: Clip.antiAlias,
+                          color: Colors.white,
+                          elevation: 20.0,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7.0, vertical: 22.0),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        "Total User Mendaftar",
+                                        style: TextStyle(
+                                          color: Colors.blue,
+                                          fontSize: 17.0,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 15,
-                                    ),
-                                    Expanded(
-                                      child: Card(
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 5.0),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
-                                        ),
-                                        clipBehavior: Clip.antiAlias,
-                                        color: Colors.white,
-                                        elevation: 20.0,
-                                        child: Row(
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                  Text(
-                                                    "User Banned",
-                                                    style: TextStyle(
-                                                      color: Colors.blue,
-                                                      fontSize: 15.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10.0,
-                                                  ),
-                                                  Text(
-                                                    snapshot.data[2].toString(),
-                                                    style: TextStyle(
-                                                      color: Colors.blue,
-                                                      fontSize: 16.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
+                                      SizedBox(
+                                        height: 5.0,
+                                      ),
+                                      Text(
+                                        snapshot.data[0].toString(),
+                                        style: TextStyle(
+                                          color: Colors.blue,
+                                          fontSize: 17.0,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ),
-                                  ])
-                                ],
-                              ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(children: <Widget>[
+                                        Expanded(
+                                          child: Card(
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: 5.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0),
+                                            ),
+                                            clipBehavior: Clip.antiAlias,
+                                            color: Colors.white,
+                                            elevation: 20.0,
+                                            child: Row(
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      SizedBox(
+                                                        height: 5.0,
+                                                      ),
+                                                      Text(
+                                                        "User Unbanned",
+                                                        style: TextStyle(
+                                                          color: Colors.blue,
+                                                          fontSize: 15.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5.0,
+                                                      ),
+                                                      Text(
+                                                        snapshot.data[1]
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          color: Colors.blue,
+                                                          fontSize: 16.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5.0,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 15,
+                                        ),
+                                        Expanded(
+                                          child: Card(
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: 5.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0),
+                                            ),
+                                            clipBehavior: Clip.antiAlias,
+                                            color: Colors.white,
+                                            elevation: 20.0,
+                                            child: Row(
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      SizedBox(
+                                                        height: 5.0,
+                                                      ),
+                                                      Text(
+                                                        "User Banned",
+                                                        style: TextStyle(
+                                                          color: Colors.blue,
+                                                          fontSize: 15.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10.0,
+                                                      ),
+                                                      Text(
+                                                        snapshot.data[2]
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          color: Colors.blue,
+                                                          fontSize: 16.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5.0,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ])
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    );
-                  } catch (e) {
-                    print(e);
-                    return Center(child: CircularProgressIndicator());
-                  }
-                }),
-            SizedBox(
-              height: 20,
-            ),
-            FutureBuilder(
-                future: callJumlahGereja(),
-                builder: (context, AsyncSnapshot snapshot) {
-                  try {
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      margin: EdgeInsets.symmetric(horizontal: 20.0),
-                      clipBehavior: Clip.antiAlias,
-                      color: Colors.white,
-                      elevation: 20.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 7.0, vertical: 22.0),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    "Total Gereja Mendaftar",
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 17.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 5.0,
-                                  ),
-                                  Text(
-                                    snapshot.data[0].toString(),
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 17.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Row(children: <Widget>[
-                                    Expanded(
-                                      child: Card(
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 5.0),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
-                                        ),
-                                        clipBehavior: Clip.antiAlias,
-                                        color: Colors.white,
-                                        elevation: 20.0,
-                                        child: Row(
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                  Text(
-                                                    "Gereja Unbanned",
-                                                    style: TextStyle(
-                                                      color: Colors.blue,
-                                                      fontSize: 15.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                  Text(
-                                                    snapshot.data[1].toString(),
-                                                    style: TextStyle(
-                                                      color: Colors.blue,
-                                                      fontSize: 16.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          margin: EdgeInsets.symmetric(horizontal: 20.0),
+                          clipBehavior: Clip.antiAlias,
+                          color: Colors.white,
+                          elevation: 20.0,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7.0, vertical: 22.0),
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        "Total Gereja Mendaftar",
+                                        style: TextStyle(
+                                          color: Colors.blue,
+                                          fontSize: 17.0,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 15,
-                                    ),
-                                    Expanded(
-                                      child: Card(
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 5.0),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30.0),
-                                        ),
-                                        clipBehavior: Clip.antiAlias,
-                                        color: Colors.white,
-                                        elevation: 20.0,
-                                        child: Row(
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                  Text(
-                                                    "Gereja Banned",
-                                                    style: TextStyle(
-                                                      color: Colors.blue,
-                                                      fontSize: 15.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10.0,
-                                                  ),
-                                                  Text(
-                                                    snapshot.data[2].toString(),
-                                                    style: TextStyle(
-                                                      color: Colors.blue,
-                                                      fontSize: 16.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
+                                      SizedBox(
+                                        height: 5.0,
+                                      ),
+                                      Text(
+                                        snapshot.data[0].toString(),
+                                        style: TextStyle(
+                                          color: Colors.blue,
+                                          fontSize: 17.0,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ),
-                                  ])
-                                ],
-                              ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(children: <Widget>[
+                                        Expanded(
+                                          child: Card(
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: 5.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0),
+                                            ),
+                                            clipBehavior: Clip.antiAlias,
+                                            color: Colors.white,
+                                            elevation: 20.0,
+                                            child: Row(
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      SizedBox(
+                                                        height: 5.0,
+                                                      ),
+                                                      Text(
+                                                        "Gereja Unbanned",
+                                                        style: TextStyle(
+                                                          color: Colors.blue,
+                                                          fontSize: 15.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5.0,
+                                                      ),
+                                                      Text(
+                                                        snapshot.data[4]
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          color: Colors.blue,
+                                                          fontSize: 16.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5.0,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 15,
+                                        ),
+                                        Expanded(
+                                          child: Card(
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: 5.0),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0),
+                                            ),
+                                            clipBehavior: Clip.antiAlias,
+                                            color: Colors.white,
+                                            elevation: 20.0,
+                                            child: Row(
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      SizedBox(
+                                                        height: 5.0,
+                                                      ),
+                                                      Text(
+                                                        "Gereja Banned",
+                                                        style: TextStyle(
+                                                          color: Colors.blue,
+                                                          fontSize: 15.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10.0,
+                                                      ),
+                                                      Text(
+                                                        snapshot.data[5]
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          color: Colors.blue,
+                                                          fontSize: 16.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5.0,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ])
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        )
+                      ],
                     );
                   } catch (e) {
                     print(e);

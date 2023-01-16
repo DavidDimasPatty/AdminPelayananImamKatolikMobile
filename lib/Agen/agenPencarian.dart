@@ -40,36 +40,28 @@ class AgenPencarian {
             });
           }
 
-          if (data[0][0] == "cari jumlah user") {
+          if (data[0][0] == "cari jumlah") {
             print("masukkkkk!!@");
             var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
+            var gerejaCollection =
+                MongoDatabase.db.collection(GEREJA_COLLECTION);
             var conn = await userCollection.find().length;
 
             var connBan = await userCollection.find({'banned': 1}).length;
+
+            var connG = await gerejaCollection.find().length;
+
+            var connBanG = await gerejaCollection.find({'banned': 1}).length;
+
+            var connUnG = await gerejaCollection.find({'banned': 0}).length;
 
             var connUn = await userCollection
                 .find({'banned': 0})
                 .length
                 .then((result) async {
                   msg.addReceiver("agenPage");
-                  msg.setContent([conn, result, connBan]);
-                  await msg.send();
-                });
-          }
-
-          if (data[0][0] == "cari jumlah gereja") {
-            var gerejaCollection =
-                MongoDatabase.db.collection(GEREJA_COLLECTION);
-            var conn = await gerejaCollection.find().length;
-
-            var connBan = await gerejaCollection.find({'banned': 1}).length;
-
-            var connUn = await gerejaCollection
-                .find({'banned': 0})
-                .length
-                .then((result) async {
-                  msg.addReceiver("agenPage");
-                  msg.setContent([conn, result, connBan]);
+                  msg.setContent(
+                      [conn, result, connBan, connG, connUnG, connBanG]);
                   await msg.send();
                 });
           }
