@@ -122,6 +122,21 @@ class _DaftarGereja extends State<DaftarGereja> {
     }
   }
 
+  Future pullRefresh() async {
+    setState(() {
+      callDb().then((result) {
+        setState(() {
+          daftarUser.clear();
+          dummyTemp.clear();
+          daftarUser.addAll(result);
+          dummyTemp.addAll(result);
+          filterSearchResults(editingController.text);
+        });
+      });
+      ;
+    });
+  }
+
   TextEditingController editingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -136,8 +151,9 @@ class _DaftarGereja extends State<DaftarGereja> {
         ),
         title: Text('Daftar Gereja'),
       ),
-      body: ListView(children: [
-        ListView(
+      body: RefreshIndicator(
+        onRefresh: pullRefresh,
+        child: ListView(
           shrinkWrap: true,
           padding: EdgeInsets.only(right: 15, left: 15),
           children: <Widget>[
@@ -160,140 +176,163 @@ class _DaftarGereja extends State<DaftarGereja> {
 
             Padding(padding: EdgeInsets.symmetric(vertical: 10)),
             /////////
-            for (var i in daftarUser)
-              InkWell(
-                borderRadius: new BorderRadius.circular(24),
-                onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) =>
-                  //           KrismaUser(names, idUser, idGereja, i['_id'])),
-                  // );
-                },
-                child: Container(
-                    margin: EdgeInsets.only(right: 15, left: 15, bottom: 20),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topRight,
-                          end: Alignment.topLeft,
-                          colors: [
-                            Colors.blueGrey,
-                            Colors.lightBlue,
-                          ]),
-                      border: Border.all(
-                        color: Colors.lightBlue,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: Column(children: <Widget>[
-                      //Color(Colors.blue);
+            FutureBuilder(
+                future: callDb(),
+                builder: (context, AsyncSnapshot snapshot) {
+                  try {
+                    return Column(children: [
+                      for (var i in daftarUser)
+                        InkWell(
+                          borderRadius: new BorderRadius.circular(24),
+                          onTap: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) =>
+                            //           KrismaUser(names, idUser, idGereja, i['_id'])),
+                            // );
+                          },
+                          child: Container(
+                              margin: EdgeInsets.only(
+                                  right: 15, left: 15, bottom: 20),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.topRight,
+                                    end: Alignment.topLeft,
+                                    colors: [
+                                      Colors.blueGrey,
+                                      Colors.lightBlue,
+                                    ]),
+                                border: Border.all(
+                                  color: Colors.lightBlue,
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child: Column(children: <Widget>[
+                                //Color(Colors.blue);
 
-                      Text(
-                        "Nama: " + i['nama'],
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w300),
-                        textAlign: TextAlign.left,
-                      ),
-                      Text(
-                        'Paroki: ' + i['paroki'].toString(),
-                        style: TextStyle(color: Colors.white, fontSize: 12),
-                      ),
-                      Text(
-                        'Address: ' + i['address'].toString(),
-                        style: TextStyle(color: Colors.white, fontSize: 12),
-                      ),
-                      if (i['banned'] == 0)
-                        Text(
-                          'Banned: No',
-                          style: TextStyle(color: Colors.white, fontSize: 12),
-                        ),
-                      if (i['banned'] == 1)
-                        Text(
-                          'Banned: Yes',
-                          style: TextStyle(color: Colors.white, fontSize: 12),
-                        ),
-                      if (i['banned'] == 0)
-                        SizedBox(
-                          width: double.infinity,
-                          child: RaisedButton(
-                              textColor: Colors.white,
-                              color: Colors.lightBlue,
-                              child: Text("Banned Gereja"),
-                              shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(30.0),
-                              ),
-                              onPressed: () async {
-                                showDialog<String>(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      AlertDialog(
-                                    title: const Text('Confirm Banned'),
-                                    content: const Text(
-                                        'Yakin ingin ban Gereja ini?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'Cancel'),
-                                        child: const Text('Tidak'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          updateGereja(i["_id"], 1);
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Ya'),
-                                      ),
-                                    ],
+                                Text(
+                                  "Nama: " + i['nama'],
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.w300),
+                                  textAlign: TextAlign.left,
+                                ),
+                                Text(
+                                  'Paroki: ' + i['paroki'].toString(),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                                Text(
+                                  'Address: ' + i['address'].toString(),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                                if (i['banned'] == 0)
+                                  Text(
+                                    'Banned: No',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12),
                                   ),
-                                );
-                              }),
-                        ),
-                      if (i['banned'] == 1)
-                        SizedBox(
-                          width: double.infinity,
-                          child: RaisedButton(
-                              textColor: Colors.white,
-                              color: Colors.lightBlue,
-                              child: Text("Unbanned Gereja"),
-                              shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(30.0),
-                              ),
-                              onPressed: () async {
-                                showDialog<String>(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      AlertDialog(
-                                    title: const Text('Confirm Unbanned'),
-                                    content: const Text(
-                                        'Yakin ingin Unbanned Gereja ini?'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'Cancel'),
-                                        child: const Text('Tidak'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          updateGereja(i["_id"], 0);
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Ya'),
-                                      ),
-                                    ],
+                                if (i['banned'] == 1)
+                                  Text(
+                                    'Banned: Yes',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12),
                                   ),
-                                );
-                              }),
-                        ),
-                    ])),
-              ),
+                                if (i['banned'] == 0)
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: RaisedButton(
+                                        textColor: Colors.white,
+                                        color: Colors.lightBlue,
+                                        child: Text("Banned Gereja"),
+                                        shape: new RoundedRectangleBorder(
+                                          borderRadius:
+                                              new BorderRadius.circular(30.0),
+                                        ),
+                                        onPressed: () async {
+                                          showDialog<String>(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                AlertDialog(
+                                              title:
+                                                  const Text('Confirm Banned'),
+                                              content: const Text(
+                                                  'Yakin ingin ban Gereja ini?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, 'Cancel'),
+                                                  child: const Text('Tidak'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    updateGereja(i["_id"], 1);
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('Ya'),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }),
+                                  ),
+                                if (i['banned'] == 1)
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: RaisedButton(
+                                        textColor: Colors.white,
+                                        color: Colors.lightBlue,
+                                        child: Text("Unbanned Gereja"),
+                                        shape: new RoundedRectangleBorder(
+                                          borderRadius:
+                                              new BorderRadius.circular(30.0),
+                                        ),
+                                        onPressed: () async {
+                                          showDialog<String>(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                AlertDialog(
+                                              title: const Text(
+                                                  'Confirm Unbanned'),
+                                              content: const Text(
+                                                  'Yakin ingin Unbanned Gereja ini?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, 'Cancel'),
+                                                  child: const Text('Tidak'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    updateGereja(i["_id"], 0);
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('Ya'),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }),
+                                  ),
+                              ])),
+                        )
+                    ]);
+                  } catch (e) {
+                    print(e);
+                    return Center(child: CircularProgressIndicator());
+                  }
+                }),
 
             /////////
           ],
         ),
-      ]),
+      ),
     );
   }
 }

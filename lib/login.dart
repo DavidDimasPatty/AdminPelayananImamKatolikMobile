@@ -195,18 +195,31 @@ class Login extends StatelessWidget {
                                         .then((ret) async {
                                       print("work");
                                       print(ret);
-                                      if (ret.length > 0) {
-                                        print(ret[0]["_id"]);
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => HomePage(
-                                                    ret[0]['_id'],
-                                                  )),
-                                        );
-                                      } else {
+                                      try {
+                                        if (ret.length > 0) {
+                                          print(ret[0]["_id"]);
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => HomePage(
+                                                      ret[0]['_id'],
+                                                    )),
+                                          );
+                                        } else {
+                                          Fluttertoast.showToast(
+                                              msg: "Email dan Password Salah",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.CENTER,
+                                              timeInSecForIosWeb: 2,
+                                              backgroundColor: Colors.red,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0);
+                                          emailController.clear();
+                                          passwordController.clear();
+                                        }
+                                      } catch (e) {
                                         Fluttertoast.showToast(
-                                            msg: "Email dan Password Salah",
+                                            msg: "Connection Problem",
                                             toastLength: Toast.LENGTH_SHORT,
                                             gravity: ToastGravity.CENTER,
                                             timeInSecForIosWeb: 2,

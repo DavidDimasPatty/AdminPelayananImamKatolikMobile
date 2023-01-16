@@ -107,9 +107,15 @@ class AgenPencarian {
                   .updateOne(where.eq('_id', data[1][0]),
                       modify.set('banned', data[2][0]))
                   .then((result) async {
-                msg.addReceiver("agenPage");
-                msg.setContent('oke');
-                await msg.send();
+                if (result.isSuccess) {
+                  msg.addReceiver("agenPage");
+                  msg.setContent('oke');
+                  await msg.send();
+                } else {
+                  msg.addReceiver("agenPage");
+                  msg.setContent('failed');
+                  await msg.send();
+                }
               });
             } catch (e) {
               msg.addReceiver("agenPage");
@@ -125,9 +131,15 @@ class AgenPencarian {
                   .updateOne(where.eq('_id', data[1][0]),
                       modify.set('banned', data[2][0]))
                   .then((result) async {
-                msg.addReceiver("agenPage");
-                msg.setContent('oke');
-                await msg.send();
+                if (result.isSuccess) {
+                  msg.addReceiver("agenPage");
+                  msg.setContent('oke');
+                  await msg.send();
+                } else {
+                  msg.addReceiver("agenPage");
+                  msg.setContent('failed');
+                  await msg.send();
+                }
               });
             } catch (e) {
               msg.addReceiver("agenPage");
