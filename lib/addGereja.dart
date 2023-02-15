@@ -1,5 +1,6 @@
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/Agen/messages.dart';
+import 'package:admin_pelayanan_katolik/daftarGereja.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -49,7 +50,7 @@ class _addGereja extends State<addGereja> {
 
     if (hasil == "failed") {
       Fluttertoast.showToast(
-          msg: "Gagal Mendaftarkan Baptis",
+          msg: "Gagal menambahkan Gereja",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 2,
@@ -58,18 +59,17 @@ class _addGereja extends State<addGereja> {
           fontSize: 16.0);
     } else {
       Fluttertoast.showToast(
-          msg: "Berhasil Mendaftarkan Baptis",
+          msg: "Berhasil menambahkan Gereja",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 2,
           backgroundColor: Colors.green,
           textColor: Colors.white,
           fontSize: 16.0);
-      // Navigator.pop(
-      //   context,
-      //   MaterialPageRoute(
-      //       builder: (context) => Baptis(names, idUser, idGereja)),
-      // );
+      Navigator.pop(
+        context,
+        MaterialPageRoute(builder: (context) => DaftarGereja(id)),
+      );
     }
   }
 
@@ -332,7 +332,7 @@ class _addGereja extends State<addGereja> {
           child: RaisedButton(
               textColor: Colors.white,
               color: Colors.lightBlue,
-              child: Text("Submit Kegiatan"),
+              child: Text("Submit"),
               shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0),
               ),
