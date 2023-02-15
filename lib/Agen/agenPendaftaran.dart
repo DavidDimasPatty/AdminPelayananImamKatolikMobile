@@ -65,6 +65,30 @@ class AgenPendaftaran {
           }
         }
 
+        if (data[0][0] == "update imam") {
+          var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
+          try {
+            var update = await userCollection
+                .updateOne(where.eq('_id', data[1][0]),
+                    modify.set('banned', data[2][0]))
+                .then((result) async {
+              if (result.isSuccess) {
+                msg.addReceiver("agenPage");
+                msg.setContent('oke');
+                await msg.send();
+              } else {
+                msg.addReceiver("agenPage");
+                msg.setContent('failed');
+                await msg.send();
+              }
+            });
+          } catch (e) {
+            msg.addReceiver("agenPage");
+            msg.setContent('fail');
+            await msg.send();
+          }
+        }
+
         if (data[0][0] == "add gereja") {
           var userCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
           try {
@@ -77,6 +101,37 @@ class AgenPendaftaran {
               "lat": data[6][0],
               "lng": data[7][0],
               "banned": 0
+            }).then((result) async {
+              if (result.isSuccess) {
+                msg.addReceiver("agenPage");
+                msg.setContent('oke');
+                await msg.send();
+              } else {
+                msg.addReceiver("agenPage");
+                msg.setContent('failed');
+                await msg.send();
+              }
+            });
+          } catch (e) {
+            msg.addReceiver("agenPage");
+            msg.setContent('fail');
+            await msg.send();
+          }
+        }
+
+        if (data[0][0] == "add imam") {
+          var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
+          try {
+            var hasil = await userCollection.insertOne({
+              "email": data[1][0],
+              "password": data[2][0],
+              "idGereja": data[3][0],
+              "name": data[4][0],
+              "picture": "",
+              "notelp": "",
+              "statusPemberkatan": 0,
+              "banned": 0,
+              "notif": true
             }).then((result) async {
               if (result.isSuccess) {
                 msg.addReceiver("agenPage");

@@ -40,11 +40,23 @@ class AgenPencarian {
             });
           }
 
+          if (data[0][0] == "cari imam") {
+            var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
+            var conn =
+                await userCollection.find().toList().then((result) async {
+              msg.addReceiver("agenPage");
+              msg.setContent(result);
+              await msg.send();
+            });
+          }
+
           if (data[0][0] == "cari jumlah") {
             print("masukkkkk!!@");
             var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
             var gerejaCollection =
                 MongoDatabase.db.collection(GEREJA_COLLECTION);
+
+            var imamCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
             var conn = await userCollection.find().length;
 
             var connBan = await userCollection.find({'banned': 1}).length;
@@ -55,13 +67,28 @@ class AgenPencarian {
 
             var connUnG = await gerejaCollection.find({'banned': 0}).length;
 
+            var connI = await imamCollection.find().length;
+
+            var connBanI = await imamCollection.find({'banned': 1}).length;
+
+            var connUnI = await imamCollection.find({'banned': 0}).length;
+
             var connUn = await userCollection
                 .find({'banned': 0})
                 .length
                 .then((result) async {
                   msg.addReceiver("agenPage");
-                  msg.setContent(
-                      [conn, result, connBan, connG, connUnG, connBanG]);
+                  msg.setContent([
+                    conn,
+                    result,
+                    connBan,
+                    connG,
+                    connUnG,
+                    connBanG,
+                    connI,
+                    connUnI,
+                    connBanI
+                  ]);
                   await msg.send();
                 });
           }

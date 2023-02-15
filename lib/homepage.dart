@@ -2,6 +2,7 @@ import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/Agen/messages.dart';
 import 'package:admin_pelayanan_katolik/FadeAnimation.dart';
 import 'package:admin_pelayanan_katolik/daftarGereja.dart';
+import 'package:admin_pelayanan_katolik/daftarImam.dart';
 import 'package:admin_pelayanan_katolik/daftarUser.dart';
 import 'package:flutter/material.dart';
 //import 'package:pelayanan_iman_katolik/forgetPassword.dart';
@@ -400,6 +401,173 @@ class _HomePage extends State<HomePage> {
                                   ],
                                 ),
                               ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
+                              margin: EdgeInsets.symmetric(horizontal: 20.0),
+                              clipBehavior: Clip.antiAlias,
+                              color: Colors.white,
+                              elevation: 20.0,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 7.0, vertical: 22.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            "Total Imam Mendaftar",
+                                            style: TextStyle(
+                                              color: Colors.blue,
+                                              fontSize: 17.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 5.0,
+                                          ),
+                                          Text(
+                                            hasil[6].toString(),
+                                            style: TextStyle(
+                                              color: Colors.blue,
+                                              fontSize: 17.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(children: <Widget>[
+                                            Expanded(
+                                              child: Card(
+                                                margin: EdgeInsets.symmetric(
+                                                    vertical: 5.0),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          30.0),
+                                                ),
+                                                clipBehavior: Clip.antiAlias,
+                                                color: Colors.white,
+                                                elevation: 20.0,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      child: Column(
+                                                        children: <Widget>[
+                                                          SizedBox(
+                                                            height: 5.0,
+                                                          ),
+                                                          Text(
+                                                            "Imam Unbanned",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.blue,
+                                                              fontSize: 15.0,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 5.0,
+                                                          ),
+                                                          Text(
+                                                            hasil[7].toString(),
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.blue,
+                                                              fontSize: 16.0,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 5.0,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 15,
+                                            ),
+                                            Expanded(
+                                              child: Card(
+                                                margin: EdgeInsets.symmetric(
+                                                    vertical: 5.0),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          30.0),
+                                                ),
+                                                clipBehavior: Clip.antiAlias,
+                                                color: Colors.white,
+                                                elevation: 20.0,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Expanded(
+                                                      child: Column(
+                                                        children: <Widget>[
+                                                          SizedBox(
+                                                            height: 5.0,
+                                                          ),
+                                                          Text(
+                                                            "Imam Banned",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.blue,
+                                                              fontSize: 15.0,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 10.0,
+                                                          ),
+                                                          Text(
+                                                            hasil[8].toString(),
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.blue,
+                                                              fontSize: 16.0,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 5.0,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ])
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             )
                           ],
                         );
@@ -484,7 +652,45 @@ class _HomePage extends State<HomePage> {
                         ),
                       ])),
                 ),
+                InkWell(
+                  borderRadius: new BorderRadius.circular(24),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DaftarImam(id)),
+                    );
+                  },
+                  child: Container(
+                      margin: EdgeInsets.only(right: 15, left: 15, bottom: 20),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topRight,
+                            end: Alignment.topLeft,
+                            colors: [
+                              Colors.blueGrey,
+                              Colors.lightBlue,
+                            ]),
+                        border: Border.all(
+                          color: Colors.lightBlue,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Column(children: <Widget>[
+                        //Color(Colors.blue);
 
+                        Text(
+                          "Daftar Imam",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 26.0,
+                              fontWeight: FontWeight.w300),
+                          textAlign: TextAlign.left,
+                        ),
+                      ])),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
                 /////////
                 ///
               ],
