@@ -1,5 +1,6 @@
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/Agen/messages.dart';
+import 'package:admin_pelayanan_katolik/addGereja.dart';
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -173,7 +174,33 @@ class _DaftarGereja extends State<DaftarGereja> {
                 onSubmitted: (String) {},
               ),
             ),
-
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(right: 10, left: 10),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: IconButton(
+                      color: Colors.black,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => addGereja(id)),
+                        );
+                      },
+                      splashColor: Colors.blue,
+                      splashRadius: 30,
+                      icon: Icon(Icons.add),
+                    ),
+                  ),
+                ),
+                Text("Add Gereja")
+              ],
+            ),
+            Padding(padding: EdgeInsets.symmetric(vertical: 10)),
             Padding(padding: EdgeInsets.symmetric(vertical: 10)),
             /////////
             FutureBuilder(
