@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocode/geocode.dart';
 
 class addGereja extends StatefulWidget {
   @override
@@ -16,12 +17,8 @@ class addGereja extends StatefulWidget {
 
 class _addGereja extends State<addGereja> {
   final id;
-  String _selectedDate = '';
-  String _dateCount = '';
-  String _range = '';
-  String _rangeCount = '';
-  String tanggalBuka = "";
-  String tanggalTutup = "";
+  double? lattitude = 0;
+  double? longttitude = 0;
   TextEditingController nama = new TextEditingController();
   TextEditingController alamat = new TextEditingController();
   TextEditingController paroki = new TextEditingController();
@@ -29,15 +26,18 @@ class _addGereja extends State<addGereja> {
   TextEditingController deskripsi = new TextEditingController();
   _addGereja(this.id);
 
-  void submit(idGereja, kapasitas, tanggalbuka, tanggaltutup) async {
+  void submit() async {
     Messages msg = new Messages();
     msg.addReceiver("agenPendaftaran");
     msg.setContent([
-      ["add Baptis"],
-      [idGereja],
-      [kapasitas],
-      [tanggalbuka.toString()],
-      [tanggaltutup.toString()]
+      ["add gereja"],
+      [nama.text],
+      [alamat.text],
+      [paroki.text],
+      [lingkungan.text],
+      [deskripsi.text],
+      [lattitude],
+      [longttitude]
     ]);
     var hasil;
     await msg.send().then((res) async {
@@ -113,7 +113,7 @@ class _addGereja extends State<addGereja> {
                       color: Colors.black,
                     ),
                   ),
-                  hintText: "Kapasitas Pendaftaran",
+                  hintText: "Nama Gereja",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -151,12 +151,60 @@ class _addGereja extends State<addGereja> {
                       color: Colors.black,
                     ),
                   ),
-                  hintText: "Kapasitas Pendaftaran",
+                  hintText: "Alamat Gereja",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   )),
             ),
+            RaisedButton(
+                textColor: Colors.white,
+                color: Colors.lightBlue,
+                child: Text("Generate Coordinate"),
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(30.0),
+                ),
+                onPressed: () async {
+                  try {
+                    print(alamat.text);
+                    GeoCode geoCode = GeoCode();
+                    Coordinates coordinates =
+                        await geoCode.forwardGeocoding(address: alamat.text);
+                    print("Latitude: ${coordinates.latitude}");
+                    print("Longitude: ${coordinates.longitude}");
+                    setState(() {
+                      lattitude = coordinates.latitude;
+                      longttitude = coordinates.longitude;
+                    });
+                  } catch (e) {
+                    print(e);
+                  }
+                }),
+            Row(
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      "Lattitude",
+                    ),
+                    Text(
+                      lattitude.toString(),
+                    ),
+                  ],
+                ),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+                Column(
+                  children: [
+                    Text(
+                      "Longtittude",
+                    ),
+                    Text(
+                      longttitude.toString(),
+                    ),
+                  ],
+                )
+              ],
+            )
           ],
         ),
         Column(
@@ -189,7 +237,7 @@ class _addGereja extends State<addGereja> {
                       color: Colors.black,
                     ),
                   ),
-                  hintText: "Kapasitas Pendaftaran",
+                  hintText: "Paroki Gereja",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -227,7 +275,7 @@ class _addGereja extends State<addGereja> {
                       color: Colors.black,
                     ),
                   ),
-                  hintText: "Kapasitas Pendaftaran",
+                  hintText: "Lingkungan Gereja",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -265,50 +313,12 @@ class _addGereja extends State<addGereja> {
                       color: Colors.black,
                     ),
                   ),
-                  hintText: "Kapasitas Pendaftaran",
+                  hintText: "Deskripsi Gereja",
                   hintStyle: TextStyle(color: Colors.grey),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   )),
             ),
-          ],
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-            ),
-            Text(
-              "Lokasi di Map",
-              textAlign: TextAlign.left,
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 5),
-            ),
-            // TextField(
-            //   controller: kapasitas,
-            //   style: TextStyle(color: Colors.black),
-            //   decoration: InputDecoration(
-            //       enabledBorder: OutlineInputBorder(
-            //         borderRadius: BorderRadius.circular(10),
-            //         borderSide: BorderSide(
-            //           color: Colors.blue,
-            //         ),
-            //       ),
-            //       focusedBorder: OutlineInputBorder(
-            //         borderRadius: BorderRadius.circular(10),
-            //         borderSide: BorderSide(
-            //           color: Colors.black,
-            //         ),
-            //       ),
-            //       hintText: "Kapasitas Pendaftaran",
-            //       hintStyle: TextStyle(color: Colors.grey),
-            //       border: OutlineInputBorder(
-            //         borderRadius: BorderRadius.circular(10),
-            //       )),
-            // ),
           ],
         ),
         Padding(
@@ -327,7 +337,7 @@ class _addGereja extends State<addGereja> {
                 borderRadius: new BorderRadius.circular(30.0),
               ),
               onPressed: () async {
-                // submit(id, kapasitas.text, tanggalBuka, tanggalTutup);
+                submit();
               }),
         ),
       ]),
