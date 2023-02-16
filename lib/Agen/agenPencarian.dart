@@ -42,8 +42,17 @@ class AgenPencarian {
 
           if (data[0][0] == "cari imam") {
             var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
-            var conn =
-                await userCollection.find().toList().then((result) async {
+            final pipeline4 = AggregationPipelineBuilder()
+                .addStage(Lookup(
+                    from: 'Gereja',
+                    localField: 'idGereja',
+                    foreignField: '_id',
+                    as: 'imamGereja'))
+                .build();
+            var countU = await userCollection
+                .aggregateToStream(pipeline4)
+                .toList()
+                .then((result) async {
               msg.addReceiver("agenPage");
               msg.setContent(result);
               await msg.send();

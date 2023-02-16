@@ -245,7 +245,16 @@ class _DaftarImam extends State<DaftarImam> {
                                       color: Colors.white,
                                       fontSize: 20.0,
                                       fontWeight: FontWeight.w300),
-                                  textAlign: TextAlign.left,
+                                  textAlign: TextAlign.center,
+                                ),
+
+                                Text(
+                                  "Gereja: " + i['imamGereja'][0]['nama'],
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w300),
+                                  textAlign: TextAlign.center,
                                 ),
                                 // Text(
                                 //   'Paroki: ' + i['paroki'].toString(),
@@ -300,6 +309,21 @@ class _DaftarImam extends State<DaftarImam> {
                                                   onPressed: () async {
                                                     updateGereja(i["_id"], 1);
                                                     Navigator.pop(context);
+                                                    setState(() {
+                                                      callDb().then((result) {
+                                                        setState(() {
+                                                          daftarUser.clear();
+                                                          dummyTemp.clear();
+                                                          daftarUser
+                                                              .addAll(result);
+                                                          dummyTemp
+                                                              .addAll(result);
+                                                          filterSearchResults(
+                                                              editingController
+                                                                  .text);
+                                                        });
+                                                      });
+                                                    });
                                                   },
                                                   child: const Text('Ya'),
                                                 ),
@@ -339,6 +363,21 @@ class _DaftarImam extends State<DaftarImam> {
                                                   onPressed: () async {
                                                     updateGereja(i["_id"], 0);
                                                     Navigator.pop(context);
+                                                    setState(() {
+                                                      callDb().then((result) {
+                                                        setState(() {
+                                                          daftarUser.clear();
+                                                          dummyTemp.clear();
+                                                          daftarUser
+                                                              .addAll(result);
+                                                          dummyTemp
+                                                              .addAll(result);
+                                                          filterSearchResults(
+                                                              editingController
+                                                                  .text);
+                                                        });
+                                                      });
+                                                    });
                                                   },
                                                   child: const Text('Ya'),
                                                 ),
