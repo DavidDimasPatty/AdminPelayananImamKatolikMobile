@@ -300,6 +300,21 @@ class _DaftarGereja extends State<DaftarGereja> {
                                                   onPressed: () async {
                                                     updateGereja(i["_id"], 1);
                                                     Navigator.pop(context);
+                                                    setState(() {
+                                                      callDb().then((result) {
+                                                        setState(() {
+                                                          daftarUser.clear();
+                                                          dummyTemp.clear();
+                                                          daftarUser
+                                                              .addAll(result);
+                                                          dummyTemp
+                                                              .addAll(result);
+                                                          filterSearchResults(
+                                                              editingController
+                                                                  .text);
+                                                        });
+                                                      });
+                                                    });
                                                   },
                                                   child: const Text('Ya'),
                                                 ),
@@ -339,6 +354,21 @@ class _DaftarGereja extends State<DaftarGereja> {
                                                   onPressed: () async {
                                                     updateGereja(i["_id"], 0);
                                                     Navigator.pop(context);
+                                                    setState(() {
+                                                      callDb().then((result) {
+                                                        setState(() {
+                                                          daftarUser.clear();
+                                                          dummyTemp.clear();
+                                                          daftarUser
+                                                              .addAll(result);
+                                                          dummyTemp
+                                                              .addAll(result);
+                                                          filterSearchResults(
+                                                              editingController
+                                                                  .text);
+                                                        });
+                                                      });
+                                                    });
                                                   },
                                                   child: const Text('Ya'),
                                                 ),

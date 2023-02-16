@@ -265,6 +265,21 @@ class _DaftarUser extends State<DaftarUser> {
                                                       updateUser(i["_id"], 1);
 
                                                       Navigator.pop(context);
+                                                      setState(() {
+                                                        callDb().then((result) {
+                                                          setState(() {
+                                                            daftarUser.clear();
+                                                            dummyTemp.clear();
+                                                            daftarUser
+                                                                .addAll(result);
+                                                            dummyTemp
+                                                                .addAll(result);
+                                                            filterSearchResults(
+                                                                editingController
+                                                                    .text);
+                                                          });
+                                                        });
+                                                      });
                                                     },
                                                     child: const Text('Ya'),
                                                   ),
@@ -304,6 +319,21 @@ class _DaftarUser extends State<DaftarUser> {
                                                     onPressed: () async {
                                                       updateUser(i["_id"], 0);
                                                       Navigator.pop(context);
+                                                      setState(() {
+                                                        callDb().then((result) {
+                                                          setState(() {
+                                                            daftarUser.clear();
+                                                            dummyTemp.clear();
+                                                            daftarUser
+                                                                .addAll(result);
+                                                            dummyTemp
+                                                                .addAll(result);
+                                                            filterSearchResults(
+                                                                editingController
+                                                                    .text);
+                                                          });
+                                                        });
+                                                      });
                                                     },
                                                     child: const Text('Ya'),
                                                   ),
