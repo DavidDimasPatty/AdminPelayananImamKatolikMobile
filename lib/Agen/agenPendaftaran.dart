@@ -130,6 +130,9 @@ class AgenPendaftaran {
               "picture": "",
               "notelp": "",
               "statusPemberkatan": 0,
+              "statusPerminyakan": 0,
+              "statusTobat": 0,
+              "statusPerkawinan": 0,
               "banned": 0,
               "notif": true
             }).then((result) async {
