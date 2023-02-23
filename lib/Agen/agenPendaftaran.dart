@@ -90,9 +90,11 @@ class AgenPendaftaran {
         }
 
         if (data[0][0] == "add gereja") {
-          var userCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
+          var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
+          var aturanCollection =
+              MongoDatabase.db.collection(ATURAN_PELAYANAN_COLLECTION);
           try {
-            var hasil = await userCollection.insertOne({
+            var hasil = await gerejaCollection.insertOne({
               "nama": data[1][0],
               "address": data[2][0],
               "paroki": data[3][0],
@@ -100,15 +102,44 @@ class AgenPendaftaran {
               "deskripsi": data[5][0],
               "lat": data[6][0],
               "lng": data[7][0],
-              "banned": 0
+              "gambar": "",
+              "banned": 0,
+              "createdAt": DateTime.now(),
             }).then((result) async {
-              if (result.isSuccess) {
+              try {
+                var find = await gerejaCollection
+                    .find(where.sortBy("createdAt", descending: true).limit(1))
+                    .toList()
+                    .then((result2) async {
+                  print("objectaWWDDDDDDDDDDD");
+                  print(result2);
+                  var addAturan = await aturanCollection.insertOne({
+                    "idGereja": result2[0]['_id'],
+                    "baptis": "",
+                    "komuni": "",
+                    "krisma": "",
+                    "perkawinan": "",
+                    "perminyakan": "",
+                    "tobat": "",
+                    "pemberkatan": "",
+                    "updatedAt": DateTime.now(),
+                    "updatedBy": ObjectId(),
+                  }).then((result3) async {
+                    if (result3.isSuccess) {
+                      msg.addReceiver("agenPage");
+                      msg.setContent('oke');
+                      await msg.send();
+                    } else {
+                      msg.addReceiver("agenPage");
+                      msg.setContent('failed');
+                      await msg.send();
+                    }
+                  });
+                });
+              } catch (e) {
+                print(e);
                 msg.addReceiver("agenPage");
-                msg.setContent('oke');
-                await msg.send();
-              } else {
-                msg.addReceiver("agenPage");
-                msg.setContent('failed');
+                msg.setContent('fail');
                 await msg.send();
               }
             });

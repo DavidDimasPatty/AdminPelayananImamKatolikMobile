@@ -18,3 +18,4 @@ const USER_BAPTIS_COLLECTION = "userBaptis";
 const USER_UMUM_COLLECTION = "userUmum";
 const USER_KRISMA_COLLECTION = "userKrisma";
 const PEMBERKATAN_COLLECTION = "pemberkatan";
+const ATURAN_PELAYANAN_COLLECTION = "aturanPelayanan";
