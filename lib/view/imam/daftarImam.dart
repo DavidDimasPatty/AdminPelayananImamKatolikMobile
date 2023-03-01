@@ -1,12 +1,9 @@
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/Agen/messages.dart';
-import 'package:admin_pelayanan_katolik/addGereja.dart';
-import 'package:admin_pelayanan_katolik/addImam.dart';
+import 'package:admin_pelayanan_katolik/view/imam/addImam.dart';
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'DatabaseFolder/mongodb.dart';
-import 'homePage.dart';
 
 class DaftarImam extends StatefulWidget {
   final id;

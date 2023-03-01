@@ -1,14 +1,10 @@
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/Agen/messages.dart';
 import 'package:admin_pelayanan_katolik/FadeAnimation.dart';
-import 'package:admin_pelayanan_katolik/daftarGereja.dart';
-import 'package:admin_pelayanan_katolik/daftarImam.dart';
-import 'package:admin_pelayanan_katolik/daftarUser.dart';
+import 'package:admin_pelayanan_katolik/view/gereja/daftarGereja.dart';
+import 'package:admin_pelayanan_katolik/view/imam/daftarImam.dart';
+import 'package:admin_pelayanan_katolik/view/user/daftarUser.dart';
 import 'package:flutter/material.dart';
-//import 'package:pelayanan_iman_katolik/forgetPassword.dart';
-//import 'package:pelayanan_iman_katolik/singup.dart';
-import 'DatabaseFolder/mongodb.dart';
-//import 'package:pelayanan_iman_katolik/homePage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 

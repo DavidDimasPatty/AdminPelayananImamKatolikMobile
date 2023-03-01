@@ -1,4 +1,4 @@
-import 'package:admin_pelayanan_katolik/login.dart';
+import 'package:admin_pelayanan_katolik/view/login.dart';
 import 'package:flutter/material.dart';
 
 import 'messages.dart';
