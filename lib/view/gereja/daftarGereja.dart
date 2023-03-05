@@ -13,9 +13,6 @@ class DaftarGereja extends StatefulWidget {
 }
 
 class _DaftarGereja extends State<DaftarGereja> {
-  var names;
-  var emails;
-  var distance;
   List daftarUser = [];
 
   List dummyTemp = [];

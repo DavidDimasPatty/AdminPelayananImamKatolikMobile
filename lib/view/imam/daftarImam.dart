@@ -13,9 +13,6 @@ class DaftarImam extends StatefulWidget {
 }
 
 class _DaftarImam extends State<DaftarImam> {
-  var names;
-  var emails;
-  var distance;
   List daftarUser = [];
 
   List dummyTemp = [];

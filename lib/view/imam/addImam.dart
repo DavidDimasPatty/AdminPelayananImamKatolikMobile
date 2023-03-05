@@ -19,8 +19,7 @@ class addImam extends StatefulWidget {
 
 class _addImam extends State<addImam> {
   final id;
-  double? lattitude = 0;
-  double? longttitude = 0;
+
   TextEditingController nama = new TextEditingController();
   TextEditingController email = new TextEditingController();
   TextEditingController password = new TextEditingController();
