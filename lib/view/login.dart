@@ -7,12 +7,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Login extends StatelessWidget {
-  login(id, password) async {
+  login(email, password) async {
     Messages msg = new Messages();
     msg.addReceiver("agenPencarian");
     msg.setContent([
       ["cari admin"],
-      [id],
+      [email],
       [password]
     ]);
     var hasil;
