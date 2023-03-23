@@ -76,12 +76,12 @@ class _DaftarUser extends State<DaftarUser> {
     }
   }
 
-  void updateUser(idKegiatan, status) async {
+  void updateUser(idUser, status) async {
     Messages msg = new Messages();
     msg.addReceiver("agenPencarian");
     msg.setContent([
       ["update user"],
-      [idKegiatan],
+      [idUser],
       [status]
     ]);
     var hasil;
