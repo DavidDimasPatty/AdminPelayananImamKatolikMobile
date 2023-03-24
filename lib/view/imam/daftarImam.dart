@@ -20,18 +20,14 @@ class _DaftarImam extends State<DaftarImam> {
   final id;
   _DaftarImam(this.id);
 
-  Future<List> callDb() async {
+  Future callDb() async {
     Messages msg = new Messages();
-    msg.addReceiver("agenPencarian");
-    msg.setContent([
+    await msg.addReceiver("agenPencarian");
+    await msg.setContent([
       ["cari imam"]
     ]);
     List hasil = [];
-    await msg.send().then((res) async {
-      print("masuk");
-      print(await AgenPage().receiverTampilan());
-    });
-    await Future.delayed(Duration(seconds: 1));
+    await msg.send();
     hasil = await AgenPage().receiverTampilan();
 
     return hasil;
@@ -72,20 +68,16 @@ class _DaftarImam extends State<DaftarImam> {
     }
   }
 
-  void updateGereja(idKegiatan, status) async {
+  Future updateImam(idKegiatan, status) async {
     Messages msg = new Messages();
-    msg.addReceiver("agenPendaftaran");
-    msg.setContent([
+    await msg.addReceiver("agenPendaftaran");
+    await msg.setContent([
       ["update imam"],
       [idKegiatan],
       [status]
     ]);
     var hasil;
-    await msg.send().then((res) async {
-      print("masuk");
-      print(await AgenPage().receiverTampilan());
-    });
-    await Future.delayed(Duration(seconds: 1));
+    await msg.send();
     hasil = await AgenPage().receiverTampilan();
 
     if (hasil == "fail") {
@@ -301,7 +293,8 @@ class _DaftarImam extends State<DaftarImam> {
                                                 ),
                                                 TextButton(
                                                   onPressed: () async {
-                                                    updateGereja(i["_id"], 1);
+                                                    await updateImam(
+                                                        i["_id"], 1);
                                                     Navigator.pop(context);
                                                     setState(() {
                                                       callDb().then((result) {
@@ -355,7 +348,8 @@ class _DaftarImam extends State<DaftarImam> {
                                                 ),
                                                 TextButton(
                                                   onPressed: () async {
-                                                    updateGereja(i["_id"], 0);
+                                                    await updateImam(
+                                                        i["_id"], 0);
                                                     Navigator.pop(context);
                                                     setState(() {
                                                       callDb().then((result) {

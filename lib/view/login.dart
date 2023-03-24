@@ -7,22 +7,21 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Login extends StatelessWidget {
-  login(email, password) async {
+  Future login(email, password) async {
     Messages msg = new Messages();
-    msg.addReceiver("agenPencarian");
-    msg.setContent([
+    await msg.addReceiver("agenPencarian");
+    await msg.setContent([
       ["cari admin"],
       [email],
       [password]
     ]);
-    var hasil;
-    await msg.send().then((res) async {
-      print("masuk");
-      print(await AgenPage().receiverTampilan());
-    });
-    await Future.delayed(Duration(seconds: 1));
-    hasil = await AgenPage().receiverTampilan();
-    return hasil;
+    // var hasil;
+    await msg.send();
+    return await AgenPage().receiverTampilan();
+
+    // // await Future.delayed(Duration(seconds: 1));
+    // hasil = await AgenPage().receiverTampilan();
+    // return hasil;
   }
 
   @override
@@ -186,13 +185,11 @@ class Login extends StatelessWidget {
                                     emailController.clear();
                                     passwordController.clear();
                                   } else {
-                                    var ret = await login(emailController.text,
+                                    await login(emailController.text,
                                             passwordController.text)
                                         .then((ret) async {
-                                      print("work");
-                                      print(ret);
                                       try {
-                                        if (ret.length > 0) {
+                                        if (await ret.length > 0) {
                                           print(ret[0]["_id"]);
                                           Navigator.pushReplacement(
                                             context,
@@ -214,6 +211,7 @@ class Login extends StatelessWidget {
                                           passwordController.clear();
                                         }
                                       } catch (e) {
+                                        print(e);
                                         Fluttertoast.showToast(
                                             msg: "Connection Problem",
                                             toastLength: Toast.LENGTH_SHORT,

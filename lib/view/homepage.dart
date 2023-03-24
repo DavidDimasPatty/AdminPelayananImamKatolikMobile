@@ -22,18 +22,21 @@ class _HomePage extends State<HomePage> {
 
   Future callJumlah() async {
     Messages msg = new Messages();
-    msg.addReceiver("agenPencarian");
-    msg.setContent([
+    await msg.addReceiver("agenPencarian");
+    await msg.setContent([
       ["cari jumlah"]
     ]);
-    await msg.send().then((res) async {
-      print("masuk");
-      print(await AgenPage().receiverTampilan());
-    });
-    await Future.delayed(Duration(seconds: 1));
-    hasil = AgenPage().receiverTampilan();
+    await msg.send();
+    hasil = await AgenPage().receiverTampilan();
 
     return hasil;
+  }
+
+  @override
+  initState() {
+    super.initState();
+    // Add listeners to this class
+    callJumlah();
   }
 
   Future pullRefresh() async {

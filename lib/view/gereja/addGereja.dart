@@ -27,10 +27,10 @@ class _addGereja extends State<addGereja> {
   TextEditingController deskripsi = new TextEditingController();
   _addGereja(this.id);
 
-  void submit() async {
+  Future submit() async {
     Messages msg = new Messages();
-    msg.addReceiver("agenPendaftaran");
-    msg.setContent([
+    await msg.addReceiver("agenPendaftaran");
+    await msg.setContent([
       ["add gereja"],
       [nama.text],
       [alamat.text],
@@ -41,11 +41,8 @@ class _addGereja extends State<addGereja> {
       [longttitude]
     ]);
     var hasil;
-    await msg.send().then((res) async {
-      print("masuk");
-      print(await AgenPage().receiverTampilan());
-    });
-    await Future.delayed(Duration(seconds: 1));
+    await msg.send();
+
     hasil = await AgenPage().receiverTampilan();
 
     if (hasil == "failed") {

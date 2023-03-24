@@ -20,21 +20,13 @@ class _DaftarGereja extends State<DaftarGereja> {
   final id;
   _DaftarGereja(this.id);
 
-  Future<List> callDb() async {
+  Future callDb() async {
     Messages msg = new Messages();
-    msg.addReceiver("agenPencarian");
-    msg.setContent([
+    await msg.addReceiver("agenPencarian");
+    await msg.setContent([
       ["cari gereja"]
     ]);
-    List hasil = [];
-    await msg.send().then((res) async {
-      print("masuk");
-      print(await AgenPage().receiverTampilan());
-    });
-    await Future.delayed(Duration(seconds: 1));
-    hasil = await AgenPage().receiverTampilan();
-
-    return hasil;
+    return await AgenPage().receiverTampilan();
   }
 
   @override
@@ -72,20 +64,17 @@ class _DaftarGereja extends State<DaftarGereja> {
     }
   }
 
-  void updateGereja(idKegiatan, status) async {
+  Future updateGereja(idKegiatan, status) async {
     Messages msg = new Messages();
-    msg.addReceiver("agenPencarian");
-    msg.setContent([
+    await msg.addReceiver("agenPencarian");
+    await msg.setContent([
       ["update gereja"],
       [idKegiatan],
       [status]
     ]);
     var hasil;
-    await msg.send().then((res) async {
-      print("masuk");
-      print(await AgenPage().receiverTampilan());
-    });
-    await Future.delayed(Duration(seconds: 1));
+    await msg.send();
+
     hasil = await AgenPage().receiverTampilan();
 
     if (hasil == "fail") {
@@ -293,7 +282,8 @@ class _DaftarGereja extends State<DaftarGereja> {
                                                 ),
                                                 TextButton(
                                                   onPressed: () async {
-                                                    updateGereja(i["_id"], 1);
+                                                    await updateGereja(
+                                                        i["_id"], 1);
                                                     Navigator.pop(context);
                                                     setState(() {
                                                       callDb().then((result) {
@@ -347,7 +337,8 @@ class _DaftarGereja extends State<DaftarGereja> {
                                                 ),
                                                 TextButton(
                                                   onPressed: () async {
-                                                    updateGereja(i["_id"], 0);
+                                                    await updateGereja(
+                                                        i["_id"], 0);
                                                     Navigator.pop(context);
                                                     setState(() {
                                                       callDb().then((result) {

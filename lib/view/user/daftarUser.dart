@@ -24,20 +24,15 @@ class _DaftarUser extends State<DaftarUser> {
   final id;
   _DaftarUser(this.id);
 
-  Future<List> callDb() async {
+  Future callDb() async {
     Messages msg = new Messages();
-    msg.addReceiver("agenPencarian");
-    msg.setContent([
+    await msg.addReceiver("agenPencarian");
+    await msg.setContent([
       ["cari user"]
     ]);
     List hasil = [];
-    await msg.send().then((res) async {
-      print("masuk");
-      print(await AgenPage().receiverTampilan());
-    });
-    await Future.delayed(Duration(seconds: 1));
+    await msg.send();
     hasil = await AgenPage().receiverTampilan();
-
     return hasil;
   }
 
@@ -76,20 +71,16 @@ class _DaftarUser extends State<DaftarUser> {
     }
   }
 
-  void updateUser(idUser, status) async {
+  Future updateUser(idUser, status) async {
     Messages msg = new Messages();
-    msg.addReceiver("agenPencarian");
-    msg.setContent([
+    await msg.addReceiver("agenPencarian");
+    await msg.setContent([
       ["update user"],
       [idUser],
       [status]
     ]);
     var hasil;
-    await msg.send().then((res) async {
-      print("masuk");
-      print(await AgenPage().receiverTampilan());
-    });
-    await Future.delayed(Duration(seconds: 1));
+    await msg.send();
     hasil = await AgenPage().receiverTampilan();
 
     if (hasil == "fail") {
@@ -260,7 +251,8 @@ class _DaftarUser extends State<DaftarUser> {
                                                   ),
                                                   TextButton(
                                                     onPressed: () async {
-                                                      updateUser(i["_id"], 1);
+                                                      await updateUser(
+                                                          i["_id"], 1);
 
                                                       Navigator.pop(context);
                                                       setState(() {
@@ -315,7 +307,8 @@ class _DaftarUser extends State<DaftarUser> {
                                                   ),
                                                   TextButton(
                                                     onPressed: () async {
-                                                      updateUser(i["_id"], 0);
+                                                      await updateUser(
+                                                          i["_id"], 0);
                                                       Navigator.pop(context);
                                                       setState(() {
                                                         callDb().then((result) {

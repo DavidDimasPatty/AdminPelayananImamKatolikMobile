@@ -27,10 +27,10 @@ class _addImam extends State<addImam> {
   var idGerejaSelected;
   var gereja = [];
   var idGereja = [];
-  void submit() async {
+  Future submit() async {
     Messages msg = new Messages();
-    msg.addReceiver("agenPendaftaran");
-    msg.setContent([
+    await msg.addReceiver("agenPendaftaran");
+    await msg.setContent([
       ["add imam"],
       [email.text],
       [password.text],
@@ -38,11 +38,8 @@ class _addImam extends State<addImam> {
       [nama.text],
     ]);
     var hasil;
-    await msg.send().then((res) async {
-      print("masuk");
-      print(await AgenPage().receiverTampilan());
-    });
-    await Future.delayed(Duration(seconds: 1));
+    await msg.send();
+
     hasil = await AgenPage().receiverTampilan();
 
     if (hasil == "failed") {
@@ -71,18 +68,14 @@ class _addImam extends State<addImam> {
   }
 
   List hasil = [];
-  Future<List> callDb() async {
+  Future callDb() async {
     Messages msg = new Messages();
-    msg.addReceiver("agenPencarian");
-    msg.setContent([
+    await msg.addReceiver("agenPencarian");
+    await msg.setContent([
       ["cari gereja"]
     ]);
 
-    await msg.send().then((res) async {
-      print("masuk");
-      print(await AgenPage().receiverTampilan());
-    });
-    await Future.delayed(Duration(seconds: 1));
+    await msg.send();
     hasil = await AgenPage().receiverTampilan();
 
     return hasil;

@@ -67,7 +67,19 @@ class AgenPendaftaran {
 
         if (data[0][0] == "update imam") {
           var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
+          var GerejarCollection =
+              MongoDatabase.db.collection(GEREJA_COLLECTION);
           try {
+            msg.addReceiver("agenPencarian");
+            msg.setContent([
+              ["cari gereja daftar"]
+            ]);
+            await msg.send().then((res) async {
+              var dataAgen = await msg.receive();
+              print("data agen:");
+              print(dataAgen);
+            });
+
             var update = await userCollection
                 .updateOne(where.eq('_id', data[1][0]),
                     modify.set('banned', data[2][0]))

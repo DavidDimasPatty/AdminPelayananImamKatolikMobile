@@ -11,20 +11,19 @@ class AgenPage {
     //SendBehaviour();
     ResponsBehaviour();
   }
-  setDataTampilan(data) {
-    dataTampilan = data;
+  setDataTampilan(data) async {
+    dataTampilan = await data;
   }
 
-  receiverTampilan() {
-    return dataTampilan;
+  receiverTampilan() async {
+    return await dataTampilan;
   }
 
   ResponsBehaviour() async {
     Messages msg = Messages();
-    var data = msg.receive();
-    print("ini");
+    var data = await msg.receive();
     print(data.runtimeType);
-    action() async {
+    action() {
       try {
         if (data.runtimeType == List<Map<String, Object?>>) {
           setDataTampilan(data);
@@ -32,6 +31,7 @@ class AgenPage {
         if (data.runtimeType == String) {
           setDataTampilan(data);
         }
+
         if (data.runtimeType == List<dynamic>) {
           setDataTampilan(data);
         }

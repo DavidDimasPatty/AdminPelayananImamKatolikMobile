@@ -1,33 +1,49 @@
 import 'package:admin_pelayanan_katolik/Agen/agenPendaftaran.dart';
+import 'package:admin_pelayanan_katolik/Agen/agenSetting.dart';
 
 import 'agenPage.dart';
 import 'agenPencarian.dart';
 
 class Messages {
-  String Agen = "";
-  static var Data;
+  static var Agen = [];
+  static var Data = [];
 
-  addReceiver(agen) async {
-    this.Agen = agen;
+  addReceiver(agen) {
+    if (Agen.length >= 1) {
+      Agen.add(agen);
+      Agen.removeAt(0);
+    } else {
+      Agen.add(agen);
+    }
   }
 
-  setContent(data) async {
-    Data = data;
+  setContent(data) {
+    if (Data.length >= 1) {
+      Data.add(data);
+      Data.removeAt(0);
+    } else {
+      Data.add(data);
+    }
   }
 
   send() async {
-    if (this.Agen == "agenPencarian") {
+    print(Agen);
+    if (Agen.last == "agenPencarian") {
       await AgenPencarian();
     }
-    if (this.Agen == "agenPage") {
+    if (Agen.last == "agenPage") {
       await AgenPage();
     }
-    if (this.Agen == "agenPendaftaran") {
+    if (Agen.last == "agenPendaftaran") {
       await AgenPendaftaran();
+    }
+    if (Agen.last == "agenSetting") {
+      await AgenSetting();
     }
   }
 
   receive() {
-    return Data;
+    print(Data);
+    return Data.elementAt(0);
   }
 }

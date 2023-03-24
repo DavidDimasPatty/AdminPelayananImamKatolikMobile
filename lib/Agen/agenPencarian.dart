@@ -12,10 +12,10 @@ class AgenPencarian {
     UpdateBehaviour();
   }
 
-  ResponsBehaviour() {
+  ResponsBehaviour() async {
     Messages msg = Messages();
 
-    var data = msg.receive();
+    var data = await msg.receive();
     action() async {
       try {
         if (data.runtimeType == List<List<String>>) {
@@ -35,6 +35,16 @@ class AgenPencarian {
             var conn =
                 await userCollection.find().toList().then((result) async {
               msg.addReceiver("agenPage");
+              msg.setContent(result);
+              await msg.send();
+            });
+          }
+
+          if (data[0][0] == "cari gereja daftar") {
+            var userCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
+            var conn =
+                await userCollection.find().toList().then((result) async {
+              msg.addReceiver("agenPendaftaran");
               msg.setContent(result);
               await msg.send();
             });
@@ -110,28 +120,32 @@ class AgenPencarian {
     action();
   }
 
-  UpdateBehaviour() {
+  UpdateBehaviour() async {
     Messages msg = Messages();
 
-    var data = msg.receive();
+    var data = await msg.receive();
+    print("tester jenis data");
+    print(data.runtimeType);
     action() async {
       try {
         if (data.runtimeType == List<List<dynamic>>) {
-          if (data[0][0] == "cari admin") {
-            var userCollection = MongoDatabase.db.collection(ADMIN_COLLECTION);
-            var conn = await userCollection
+          if (await data[0][0] == "cari admin") {
+            // var userCollection =
+            //     await MongoDatabase.db.collection(ADMIN_COLLECTION);
+
+            await MongoDatabase.db
+                .collection(ADMIN_COLLECTION)
                 .find({'user': data[1][0], 'password': data[2][0]})
                 .toList()
                 .then((result) async {
-                  print(result);
-                  if (result != 0) {
+                  if (await result != 0) {
                     msg.addReceiver("agenPage");
                     msg.setContent(result);
-                    await msg.send();
+                    msg.send();
                   } else {
                     msg.addReceiver("agenPage");
                     msg.setContent(result);
-                    await msg.send();
+                    msg.send();
                   }
                 });
           }
