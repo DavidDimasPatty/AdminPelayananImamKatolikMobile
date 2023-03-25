@@ -26,7 +26,7 @@ class _HomePage extends State<HomePage> {
       ["cari jumlah"]
     ]);
     await msg.send();
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
     return await AgenPage().receiverTampilan();
   }
 

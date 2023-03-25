@@ -9,7 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 class Login extends StatelessWidget {
   Future login(email, password) async {
     Messages msg = new Messages();
-    await msg.addReceiver("agenPencarian");
+    await msg.addReceiver("agenAkun");
     await msg.setContent([
       ["cari admin"],
       [email],

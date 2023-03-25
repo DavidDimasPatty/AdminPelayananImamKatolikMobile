@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:admin_pelayanan_katolik/DatabaseFolder/data.dart';
@@ -12,12 +13,12 @@ class AgenPendaftaran {
     ResponsBehaviour();
     ReceiveBehaviour();
   }
-  setDataTampilan(data) async {
-    dataPencarian = await data;
+  setDataTampilan(data) {
+    dataPencarian = data;
   }
 
-  receiverTampilan() async {
-    return await dataPencarian;
+  receiverTampilan() {
+    return dataPencarian;
   }
 
   ReceiveBehaviour() {
@@ -25,6 +26,7 @@ class AgenPendaftaran {
 
     var data = msg.receive();
 
+    print("dapet");
     action() async {
       try {
         if (data.runtimeType == List<Map<String, Object?>>) {
@@ -95,13 +97,6 @@ class AgenPendaftaran {
           var GerejarCollection =
               MongoDatabase.db.collection(GEREJA_COLLECTION);
           try {
-            await msg.addReceiver("agenPencarian");
-            await msg.setContent([
-              ["cari gereja daftar"]
-            ]);
-            await msg.send();
-            print(await receiverTampilan());
-
             var update = await userCollection
                 .updateOne(where.eq('_id', data[1][0]),
                     modify.set('banned', data[2][0]))

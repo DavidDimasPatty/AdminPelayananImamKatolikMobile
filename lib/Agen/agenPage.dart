@@ -7,7 +7,7 @@ class AgenPage {
   static var dataTampilan;
   AgenPage() {
     //measure
-    // ReadyBehaviour();
+    ReadyBehaviour();
     //SendBehaviour();
     ResponsBehaviour();
   }
@@ -50,11 +50,7 @@ class AgenPage {
     var data = msg.receive();
     action() {
       try {
-        if (data == "Done") {
-          return data;
-        }
-
-        if (data == "ready") {
+        if (data == "Application Setting Ready") {
           runApp(MaterialApp(
             title: 'Navigation Basics',
             home: Login(),

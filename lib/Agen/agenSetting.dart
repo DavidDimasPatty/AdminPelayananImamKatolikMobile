@@ -30,13 +30,13 @@ class AgenSetting {
             await Firebase.initializeApp();
             await MongoDatabase.connect().then((result) async {
               WidgetsFlutterBinding.ensureInitialized();
-              msg.addReceiver("agenPage");
-              msg.setContent("Application Setting Ready");
+              await msg.addReceiver("agenPage");
+              await msg.setContent("Application Setting Ready");
               await msg.send();
-              runApp(await MaterialApp(
-                title: 'Navigation Basics',
-                home: Login(),
-              ));
+              // runApp(await MaterialApp(
+              //   title: 'Navigation Basics',
+              //   home: Login(),
+              // ));
             });
           } catch (e) {
             msg.addReceiver("agenPage");

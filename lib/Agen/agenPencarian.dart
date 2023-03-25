@@ -34,8 +34,8 @@ class AgenPencarian {
             var userCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
             var conn =
                 await userCollection.find().toList().then((result) async {
-              msg.addReceiver("agenPage");
-              msg.setContent(result);
+              await msg.addReceiver("agenPage");
+              await msg.setContent(result);
               await msg.send();
             });
           }
@@ -43,8 +43,8 @@ class AgenPencarian {
           if (data[0][0] == "cari gereja daftar") {
             var userCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
             var conn = await userCollection.find().toList();
-            msg.addReceiver("agenPendaftaran");
-            msg.setContent(conn);
+            await msg.addReceiver("agenPendaftaran");
+            await msg.setContent(conn);
             await msg.send();
           }
 
