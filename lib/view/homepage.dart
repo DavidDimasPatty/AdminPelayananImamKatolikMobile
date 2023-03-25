@@ -18,7 +18,6 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   var id;
   _HomePage(this.id);
-  List hasil = [];
 
   Future callJumlah() async {
     Messages msg = new Messages();
@@ -27,16 +26,16 @@ class _HomePage extends State<HomePage> {
       ["cari jumlah"]
     ]);
     await msg.send();
-    hasil = await AgenPage().receiverTampilan();
-
-    return hasil;
+    await Future.delayed(Duration(seconds: 2));
+    return await AgenPage().receiverTampilan();
   }
 
   @override
-  initState() {
+  void initState() {
     super.initState();
-    // Add listeners to this class
-    callJumlah();
+    setState(() {
+      callJumlah();
+    });
   }
 
   Future pullRefresh() async {
@@ -102,7 +101,7 @@ class _HomePage extends State<HomePage> {
                                         height: 5.0,
                                       ),
                                       Text(
-                                        hasil[0].toString(),
+                                        snapshot.data[0].toString(),
                                         style: TextStyle(
                                           color: Colors.blue,
                                           fontSize: 17.0,
@@ -145,7 +144,8 @@ class _HomePage extends State<HomePage> {
                                                         height: 5.0,
                                                       ),
                                                       Text(
-                                                        hasil[1].toString(),
+                                                        snapshot.data[1]
+                                                            .toString(),
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 16.0,
@@ -198,7 +198,8 @@ class _HomePage extends State<HomePage> {
                                                         height: 10.0,
                                                       ),
                                                       Text(
-                                                        hasil[2].toString(),
+                                                        snapshot.data[2]
+                                                            .toString(),
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 16.0,
@@ -258,7 +259,7 @@ class _HomePage extends State<HomePage> {
                                         height: 5.0,
                                       ),
                                       Text(
-                                        hasil[3].toString(),
+                                        snapshot.data[3].toString(),
                                         style: TextStyle(
                                           color: Colors.blue,
                                           fontSize: 17.0,
@@ -301,7 +302,8 @@ class _HomePage extends State<HomePage> {
                                                         height: 5.0,
                                                       ),
                                                       Text(
-                                                        hasil[4].toString(),
+                                                        snapshot.data[4]
+                                                            .toString(),
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 16.0,
@@ -354,7 +356,8 @@ class _HomePage extends State<HomePage> {
                                                         height: 10.0,
                                                       ),
                                                       Text(
-                                                        hasil[5].toString(),
+                                                        snapshot.data[5]
+                                                            .toString(),
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 16.0,
@@ -414,7 +417,7 @@ class _HomePage extends State<HomePage> {
                                         height: 5.0,
                                       ),
                                       Text(
-                                        hasil[6].toString(),
+                                        snapshot.data[6].toString(),
                                         style: TextStyle(
                                           color: Colors.blue,
                                           fontSize: 17.0,
@@ -457,7 +460,8 @@ class _HomePage extends State<HomePage> {
                                                         height: 5.0,
                                                       ),
                                                       Text(
-                                                        hasil[7].toString(),
+                                                        snapshot.data[7]
+                                                            .toString(),
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 16.0,
@@ -510,7 +514,8 @@ class _HomePage extends State<HomePage> {
                                                         height: 10.0,
                                                       ),
                                                       Text(
-                                                        hasil[8].toString(),
+                                                        snapshot.data[8]
+                                                            .toString(),
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 16.0,
@@ -540,6 +545,7 @@ class _HomePage extends State<HomePage> {
                     );
                   } catch (e) {
                     print(e);
+
                     return Center(child: CircularProgressIndicator());
                   }
                 }),

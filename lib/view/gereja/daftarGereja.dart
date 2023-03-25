@@ -14,18 +14,21 @@ class DaftarGereja extends StatefulWidget {
 
 class _DaftarGereja extends State<DaftarGereja> {
   List daftarUser = [];
-
+  bool isLoading = true;
   List dummyTemp = [];
 
   final id;
   _DaftarGereja(this.id);
 
-  Future callDb() async {
+  Future<List> callDb() async {
     Messages msg = new Messages();
     await msg.addReceiver("agenPencarian");
     await msg.setContent([
       ["cari gereja"]
     ]);
+    List hasil;
+    await msg.send();
+    await Future.delayed(Duration(seconds: 1));
     return await AgenPage().receiverTampilan();
   }
 
@@ -33,6 +36,7 @@ class _DaftarGereja extends State<DaftarGereja> {
   void initState() {
     super.initState();
     callDb().then((result) {
+      print(result);
       setState(() {
         daftarUser.addAll(result);
         dummyTemp.addAll(result);
@@ -185,14 +189,15 @@ class _DaftarGereja extends State<DaftarGereja> {
               ],
             ),
             Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-            Padding(padding: EdgeInsets.symmetric(vertical: 10)),
             /////////
+
             FutureBuilder(
                 future: callDb(),
                 builder: (context, AsyncSnapshot snapshot) {
                   try {
                     return Column(children: [
-                      for (var i in daftarUser)
+                      // for (var i in daftarUser)
+                      for (var i in snapshot.data)
                         InkWell(
                           borderRadius: new BorderRadius.circular(24),
                           onTap: () {
@@ -367,9 +372,10 @@ class _DaftarGereja extends State<DaftarGereja> {
                         )
                     ]);
                   } catch (e) {
-                    print(e);
                     return Center(child: CircularProgressIndicator());
                   }
+
+                  // return Center(child: CircularProgressIndicator());
                 }),
 
             /////////

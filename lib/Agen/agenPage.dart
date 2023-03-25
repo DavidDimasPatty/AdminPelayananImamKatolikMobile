@@ -7,7 +7,7 @@ class AgenPage {
   static var dataTampilan;
   AgenPage() {
     //measure
-    ReadyBehaviour();
+    // ReadyBehaviour();
     //SendBehaviour();
     ResponsBehaviour();
   }
@@ -22,21 +22,20 @@ class AgenPage {
   ResponsBehaviour() async {
     Messages msg = Messages();
     var data = await msg.receive();
-    print(data.runtimeType);
-    action() {
+    action() async {
       try {
         if (data.runtimeType == List<Map<String, Object?>>) {
-          setDataTampilan(data);
+          await setDataTampilan(data);
         }
         if (data.runtimeType == String) {
-          setDataTampilan(data);
+          await setDataTampilan(data);
         }
 
         if (data.runtimeType == List<dynamic>) {
-          setDataTampilan(data);
+          await setDataTampilan(data);
         }
         if (data.runtimeType == List<List<dynamic>>) {
-          setDataTampilan(data);
+          await setDataTampilan(data);
         }
       } catch (error) {
         return 0;

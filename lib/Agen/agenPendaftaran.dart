@@ -6,9 +6,34 @@ import '../DatabaseFolder/mongodb.dart';
 import 'messages.dart';
 
 class AgenPendaftaran {
+  static var dataPencarian;
   AgenPendaftaran() {
     ReadyBehaviour();
     ResponsBehaviour();
+    ReceiveBehaviour();
+  }
+  setDataTampilan(data) async {
+    dataPencarian = await data;
+  }
+
+  receiverTampilan() async {
+    return await dataPencarian;
+  }
+
+  ReceiveBehaviour() {
+    Messages msg = Messages();
+
+    var data = msg.receive();
+
+    action() async {
+      try {
+        if (data.runtimeType == List<Map<String, Object?>>) {
+          await setDataTampilan(data);
+        }
+      } catch (e) {
+        return null;
+      }
+    }
   }
 
   ResponsBehaviour() {
@@ -70,27 +95,24 @@ class AgenPendaftaran {
           var GerejarCollection =
               MongoDatabase.db.collection(GEREJA_COLLECTION);
           try {
-            msg.addReceiver("agenPencarian");
-            msg.setContent([
+            await msg.addReceiver("agenPencarian");
+            await msg.setContent([
               ["cari gereja daftar"]
             ]);
-            await msg.send().then((res) async {
-              var dataAgen = await msg.receive();
-              print("data agen:");
-              print(dataAgen);
-            });
+            await msg.send();
+            print(await receiverTampilan());
 
             var update = await userCollection
                 .updateOne(where.eq('_id', data[1][0]),
                     modify.set('banned', data[2][0]))
                 .then((result) async {
               if (result.isSuccess) {
-                msg.addReceiver("agenPage");
-                msg.setContent('oke');
+                await msg.addReceiver("agenPage");
+                await msg.setContent('oke');
                 await msg.send();
               } else {
-                msg.addReceiver("agenPage");
-                msg.setContent('failed');
+                await msg.addReceiver("agenPage");
+                await msg.setContent('failed');
                 await msg.send();
               }
             });

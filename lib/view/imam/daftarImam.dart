@@ -28,6 +28,7 @@ class _DaftarImam extends State<DaftarImam> {
     ]);
     List hasil = [];
     await msg.send();
+    await Future.delayed(Duration(seconds: 1));
     hasil = await AgenPage().receiverTampilan();
 
     return hasil;
@@ -379,6 +380,7 @@ class _DaftarImam extends State<DaftarImam> {
                     ]);
                   } catch (e) {
                     print(e);
+
                     return Center(child: CircularProgressIndicator());
                   }
                 }),

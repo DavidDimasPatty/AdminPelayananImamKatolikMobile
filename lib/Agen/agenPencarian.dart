@@ -42,12 +42,10 @@ class AgenPencarian {
 
           if (data[0][0] == "cari gereja daftar") {
             var userCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
-            var conn =
-                await userCollection.find().toList().then((result) async {
-              msg.addReceiver("agenPendaftaran");
-              msg.setContent(result);
-              await msg.send();
-            });
+            var conn = await userCollection.find().toList();
+            msg.addReceiver("agenPendaftaran");
+            msg.setContent(conn);
+            await msg.send();
           }
 
           if (data[0][0] == "cari imam") {
@@ -124,8 +122,6 @@ class AgenPencarian {
     Messages msg = Messages();
 
     var data = await msg.receive();
-    print("tester jenis data");
-    print(data.runtimeType);
     action() async {
       try {
         if (data.runtimeType == List<List<dynamic>>) {

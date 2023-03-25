@@ -27,7 +27,6 @@ class Messages {
   }
 
   send() async {
-    print(Agen);
     if (Agen.last == "agenPencarian") {
       await AgenPencarian();
     }
@@ -43,7 +42,6 @@ class Messages {
   }
 
   receive() {
-    print(Data);
-    return Data.elementAt(0);
+    return Data.last;
   }
 }

@@ -17,6 +17,7 @@ class Login extends StatelessWidget {
     ]);
     // var hasil;
     await msg.send();
+    await Future.delayed(Duration(seconds: 1));
     return await AgenPage().receiverTampilan();
 
     // // await Future.delayed(Duration(seconds: 1));

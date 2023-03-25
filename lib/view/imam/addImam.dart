@@ -76,6 +76,7 @@ class _addImam extends State<addImam> {
     ]);
 
     await msg.send();
+    await Future.delayed(Duration(seconds: 1));
     hasil = await AgenPage().receiverTampilan();
 
     return hasil;
