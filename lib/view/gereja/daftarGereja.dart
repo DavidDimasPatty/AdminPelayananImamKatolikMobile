@@ -152,7 +152,7 @@ class _DaftarGereja extends State<DaftarGereja> {
                 autoFocus: false,
                 width: 400,
                 rtl: true,
-                helpText: 'Cari User',
+                helpText: 'Cari Gereja',
                 textController: editingController,
                 onSuffixTap: () {
                   setState(() {

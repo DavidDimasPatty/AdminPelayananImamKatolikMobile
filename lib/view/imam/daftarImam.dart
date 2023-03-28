@@ -152,7 +152,7 @@ class _DaftarImam extends State<DaftarImam> {
                 autoFocus: false,
                 width: 400,
                 rtl: true,
-                helpText: 'Cari User',
+                helpText: 'Cari Imam',
                 textController: editingController,
                 onSuffixTap: () {
                   setState(() {
