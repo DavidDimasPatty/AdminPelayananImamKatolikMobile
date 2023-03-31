@@ -1,3 +1,8 @@
+import 'dart:async';
+
+import 'package:admin_pelayanan_katolik/Agen/Message.dart';
+import 'package:admin_pelayanan_katolik/Agen/MessagePassing.dart';
+import 'package:admin_pelayanan_katolik/Agen/Task.dart';
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/Agen/messages.dart';
 import 'package:admin_pelayanan_katolik/view/imam/addImam.dart';
@@ -21,17 +26,29 @@ class _DaftarImam extends State<DaftarImam> {
   _DaftarImam(this.id);
 
   Future callDb() async {
-    Messages msg = new Messages();
-    await msg.addReceiver("agenPencarian");
-    await msg.setContent([
-      ["cari imam"]
-    ]);
-    List hasil = [];
-    await msg.send();
-    await Future.delayed(Duration(seconds: 1));
-    hasil = await AgenPage().receiverTampilan();
+    // Messages msg = new Messages();
+    // await msg.addReceiver("agenPencarian");
+    // await msg.setContent([
+    //   ["cari imam"]
+    // ]);
+    // List hasil = [];
+    // await msg.send();
+    // await Future.delayed(Duration(seconds: 1));
+    // hasil = await AgenPage().receiverTampilan();
 
-    return hasil;
+    // return hasil;
+    Completer<void> completer = Completer<void>();
+    Message message =
+        Message('View', 'Agent A', "REQUEST", Task('cari imam', null));
+
+    MessagePassing messagePassing = MessagePassing();
+    var data = await messagePassing.sendMessage(message);
+    completer.complete();
+    var result = await messagePassing.messageGetToView();
+
+    await completer.future;
+
+    return result;
   }
 
   @override

@@ -36,6 +36,7 @@ class _DaftarGereja extends State<DaftarGereja> {
     // await msg.send();
     // await Future.delayed(Duration(seconds: 1));
     // return await AgenPage().receiverTampilan();
+
     Completer<void> completer = Completer<void>();
     Message message =
         Message('View', 'Agent A', "REQUEST", Task('cari gereja', null));
@@ -54,7 +55,6 @@ class _DaftarGereja extends State<DaftarGereja> {
   void initState() {
     super.initState();
     callDb().then((result) {
-      print(result);
       setState(() {
         daftarUser.addAll(result);
         dummyTemp.addAll(result);
@@ -70,6 +70,7 @@ class _DaftarGereja extends State<DaftarGereja> {
             .toString()
             .toLowerCase()
             .contains(query.toLowerCase())) {
+          print("SOORRRY");
           listOMaps.add(item);
         }
       }
@@ -215,7 +216,7 @@ class _DaftarGereja extends State<DaftarGereja> {
                   try {
                     return Column(children: [
                       // for (var i in daftarUser)
-                      for (var i in snapshot.data)
+                      for (var i in daftarUser)
                         InkWell(
                           borderRadius: new BorderRadius.circular(24),
                           onTap: () {

@@ -22,8 +22,6 @@ class MessagePassing {
         agent.rejectTask(message.task);
       }
     } else if (message.receiver == "View") {
-      print("hereeeeeeeeeeeee");
-      print(message);
       messageSetToView(message.task);
     }
     return null;

@@ -3,7 +3,6 @@ import 'package:admin_pelayanan_katolik/Agen/agenPendaftaran.dart';
 import 'package:admin_pelayanan_katolik/Agen/agenSetting.dart';
 
 import 'agenPage.dart';
-import 'agenPencarian.dart';
 
 class Messages {
   static var Agen = [];
@@ -28,9 +27,6 @@ class Messages {
   }
 
   send() async {
-    if (Agen.last == "agenPencarian") {
-      await AgenPencarian();
-    }
     if (Agen.last == "agenPage") {
       await AgenPage();
     }

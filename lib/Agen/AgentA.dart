@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 
 import '../DatabaseFolder/data.dart';
 import '../DatabaseFolder/mongodb.dart';
@@ -21,13 +22,9 @@ class AgentA extends Agent {
 
   bool canPerformTask(dynamic message) {
     for (var p in plan) {
-      if (p.goals == message.task.action) {
-        if (p.protocol == message.protocol) {
-          return true;
-        }
-        return false;
+      if (p.goals == message.task.action && p.protocol == message.protocol) {
+        return true;
       }
-      return false;
     }
     return false;
   }
@@ -58,8 +55,7 @@ class AgentA extends Agent {
               }
             }
             if (checkGoals == true) {
-              print(
-                  'Agent A waited seconds and is returning data to ${message.receiver}');
+              print('Agent A returning data to ${message.receiver}');
               MessagePassing messagePassing = MessagePassing();
               messagePassing.sendMessage(message);
               break;
@@ -80,6 +76,77 @@ class AgentA extends Agent {
     return message;
   }
 
+  Future<Message> cariImam() async {
+    var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
+    final pipeline4 = AggregationPipelineBuilder()
+        .addStage(Lookup(
+            from: 'Gereja',
+            localField: 'idGereja',
+            foreignField: '_id',
+            as: 'imamGereja'))
+        .build();
+    var conn = await userCollection.aggregateToStream(pipeline4).toList();
+    Message message = Message('Agent A', 'View', "INFORM", Task('cari', conn));
+    return message;
+  }
+
+  Future<Message> cariUser() async {
+    var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
+    var conn = await userCollection.find().toList();
+    Message message = Message('Agent A', 'View', "INFORM", Task('cari', conn));
+    return message;
+  }
+
+  Future<Message> cariJumlah() async {
+    var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
+    var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
+
+    var imamCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
+    var conn = await userCollection.find().length;
+
+    var connBan = await userCollection.find({'banned': 1}).length;
+
+    var connG = await gerejaCollection.find().length;
+
+    var connBanG = await gerejaCollection.find({'banned': 1}).length;
+
+    var connUnG = await gerejaCollection.find({'banned': 0}).length;
+
+    var connI = await imamCollection.find().length;
+
+    var connBanI = await imamCollection.find({'banned': 1}).length;
+
+    var connUnI = await imamCollection.find({'banned': 0}).length;
+
+    var connUn = await userCollection.find({'banned': 0}).length;
+    // conn,
+    // result,
+    // connBan,
+    // connG,
+    // connUnG,
+    // connBanG,
+    // connI,
+    // connUnI,
+    // connBanI
+
+    Message message = Message(
+        'Agent A',
+        'View',
+        "INFORM",
+        Task('cari', [
+          conn,
+          connUn,
+          connBan,
+          connG,
+          connUnG,
+          connBanG,
+          connI,
+          connUnI,
+          connBanI
+        ]));
+    return message;
+  }
+
   void rejectTask(dynamic task) {
     print('Task rejected A: $task');
   }
@@ -97,7 +164,17 @@ class AgentA extends Agent {
   }
 
   void _initAgent() {
-    plan = [Plan("cari gereja", "REQUEST", cariGereja(), null)];
-    goals = [Goals("cari gereja", List<Map<String, Object?>>, 2)];
+    plan = [
+      Plan("cari gereja", "REQUEST", cariGereja(), null),
+      Plan("cari imam", "REQUEST", cariImam(), null),
+      Plan("cari user", "REQUEST", cariUser(), null),
+      Plan("cari jumlah", "REQUEST", cariJumlah(), null)
+    ];
+    goals = [
+      Goals("cari gereja", List<Map<String, Object?>>, 2),
+      Goals("cari imam", List<Map<String, Object?>>, 2),
+      Goals("cari user", List<Map<String, Object?>>, 2),
+      Goals("cari jumlah", List<dynamic>, 2)
+    ];
   }
 }
