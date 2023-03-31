@@ -87,18 +87,26 @@ class _DaftarGereja extends State<DaftarGereja> {
     }
   }
 
-  Future updateGereja(idKegiatan, status) async {
-    Messages msg = new Messages();
-    await msg.addReceiver("agenPencarian");
-    await msg.setContent([
-      ["update gereja"],
-      [idKegiatan],
-      [status]
-    ]);
-    var hasil;
-    await msg.send();
+  Future updateGereja(idGereja, status) async {
+    // Messages msg = new Messages();
+    // await msg.addReceiver("agenPencarian");
+    // await msg.setContent([
+    //   ["update gereja"],
+    //   [idKegiatan],
+    //   [status]
+    // ]);
+    // var hasil;
+    // await msg.send();
 
-    hasil = await AgenPage().receiverTampilan();
+    // hasil = await AgenPage().receiverTampilan();
+    Completer<void> completer = Completer<void>();
+    Message message = Message('View', 'Agent Pendaftaran', "REQUEST",
+        Task('update gereja', [idGereja, status]));
+
+    MessagePassing messagePassing = MessagePassing();
+    var data = await messagePassing.sendMessage(message);
+    completer.complete();
+    var hasil = await messagePassing.messageGetToView();
 
     if (hasil == "fail") {
       Fluttertoast.showToast(

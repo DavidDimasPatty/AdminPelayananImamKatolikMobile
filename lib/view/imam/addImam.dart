@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:admin_pelayanan_katolik/Agen/Message.dart';
+import 'package:admin_pelayanan_katolik/Agen/Task.dart';
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/Agen/messages.dart';
 import 'package:admin_pelayanan_katolik/view/gereja/daftarGereja.dart';
@@ -7,6 +11,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocode/geocode.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+
+import '../../Agen/MessagePassing.dart';
 
 class addImam extends StatefulWidget {
   @override
@@ -27,21 +33,34 @@ class _addImam extends State<addImam> {
   var idGerejaSelected;
   var gereja = [];
   var idGereja = [];
+
   Future submit() async {
-    Messages msg = new Messages();
-    await msg.addReceiver("agenPendaftaran");
-    await msg.setContent([
-      ["add imam"],
-      [email.text],
-      [password.text],
-      [idGerejaSelected],
-      [nama.text],
-    ]);
-    var hasil;
-    await msg.send();
+    // Messages msg = new Messages();
+    // await msg.addReceiver("agenPendaftaran");
+    // await msg.setContent([
+    //   ["add imam"],
+    //   [email.text],
+    //   [password.text],
+    //   [idGerejaSelected],
+    //   [nama.text],
+    //   [id]
+    // ]);
+    // var hasil;
+    // await msg.send();
 
-    hasil = await AgenPage().receiverTampilan();
+    // hasil = await AgenPage().receiverTampilan();
+    Completer<void> completer = Completer<void>();
+    Message message = Message(
+        'View',
+        'Agent Pendaftaran',
+        "REQUEST",
+        Task('add imam',
+            [email.text, password.text, idGerejaSelected, nama.text, id]));
 
+    MessagePassing messagePassing = MessagePassing();
+    var data = await messagePassing.sendMessage(message);
+    completer.complete();
+    var hasil = await messagePassing.messageGetToView();
     if (hasil == "failed") {
       Fluttertoast.showToast(
           msg: "Gagal menambahkan Imam",
@@ -67,19 +86,30 @@ class _addImam extends State<addImam> {
     }
   }
 
-  List hasil = [];
   Future callDb() async {
-    Messages msg = new Messages();
-    await msg.addReceiver("agenPencarian");
-    await msg.setContent([
-      ["cari gereja"]
-    ]);
+    // Messages msg = new Messages();
+    // await msg.addReceiver("agenPencarian");
+    // await msg.setContent([
+    //   ["cari gereja"]
+    // ]);
 
-    await msg.send();
-    await Future.delayed(Duration(seconds: 1));
-    hasil = await AgenPage().receiverTampilan();
+    // await msg.send();
+    // await Future.delayed(Duration(seconds: 1));
+    // hasil = await AgenPage().receiverTampilan();
 
-    return hasil;
+    // return hasil;
+    Completer<void> completer = Completer<void>();
+    Message message = Message(
+        'View', 'Agent Pencarian', "REQUEST", Task('cari gereja', null));
+
+    MessagePassing messagePassing = MessagePassing();
+    var data = await messagePassing.sendMessage(message);
+    completer.complete();
+    var result = await messagePassing.messageGetToView();
+
+    await completer.future;
+
+    return result;
   }
 
   // void initState() {

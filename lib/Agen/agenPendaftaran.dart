@@ -17,10 +17,8 @@ class AgentPendaftaran extends Agent {
   }
   List<Plan> _plan = [];
   List<Goals> _goals = [];
-  List _dataProcess = [];
-  int _estimatedTime = 5;
   bool stop = false;
-
+  int _estimatedTime = 5;
   bool canPerformTask(dynamic message) {
     for (var p in _plan) {
       if (p.goals == message.task.action && p.protocol == message.protocol) {
@@ -43,9 +41,8 @@ class AgentPendaftaran extends Agent {
           Message msg = rejectTask(task, sender);
           messagePassing.sendMessage(msg);
         });
-        _dataProcess.add(task.data);
 
-        Message message = await action(p.goals, task);
+        Message message = await action(p.goals, task, sender);
 
         if (stop == false) {
           if (timer.isActive) {
@@ -80,36 +77,167 @@ class AgentPendaftaran extends Agent {
     }
   }
 
-  Future<Message> action(String goals, dynamic data) async {
+  Future<Message> action(String goals, dynamic data, String sender) async {
     switch (goals) {
       case "update user":
-        return updateUser(data);
+        return updateUser(data.data, sender);
+      case "update imam":
+        return updateImam(data.data, sender);
+      case "update gereja":
+        return updateGereja(data.data, sender);
+      case "add imam":
+        return addImam(data.data, sender);
+      case "add gereja":
+        return addGereja(data.data, sender);
 
       default:
-        return rejectTask(data.task, data.sender);
+        return rejectTask(data, data.sender);
     }
   }
 
-  Future<Message> updateUser(dynamic data) async {
-    if (_dataProcess.isNotEmpty) {
-      var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
+  Future<Message> updateUser(dynamic data, String sender) async {
+    var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
 
-      var update = await userCollection.updateOne(
-          where.eq('_id', _dataProcess.last),
-          modify.set(
-              'banned', _dataProcess.elementAt(_dataProcess.length - 1)));
+    var update = await userCollection.updateOne(where.eq('_id', data[0]),
+        modify.set('banned', data[1]).set("updatedAt", DateTime.now()));
 
-      if (update.isSuccess) {
-        Message message =
-            Message('Agent Pendaftaran', 'View', "INFORM", Task('cari', "oke"));
-        return message;
-      } else {
-        Message message = Message(
-            'Agent Pendaftaran', 'View', "INFORM", Task('cari', "failed"));
-        return message;
-      }
+    if (update.isSuccess) {
+      Message message =
+          Message('Agent Pendaftaran', sender, "INFORM", Task('cari', "oke"));
+      return message;
+    } else {
+      Message message = Message(
+          'Agent Pendaftaran', sender, "INFORM", Task('cari', "failed"));
+      return message;
     }
-    return rejectTask("update user", "View");
+  }
+
+  Future<Message> updateImam(dynamic data, String sender) async {
+    var imamCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
+
+    var update = await imamCollection.updateOne(where.eq('_id', data[0]),
+        modify.set('banned', data[1]).set("updatedAt", DateTime.now()));
+    if (update.isSuccess) {
+      Message message =
+          Message('Agent Pendaftaran', sender, "INFORM", Task('cari', "oke"));
+      return message;
+    } else {
+      Message message = Message(
+          'Agent Pendaftaran', sender, "INFORM", Task('cari', "failed"));
+      return message;
+    }
+  }
+
+  Future<Message> updateGereja(dynamic data, String sender) async {
+    var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
+
+    var update = await gerejaCollection.updateOne(where.eq('_id', data[0]),
+        modify.set('banned', data[1]).set("updatedAt", DateTime.now()));
+
+    if (update.isSuccess) {
+      Message message =
+          Message('Agent Pendaftaran', sender, "INFORM", Task('cari', "oke"));
+      return message;
+    } else {
+      Message message = Message(
+          'Agent Pendaftaran', sender, "INFORM", Task('cari', "failed"));
+      return message;
+    }
+  }
+
+  Future<Message> addImam(dynamic data, String sender) async {
+    var imamCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
+
+    var addImam = await imamCollection.insertOne({
+      "email": data[0],
+      "password": data[1],
+      "idGereja": data[2],
+      "name": data[3],
+      "picture": "",
+      "notelp": "",
+      "statusPemberkatan": 0,
+      "statusPerminyakan": 0,
+      "statusTobat": 0,
+      "statusPerkawinan": 0,
+      "banned": 0,
+      "notif": true,
+      "createdAt": DateTime.now(),
+      "updatedAt": DateTime.now(),
+      "updatedBy": data[4]
+    });
+    if (addImam.isSuccess) {
+      Message message =
+          Message('Agent Pendaftaran', sender, "INFORM", Task('cari', "oke"));
+      return message;
+    } else {
+      Message message = Message(
+          'Agent Pendaftaran', sender, "INFORM", Task('cari', "failed"));
+      return message;
+    }
+  }
+
+/////////////////BELOM KELARRRRE
+  Future<Message> addGereja(dynamic data, String sender) async {
+    var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
+    var aturanCollection =
+        MongoDatabase.db.collection(ATURAN_PELAYANAN_COLLECTION);
+
+    var addGereja = await gerejaCollection.insertOne({
+      "nama": data[1][0],
+      "address": data[2][0],
+      "paroki": data[3][0],
+      "lingkungan": data[4][0],
+      "deskripsi": data[5][0],
+      "lat": data[6][0],
+      "lng": data[7][0],
+      "gambar": "",
+      "banned": 0,
+      "createdAt": DateTime.now(),
+    });
+
+    Completer<void> completer = Completer<void>();
+    Message message = Message('Agent Pendaftaran', 'Agent Pencarian', "REQUEST",
+        Task('cari user', null));
+
+    MessagePassing messagePassing = MessagePassing();
+    var hasil = await messagePassing.sendMessage(message);
+    completer.complete();
+
+    await completer.future;
+
+    Completer<void> completer2 = Completer<void>();
+    Message message2 = Message('View', 'Agent Pencarian', "REQUEST",
+        Task('cari gereja terakhir', null));
+
+    MessagePassing messagePassing2 = MessagePassing();
+    var data2 = await messagePassing2.sendMessage(message);
+    completer.complete();
+    var result2 = await messagePassing2.messageGetToView();
+
+    await completer.future;
+
+    var addAturan = await aturanCollection.insertOne({
+      "idGereja": result2[0]['_id'],
+      "baptis": "",
+      "komuni": "",
+      "krisma": "",
+      "perkawinan": "",
+      "perminyakan": "",
+      "tobat": "",
+      "pemberkatan": "",
+      "updatedAt": DateTime.now(),
+      "updatedBy": ObjectId(),
+    });
+
+    if (addAturan.isSuccess && addGereja.isSuccess) {
+      Message message =
+          Message('Agent Pendaftaran', sender, "INFORM", Task('cari', "oke"));
+      return message;
+    } else {
+      Message message = Message(
+          'Agent Pendaftaran', sender, "INFORM", Task('cari', "failed"));
+      return message;
+    }
   }
 
   Message rejectTask(dynamic task, sender) {
@@ -139,179 +267,16 @@ class AgentPendaftaran extends Agent {
   void _initAgent() {
     _plan = [
       Plan("update user", "REQUEST", _estimatedTime),
+      Plan("update imam", "REQUEST", _estimatedTime),
+      Plan("update gereja", "REQUEST", _estimatedTime),
+      Plan("add imam", "REQUEST", _estimatedTime),
+      Plan("data pencarian gereja", "INFORM", _estimatedTime),
     ];
     _goals = [
       Goals("update user", String, 2),
+      Goals("update imam", String, 2),
+      Goals("update gereja", String, 2),
+      Goals("add imam", String, 2),
     ];
   }
 }
-
-
-//  if (data[0][0] == "update user") {
-//           var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
-//           try {
-//             var update = await userCollection
-//                 .updateOne(where.eq('_id', data[1][0]),
-//                     modify.set('banned', data[2][0]))
-//                 .then((result) async {
-//               if (result.isSuccess) {
-//                 msg.addReceiver("agenPage");
-//                 msg.setContent('oke');
-//                 await msg.send();
-//               } else {
-//                 msg.addReceiver("agenPage");
-//                 msg.setContent('failed');
-//                 await msg.send();
-//               }
-//             });
-//           } catch (e) {
-//             msg.addReceiver("agenPage");
-//             msg.setContent('fail');
-//             await msg.send();
-//           }
-//         }
-
-//         if (data[0][0] == "update gereja") {
-//           var userCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
-//           try {
-//             var update = await userCollection
-//                 .updateOne(where.eq('_id', data[1][0]),
-//                     modify.set('banned', data[2][0]))
-//                 .then((result) async {
-//               if (result.isSuccess) {
-//                 msg.addReceiver("agenPage");
-//                 msg.setContent('oke');
-//                 await msg.send();
-//               } else {
-//                 msg.addReceiver("agenPage");
-//                 msg.setContent('failed');
-//                 await msg.send();
-//               }
-//             });
-//           } catch (e) {
-//             msg.addReceiver("agenPage");
-//             msg.setContent('fail');
-//             await msg.send();
-//           }
-//         }
-
-//         if (data[0][0] == "update imam") {
-//           var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
-//           var GerejarCollection =
-//               MongoDatabase.db.collection(GEREJA_COLLECTION);
-//           try {
-//             var update = await userCollection
-//                 .updateOne(where.eq('_id', data[1][0]),
-//                     modify.set('banned', data[2][0]))
-//                 .then((result) async {
-//               if (result.isSuccess) {
-//                 await msg.addReceiver("agenPage");
-//                 await msg.setContent('oke');
-//                 await msg.send();
-//               } else {
-//                 await msg.addReceiver("agenPage");
-//                 await msg.setContent('failed');
-//                 await msg.send();
-//               }
-//             });
-//           } catch (e) {
-//             msg.addReceiver("agenPage");
-//             msg.setContent('fail');
-//             await msg.send();
-//           }
-//         }
-
-//         if (data[0][0] == "add gereja") {
-//           var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
-//           var aturanCollection =
-//               MongoDatabase.db.collection(ATURAN_PELAYANAN_COLLECTION);
-//           try {
-//             var hasil = await gerejaCollection.insertOne({
-//               "nama": data[1][0],
-//               "address": data[2][0],
-//               "paroki": data[3][0],
-//               "lingkungan": data[4][0],
-//               "deskripsi": data[5][0],
-//               "lat": data[6][0],
-//               "lng": data[7][0],
-//               "gambar": "",
-//               "banned": 0,
-//               "createdAt": DateTime.now(),
-//             }).then((result) async {
-//               try {
-//                 var find = await gerejaCollection
-//                     .find(where.sortBy("createdAt", descending: true).limit(1))
-//                     .toList()
-//                     .then((result2) async {
-//                   print("objectaWWDDDDDDDDDDD");
-//                   print(result2);
-//                   var addAturan = await aturanCollection.insertOne({
-//                     "idGereja": result2[0]['_id'],
-//                     "baptis": "",
-//                     "komuni": "",
-//                     "krisma": "",
-//                     "perkawinan": "",
-//                     "perminyakan": "",
-//                     "tobat": "",
-//                     "pemberkatan": "",
-//                     "updatedAt": DateTime.now(),
-//                     "updatedBy": ObjectId(),
-//                   }).then((result3) async {
-//                     if (result3.isSuccess) {
-//                       msg.addReceiver("agenPage");
-//                       msg.setContent('oke');
-//                       await msg.send();
-//                     } else {
-//                       msg.addReceiver("agenPage");
-//                       msg.setContent('failed');
-//                       await msg.send();
-//                     }
-//                   });
-//                 });
-//               } catch (e) {
-//                 print(e);
-//                 msg.addReceiver("agenPage");
-//                 msg.setContent('fail');
-//                 await msg.send();
-//               }
-//             });
-//           } catch (e) {
-//             msg.addReceiver("agenPage");
-//             msg.setContent('fail');
-//             await msg.send();
-//           }
-//         }
-
-//         if (data[0][0] == "add imam") {
-//           var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
-//           try {
-//             var hasil = await userCollection.insertOne({
-//               "email": data[1][0],
-//               "password": data[2][0],
-//               "idGereja": data[3][0],
-//               "name": data[4][0],
-//               "picture": "",
-//               "notelp": "",
-//               "statusPemberkatan": 0,
-//               "statusPerminyakan": 0,
-//               "statusTobat": 0,
-//               "statusPerkawinan": 0,
-//               "banned": 0,
-//               "notif": true
-//             }).then((result) async {
-//               if (result.isSuccess) {
-//                 msg.addReceiver("agenPage");
-//                 msg.setContent('oke');
-//                 await msg.send();
-//               } else {
-//                 msg.addReceiver("agenPage");
-//                 msg.setContent('failed');
-//                 await msg.send();
-//               }
-//             });
-//           } catch (e) {
-//             msg.addReceiver("agenPage");
-//             msg.setContent('fail');
-//             await msg.send();
-//           }
-//         }

@@ -86,19 +86,30 @@ class _DaftarImam extends State<DaftarImam> {
     }
   }
 
-  Future updateImam(idKegiatan, status) async {
-    Messages msg = new Messages();
-    await msg.addReceiver("agenPendaftaran");
-    await msg.setContent([
-      ["update imam"],
-      [idKegiatan],
-      [status]
-    ]);
-    var hasil;
-    await msg.send();
-    hasil = await AgenPage().receiverTampilan();
+  Future updateImam(idImam, status) async {
+    // Messages msg = new Messages();
+    // await msg.addReceiver("agenPendaftaran");
+    // await msg.setContent([
+    //   ["update imam"],
+    //   [idKegiatan],
+    //   [status]
+    // ]);
+    // var hasil;
+    // await msg.send();
+    // hasil = await AgenPage().receiverTampilan();
 
-    if (hasil == "fail") {
+    Completer<void> completer = Completer<void>();
+    Message message = Message('View', 'Agent Pendaftaran', "REQUEST",
+        Task('update imam', [idImam, status]));
+
+    MessagePassing messagePassing = MessagePassing();
+    var data = await messagePassing.sendMessage(message);
+    completer.complete();
+    var hasil = await messagePassing.messageGetToView();
+
+    await completer.future;
+
+    if (hasil == "failed") {
       Fluttertoast.showToast(
           msg: "Gagal Banned Imam",
           toastLength: Toast.LENGTH_SHORT,
@@ -107,7 +118,7 @@ class _DaftarImam extends State<DaftarImam> {
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
-    } else {
+    } else if (hasil == "oke") {
       Fluttertoast.showToast(
           msg: "Berhasil Banned Imam",
           toastLength: Toast.LENGTH_SHORT,

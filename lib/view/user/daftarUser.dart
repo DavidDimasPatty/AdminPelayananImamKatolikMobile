@@ -89,18 +89,28 @@ class _DaftarUser extends State<DaftarUser> {
   }
 
   Future updateUser(idUser, status) async {
-    Messages msg = new Messages();
-    await msg.addReceiver("agenPencarian");
-    await msg.setContent([
-      ["update user"],
-      [idUser],
-      [status]
-    ]);
-    var hasil;
-    await msg.send();
-    hasil = await AgenPage().receiverTampilan();
+    // Messages msg = new Messages();
+    // await msg.addReceiver("agenPencarian");
+    // await msg.setContent([
+    //   ["update user"],
+    //   [idUser],
+    //   [status]
+    // ]);
+    // var hasil;
+    // await msg.send();
+    // hasil = await AgenPage().receiverTampilan();
+    Completer<void> completer = Completer<void>();
+    Message message = Message('View', 'Agent Pendaftaran', "REQUEST",
+        Task('update user', [idUser, status]));
 
-    if (hasil == "fail") {
+    MessagePassing messagePassing = MessagePassing();
+    var data = await messagePassing.sendMessage(message);
+    completer.complete();
+    var hasil = await messagePassing.messageGetToView();
+
+    await completer.future;
+
+    if (hasil == "failed") {
       Fluttertoast.showToast(
           msg: "Gagal Banned User",
           toastLength: Toast.LENGTH_SHORT,
@@ -109,7 +119,7 @@ class _DaftarUser extends State<DaftarUser> {
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
-    } else {
+    } else if (hasil == "oke") {
       Fluttertoast.showToast(
           msg: "Berhasil Banned User",
           toastLength: Toast.LENGTH_SHORT,

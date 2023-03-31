@@ -44,7 +44,7 @@ class AgentPencarian extends Agent {
           messagePassing.sendMessage(msg);
         });
 
-        Message message = await action(p.goals, task);
+        Message message = await action(p.goals, task, sender);
 
         if (stop == false) {
           if (timer.isActive) {
@@ -78,35 +78,48 @@ class AgentPencarian extends Agent {
     }
   }
 
-  Future<Message> action(String goals, dynamic data) async {
+  Future<Message> action(String goals, dynamic data, String sender) async {
     switch (goals) {
       case "cari gereja":
-        return cariGereja();
+        return cariGereja(sender);
 
       case "cari imam":
-        return cariImam();
+        return cariImam(sender);
 
       case "cari user":
-        return cariUser();
+        return cariUser(sender);
 
       case "cari jumlah":
-        return cariJumlah();
+        return cariJumlah(sender);
+
+      case "cari gereja terakhir":
+        return cariGerejaTerakhir(sender);
+
       default:
         return rejectTask(data.task, data.sender);
     }
   }
 
-  Future<Message> cariGereja() async {
-    print("masuk3");
-    var userCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
-    var conn = await userCollection.find().toList();
-    Message message =
-        Message('Agent Pencarian', 'View', "INFORM", Task('cari', conn));
+  Future<Message> cariGereja(String sender) async {
+    var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
+    var conn = await gerejaCollection.find().toList();
+    Message message = Message('Agent Pencarian', sender, "INFORM",
+        Task('data pencarian gereja', conn));
     return message;
   }
 
-  Future<Message> cariImam() async {
-    print("masuk2");
+  Future<Message> cariGerejaTerakhir(String sender) async {
+    var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
+    var conn = await gerejaCollection
+        .find(where.sortBy("createdAt", descending: true).limit(1))
+        .toList();
+
+    Message message =
+        Message('Agent Pencarian', sender, "INFORM", Task('cari', conn));
+    return message;
+  }
+
+  Future<Message> cariImam(String sender) async {
     var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
     final pipeline4 = AggregationPipelineBuilder()
         .addStage(Lookup(
@@ -117,20 +130,19 @@ class AgentPencarian extends Agent {
         .build();
     var conn = await userCollection.aggregateToStream(pipeline4).toList();
     Message message =
-        Message('Agent Pencarian', 'View', "INFORM", Task('cari', conn));
+        Message('Agent Pencarian', sender, "INFORM", Task('cari', conn));
     return message;
   }
 
-  Future<Message> cariUser() async {
-    print("masuk1");
+  Future<Message> cariUser(String sender) async {
     var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
     var conn = await userCollection.find().toList();
     Message message =
-        Message('Agent Pencarian', 'View', "INFORM", Task('cari', conn));
+        Message('Agent Pencarian', sender, "INFORM", Task('cari', conn));
     return message;
   }
 
-  Future<Message> cariJumlah() async {
+  Future<Message> cariJumlah(String sender) async {
     var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
 
@@ -152,19 +164,10 @@ class AgentPencarian extends Agent {
     var connUnI = await imamCollection.find({'banned': 0}).length;
 
     var connUn = await userCollection.find({'banned': 0}).length;
-    // conn,
-    // result,
-    // connBan,
-    // connG,
-    // connUnG,
-    // connBanG,
-    // connI,
-    // connUnI,
-    // connBanI
 
     Message message = Message(
         'Agent Pencarian',
-        'View',
+        sender,
         "INFORM",
         Task('cari', [
           conn,
