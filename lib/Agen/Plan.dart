@@ -5,8 +5,7 @@ import 'Messages.dart';
 class Plan {
   String goals;
   String protocol;
-  final Future<Message> actions;
-  dynamic constraints;
+  int time;
 
-  Plan(this.goals, this.protocol, this.actions, this.constraints);
+  Plan(this.goals, this.protocol, this.time);
 }

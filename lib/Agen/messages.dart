@@ -1,5 +1,5 @@
 import 'package:admin_pelayanan_katolik/Agen/agenAkun.dart';
-import 'package:admin_pelayanan_katolik/Agen/agenPendaftaran.dart';
+
 import 'package:admin_pelayanan_katolik/Agen/agenSetting.dart';
 
 import 'agenPage.dart';
@@ -30,9 +30,7 @@ class Messages {
     if (Agen.last == "agenPage") {
       await AgenPage();
     }
-    if (Agen.last == "agenPendaftaran") {
-      await AgenPendaftaran();
-    }
+
     if (Agen.last == "agenAkun") {
       await AgenAkun();
     }

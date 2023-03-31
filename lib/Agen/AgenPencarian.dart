@@ -11,17 +11,18 @@ import 'MessagePassing.dart';
 import 'Plan.dart';
 import 'Task.dart';
 
-class AgentA extends Agent {
-  AgentA() : super('Agent A') {
+class AgentPencarian extends Agent {
+  AgentPencarian() {
     _initAgent();
   }
-  List<Plan> plan = [];
-  List<Goals> goals = [];
+
+  List<Plan> _plan = [];
+  List<Goals> _goals = [];
   int _estimatedTime = 5;
   bool stop = false;
 
   bool canPerformTask(dynamic message) {
-    for (var p in plan) {
+    for (var p in _plan) {
       if (p.goals == message.task.action && p.protocol == message.protocol) {
         return true;
       }
@@ -30,53 +31,82 @@ class AgentA extends Agent {
   }
 
   Future<dynamic> performTask(dynamic task, String sender) async {
-    print('Agent A received message from $sender');
+    print('Agent Pencarian received message from $sender');
 
-    for (var p in plan) {
+    for (var p in _plan) {
       if (p.goals == task.action) {
-        Timer timer =
-            Timer.periodic(Duration(seconds: _estimatedTime), (timer) {
+        Timer timer = Timer.periodic(Duration(seconds: p.time), (timer) {
           stop = true;
           timer.cancel();
-          return overTime(sender);
+
+          MessagePassing messagePassing = MessagePassing();
+          Message msg = rejectTask(task, sender);
+          messagePassing.sendMessage(msg);
         });
 
-        Message message = await p.actions;
+        Message message = await action(p.goals, task);
 
         if (stop == false) {
           if (timer.isActive) {
             timer.cancel();
             bool checkGoals = false;
-
-            for (var g in goals) {
-              if (g.request == p.goals &&
-                  g.goals == message.task.data.runtimeType) {
-                checkGoals = true;
-              }
-            }
-            if (checkGoals == true) {
-              print('Agent A returning data to ${message.receiver}');
+            if (message.task.data.runtimeType == String &&
+                message.task.data == "failed") {
               MessagePassing messagePassing = MessagePassing();
-              messagePassing.sendMessage(message);
-              break;
+              Message msg = rejectTask(task, sender);
+              messagePassing.sendMessage(msg);
             } else {
-              rejectTask(task);
+              for (var g in _goals) {
+                if (g.request == p.goals &&
+                    g.goals == message.task.data.runtimeType) {
+                  checkGoals = true;
+                }
+              }
+              if (checkGoals == true) {
+                print('Agent Pencarian returning data to ${message.receiver}');
+                MessagePassing messagePassing = MessagePassing();
+                messagePassing.sendMessage(message);
+                break;
+              } else {
+                rejectTask(task, sender);
+              }
+              break;
             }
-            break;
           }
         }
       }
     }
   }
 
+  Future<Message> action(String goals, dynamic data) async {
+    switch (goals) {
+      case "cari gereja":
+        return cariGereja();
+
+      case "cari imam":
+        return cariImam();
+
+      case "cari user":
+        return cariUser();
+
+      case "cari jumlah":
+        return cariJumlah();
+      default:
+        return rejectTask(data.task, data.sender);
+    }
+  }
+
   Future<Message> cariGereja() async {
+    print("masuk3");
     var userCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
     var conn = await userCollection.find().toList();
-    Message message = Message('Agent A', 'View', "INFORM", Task('cari', conn));
+    Message message =
+        Message('Agent Pencarian', 'View', "INFORM", Task('cari', conn));
     return message;
   }
 
   Future<Message> cariImam() async {
+    print("masuk2");
     var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
     final pipeline4 = AggregationPipelineBuilder()
         .addStage(Lookup(
@@ -86,14 +116,17 @@ class AgentA extends Agent {
             as: 'imamGereja'))
         .build();
     var conn = await userCollection.aggregateToStream(pipeline4).toList();
-    Message message = Message('Agent A', 'View', "INFORM", Task('cari', conn));
+    Message message =
+        Message('Agent Pencarian', 'View', "INFORM", Task('cari', conn));
     return message;
   }
 
   Future<Message> cariUser() async {
+    print("masuk1");
     var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
     var conn = await userCollection.find().toList();
-    Message message = Message('Agent A', 'View', "INFORM", Task('cari', conn));
+    Message message =
+        Message('Agent Pencarian', 'View', "INFORM", Task('cari', conn));
     return message;
   }
 
@@ -130,7 +163,7 @@ class AgentA extends Agent {
     // connBanI
 
     Message message = Message(
-        'Agent A',
+        'Agent Pencarian',
         'View',
         "INFORM",
         Task('cari', [
@@ -147,30 +180,38 @@ class AgentA extends Agent {
     return message;
   }
 
-  void rejectTask(dynamic task) {
+  Message rejectTask(dynamic task, sender) {
+    Message message = Message(
+        "Agent Pencarian",
+        sender,
+        "INFORM",
+        Task('error', [
+          ['failed']
+        ]));
+
     print('Task rejected A: $task');
+    return message;
   }
 
-  void overTime(sender) {
+  Message overTime(sender) {
     Message message = Message(
         sender,
-        "Agent A",
+        "Agent Pencarian",
         "INFORM",
         Task('error', [
           ['reject over time']
         ]));
-    MessagePassing messagePassing = MessagePassing();
-    messagePassing.sendMessage(message);
+    return message;
   }
 
   void _initAgent() {
-    plan = [
-      Plan("cari gereja", "REQUEST", cariGereja(), null),
-      Plan("cari imam", "REQUEST", cariImam(), null),
-      Plan("cari user", "REQUEST", cariUser(), null),
-      Plan("cari jumlah", "REQUEST", cariJumlah(), null)
+    _plan = [
+      Plan("cari gereja", "REQUEST", _estimatedTime),
+      Plan("cari imam", "REQUEST", _estimatedTime),
+      Plan("cari user", "REQUEST", _estimatedTime),
+      Plan("cari jumlah", "REQUEST", _estimatedTime)
     ];
-    goals = [
+    _goals = [
       Goals("cari gereja", List<Map<String, Object?>>, 2),
       Goals("cari imam", List<Map<String, Object?>>, 2),
       Goals("cari user", List<Map<String, Object?>>, 2),

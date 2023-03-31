@@ -1,14 +1,15 @@
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
+import 'package:admin_pelayanan_katolik/Agen/agenPendaftaran.dart';
 
 import 'Agent.dart';
-import 'AgentA.dart';
-import 'AgentB.dart';
+import 'AgenPencarian.dart';
+
 import 'Messages.dart';
 
 class MessagePassing {
   Map<String, Agent> agents = {
-    'Agent A': AgentA(),
-    'Agent B': AgentB(),
+    'Agent Pencarian': AgentPencarian(),
+    'Agent Pendaftaran': AgentPendaftaran(),
   };
 
   static List data = [];
@@ -19,7 +20,7 @@ class MessagePassing {
       if (agent!.canPerformTask(message)) {
         return await agent.performTask(message.task, message.sender);
       } else {
-        agent.rejectTask(message.task);
+        agent.rejectTask(message.task, message.sender);
       }
     } else if (message.receiver == "View") {
       messageSetToView(message.task);

@@ -34,8 +34,8 @@ class _HomePage extends State<HomePage> {
     // await Future.delayed(Duration(seconds: 1));
     // return await AgenPage().receiverTampilan();
     Completer<void> completer = Completer<void>();
-    Message message =
-        Message('View', 'Agent A', "REQUEST", Task('cari jumlah', null));
+    Message message = Message(
+        'View', 'Agent Pencarian', "REQUEST", Task('cari jumlah', null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);

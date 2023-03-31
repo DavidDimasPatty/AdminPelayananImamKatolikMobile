@@ -41,7 +41,7 @@ class _DaftarUser extends State<DaftarUser> {
     // return hasil;
     Completer<void> completer = Completer<void>();
     Message message =
-        Message('View', 'Agent A', "REQUEST", Task('cari user', null));
+        Message('View', 'Agent Pencarian', "REQUEST", Task('cari user', null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);

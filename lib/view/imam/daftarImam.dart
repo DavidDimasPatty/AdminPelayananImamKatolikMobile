@@ -39,7 +39,7 @@ class _DaftarImam extends State<DaftarImam> {
     // return hasil;
     Completer<void> completer = Completer<void>();
     Message message =
-        Message('View', 'Agent A', "REQUEST", Task('cari imam', null));
+        Message('View', 'Agent Pencarian', "REQUEST", Task('cari imam', null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);

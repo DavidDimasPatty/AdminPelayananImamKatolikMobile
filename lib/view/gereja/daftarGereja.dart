@@ -38,8 +38,8 @@ class _DaftarGereja extends State<DaftarGereja> {
     // return await AgenPage().receiverTampilan();
 
     Completer<void> completer = Completer<void>();
-    Message message =
-        Message('View', 'Agent A', "REQUEST", Task('cari gereja', null));
+    Message message = Message(
+        'View', 'Agent Pencarian', "REQUEST", Task('cari gereja', null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
