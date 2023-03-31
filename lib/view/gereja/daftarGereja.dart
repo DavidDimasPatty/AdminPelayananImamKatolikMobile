@@ -1,9 +1,15 @@
+import 'dart:async';
+
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/Agen/messages.dart';
 import 'package:admin_pelayanan_katolik/view/gereja/addGereja.dart';
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import '../../Agen/Message.dart';
+import '../../Agen/MessagePassing.dart';
+import '../../Agen/Task.dart';
 
 class DaftarGereja extends StatefulWidget {
   final id;
@@ -21,15 +27,27 @@ class _DaftarGereja extends State<DaftarGereja> {
   _DaftarGereja(this.id);
 
   Future<List> callDb() async {
-    Messages msg = new Messages();
-    await msg.addReceiver("agenPencarian");
-    await msg.setContent([
-      ["cari gereja"]
-    ]);
-    List hasil;
-    await msg.send();
-    await Future.delayed(Duration(seconds: 1));
-    return await AgenPage().receiverTampilan();
+    // Messages msg = new Messages();
+    // await msg.addReceiver("agenPencarian");
+    // await msg.setContent([
+    //   ["cari gereja"]
+    // ]);
+    // List hasil;
+    // await msg.send();
+    // await Future.delayed(Duration(seconds: 1));
+    // return await AgenPage().receiverTampilan();
+    Completer<void> completer = Completer<void>();
+    Message message =
+        Message('View', 'Agent A', "REQUEST", Task('cari gereja', null));
+
+    MessagePassing messagePassing = MessagePassing();
+    var data = await messagePassing.sendMessage(message);
+    completer.complete();
+    var result = await messagePassing.messageGetToView();
+
+    await completer.future;
+
+    return result;
   }
 
   @override
