@@ -6,7 +6,7 @@ import 'Messages.dart';
 abstract class Agent {
   bool canPerformTask(dynamic task);
 
-  Future<dynamic> performTask(dynamic task, String sender);
+  Future<dynamic> performTask(Message msg, String sender);
 
   void rejectTask(dynamic task, String sender);
   Future<Message> action(String goals, dynamic data, String sender);

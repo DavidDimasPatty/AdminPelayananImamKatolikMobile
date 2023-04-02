@@ -30,9 +30,10 @@ class AgentPencarian extends Agent {
     return false;
   }
 
-  Future<dynamic> performTask(dynamic task, String sender) async {
+  Future<dynamic> performTask(Message msg, String sender) async {
     print('Agent Pencarian received message from $sender');
 
+    dynamic task = msg.task;
     for (var p in _plan) {
       if (p.goals == task.action) {
         Timer timer = Timer.periodic(Duration(seconds: p.time), (timer) {
@@ -114,8 +115,8 @@ class AgentPencarian extends Agent {
         .find(where.sortBy("createdAt", descending: true).limit(1))
         .toList();
 
-    Message message =
-        Message('Agent Pencarian', sender, "INFORM", Task('cari', conn));
+    Message message = Message('Agent Pencarian', sender, "INFORM",
+        Task('add aturan pelayanan', conn));
     return message;
   }
 
@@ -192,7 +193,7 @@ class AgentPencarian extends Agent {
           ['failed']
         ]));
 
-    print('Task rejected A: $task');
+    print('Task rejected $sender: $task');
     return message;
   }
 
@@ -210,12 +211,14 @@ class AgentPencarian extends Agent {
   void _initAgent() {
     _plan = [
       Plan("cari gereja", "REQUEST", _estimatedTime),
+      Plan("cari gereja terakhir", "REQUEST", _estimatedTime),
       Plan("cari imam", "REQUEST", _estimatedTime),
       Plan("cari user", "REQUEST", _estimatedTime),
       Plan("cari jumlah", "REQUEST", _estimatedTime)
     ];
     _goals = [
       Goals("cari gereja", List<Map<String, Object?>>, 2),
+      Goals("cari gereja terakhir", List<Map<String, Object?>>, 2),
       Goals("cari imam", List<Map<String, Object?>>, 2),
       Goals("cari user", List<Map<String, Object?>>, 2),
       Goals("cari jumlah", List<dynamic>, 2)

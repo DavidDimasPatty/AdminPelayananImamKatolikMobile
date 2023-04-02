@@ -17,8 +17,11 @@ class AgentPendaftaran extends Agent {
   }
   List<Plan> _plan = [];
   List<Goals> _goals = [];
+  List<dynamic> pencarianData = [];
+
   bool stop = false;
   int _estimatedTime = 5;
+
   bool canPerformTask(dynamic message) {
     for (var p in _plan) {
       if (p.goals == message.task.action && p.protocol == message.protocol) {
@@ -28,9 +31,9 @@ class AgentPendaftaran extends Agent {
     return false;
   }
 
-  Future<dynamic> performTask(dynamic task, String sender) async {
+  Future<dynamic> performTask(Message msg, String sender) async {
     print('Agent Pendaftaran received message from $sender');
-
+    dynamic task = msg.task;
     for (var p in _plan) {
       if (p.goals == task.action) {
         Timer timer = Timer.periodic(Duration(seconds: p.time), (timer) {
@@ -77,6 +80,14 @@ class AgentPendaftaran extends Agent {
     }
   }
 
+  messageSetData(task) {
+    pencarianData.add(task);
+  }
+
+  Future<List> getDataPencarian() async {
+    return pencarianData;
+  }
+
   Future<Message> action(String goals, dynamic data, String sender) async {
     switch (goals) {
       case "update user":
@@ -89,6 +100,9 @@ class AgentPendaftaran extends Agent {
         return addImam(data.data, sender);
       case "add gereja":
         return addGereja(data.data, sender);
+
+      case "add aturan pelayanan":
+        return addAturanPelayanan(data.data, sender);
 
       default:
         return rejectTask(data, data.sender);
@@ -179,45 +193,40 @@ class AgentPendaftaran extends Agent {
 /////////////////BELOM KELARRRRE
   Future<Message> addGereja(dynamic data, String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
-    var aturanCollection =
-        MongoDatabase.db.collection(ATURAN_PELAYANAN_COLLECTION);
 
     var addGereja = await gerejaCollection.insertOne({
-      "nama": data[1][0],
-      "address": data[2][0],
-      "paroki": data[3][0],
-      "lingkungan": data[4][0],
-      "deskripsi": data[5][0],
-      "lat": data[6][0],
-      "lng": data[7][0],
+      "nama": data[0],
+      "address": data[1],
+      "paroki": data[2],
+      "lingkungan": data[3],
+      "deskripsi": data[4],
+      "lat": data[5],
+      "lng": data[6],
       "gambar": "",
       "banned": 0,
       "createdAt": DateTime.now(),
+      "createdBy": data[7],
+      "updatedAt": DateTime.now(),
+      "updatedBy": data[7]
     });
 
-    Completer<void> completer = Completer<void>();
-    Message message = Message('Agent Pendaftaran', 'Agent Pencarian', "REQUEST",
-        Task('cari user', null));
+    if (addGereja.isSuccess) {
+      Message message = Message('Agent Pendaftaran', 'Agent Pencarian',
+          "REQUEST", Task('cari gereja terakhir', "oke"));
+      return message;
+    } else {
+      Message message = Message(
+          'Agent Pendaftaran', sender, "INFORM", Task('cari', "failed"));
+      return message;
+    }
+  }
 
-    MessagePassing messagePassing = MessagePassing();
-    var hasil = await messagePassing.sendMessage(message);
-    completer.complete();
-
-    await completer.future;
-
-    Completer<void> completer2 = Completer<void>();
-    Message message2 = Message('View', 'Agent Pencarian', "REQUEST",
-        Task('cari gereja terakhir', null));
-
-    MessagePassing messagePassing2 = MessagePassing();
-    var data2 = await messagePassing2.sendMessage(message);
-    completer.complete();
-    var result2 = await messagePassing2.messageGetToView();
-
-    await completer.future;
+  Future<Message> addAturanPelayanan(dynamic data, String sender) async {
+    var aturanCollection =
+        MongoDatabase.db.collection(ATURAN_PELAYANAN_COLLECTION);
 
     var addAturan = await aturanCollection.insertOne({
-      "idGereja": result2[0]['_id'],
+      "idGereja": data[0]['_id'],
       "baptis": "",
       "komuni": "",
       "krisma": "",
@@ -229,13 +238,13 @@ class AgentPendaftaran extends Agent {
       "updatedBy": ObjectId(),
     });
 
-    if (addAturan.isSuccess && addGereja.isSuccess) {
+    if (addAturan.isSuccess) {
       Message message =
-          Message('Agent Pendaftaran', sender, "INFORM", Task('cari', "oke"));
+          Message('Agent Pendaftaran', 'View', "INFORM", Task('cari', "oke"));
       return message;
     } else {
       Message message = Message(
-          'Agent Pendaftaran', sender, "INFORM", Task('cari', "failed"));
+          'Agent Pendaftaran', 'View', "INFORM", Task('cari', "failed"));
       return message;
     }
   }
@@ -249,7 +258,7 @@ class AgentPendaftaran extends Agent {
           ['failed']
         ]));
 
-    print('Task rejected Pendaftaran: $task');
+    print('Task rejected $sender: $task');
     return message;
   }
 
@@ -270,13 +279,16 @@ class AgentPendaftaran extends Agent {
       Plan("update imam", "REQUEST", _estimatedTime),
       Plan("update gereja", "REQUEST", _estimatedTime),
       Plan("add imam", "REQUEST", _estimatedTime),
-      Plan("data pencarian gereja", "INFORM", _estimatedTime),
+      Plan("add gereja", "REQUEST", _estimatedTime),
+      Plan("add aturan pelayanan", "INFORM", _estimatedTime),
     ];
     _goals = [
       Goals("update user", String, 2),
       Goals("update imam", String, 2),
       Goals("update gereja", String, 2),
       Goals("add imam", String, 2),
+      Goals("add gereja", String, 2),
+      Goals("add aturan pelayanan", String, 2),
     ];
   }
 }

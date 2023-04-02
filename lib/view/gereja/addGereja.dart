@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:admin_pelayanan_katolik/Agen/Message.dart';
+import 'package:admin_pelayanan_katolik/Agen/MessagePassing.dart';
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/Agen/messages.dart';
 import 'package:admin_pelayanan_katolik/view/gereja/daftarGereja.dart';
@@ -6,6 +10,8 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocode/geocode.dart';
+
+import '../../Agen/Task.dart';
 
 class addGereja extends StatefulWidget {
   @override
@@ -28,22 +34,44 @@ class _addGereja extends State<addGereja> {
   _addGereja(this.id);
 
   Future submit() async {
-    Messages msg = new Messages();
-    await msg.addReceiver("agenPendaftaran");
-    await msg.setContent([
-      ["add gereja"],
-      [nama.text],
-      [alamat.text],
-      [paroki.text],
-      [lingkungan.text],
-      [deskripsi.text],
-      [lattitude],
-      [longttitude]
-    ]);
-    var hasil;
-    await msg.send();
+    // Messages msg = new Messages();
+    // await msg.addReceiver("agenPendaftaran");
+    // await msg.setContent([
+    //   ["add gereja"],
+    //   [nama.text],
+    //   [alamat.text],
+    //   [paroki.text],
+    //   [lingkungan.text],
+    //   [deskripsi.text],
+    //   [lattitude],
+    //   [longttitude],
+    //   [id]
+    // ]);
+    // var hasil;
+    // await msg.send();
 
-    hasil = await AgenPage().receiverTampilan();
+    // hasil = await AgenPage().receiverTampilan();
+
+    Completer<void> completer = Completer<void>();
+    Message message = Message(
+        'View',
+        'Agent Pendaftaran',
+        "REQUEST",
+        Task('add gereja', [
+          nama.text,
+          alamat.text,
+          paroki.text,
+          lingkungan.text,
+          deskripsi.text,
+          lattitude,
+          longttitude,
+          id
+        ]));
+
+    MessagePassing messagePassing = MessagePassing();
+    var data = await messagePassing.sendMessage(message);
+    completer.complete();
+    var hasil = await messagePassing.messageGetToView();
 
     if (hasil == "failed") {
       Fluttertoast.showToast(
