@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'Message.dart';
-import 'Messages.dart';
 
 abstract class Agent {
   bool canPerformTask(dynamic task);
