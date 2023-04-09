@@ -20,6 +20,9 @@ class AgentPencarian extends Agent {
   List<Goals> _goals = [];
   int _estimatedTime = 5;
   bool stop = false;
+  String agentName = "";
+  List _Message = [];
+  List _Sender = [];
 
   bool canPerformTask(dynamic message) {
     for (var p in _plan) {
@@ -30,8 +33,16 @@ class AgentPencarian extends Agent {
     return false;
   }
 
-  Future<dynamic> performTask(Message msg, String sender) async {
-    print('Agent Pencarian received message from $sender');
+  Future<dynamic> receiveMessage(Message msg, String sender) {
+    print(agentName + ' received message from $sender');
+    _Message.add(msg);
+    _Sender.add(sender);
+    return performTask();
+  }
+
+  Future<dynamic> performTask() async {
+    Message msg = _Message.last;
+    String sender = _Sender.last;
 
     dynamic task = msg.task;
     for (var p in _plan) {
@@ -45,12 +56,13 @@ class AgentPencarian extends Agent {
           messagePassing.sendMessage(msg);
         });
 
-        Message message = await action(p.goals, task, sender);
+        Message message = await action(p.goals, task.data, sender);
 
         if (stop == false) {
           if (timer.isActive) {
             timer.cancel();
             bool checkGoals = false;
+
             if (message.task.data.runtimeType == String &&
                 message.task.data == "failed") {
               MessagePassing messagePassing = MessagePassing();
@@ -64,7 +76,7 @@ class AgentPencarian extends Agent {
                 }
               }
               if (checkGoals == true) {
-                print('Agent Pencarian returning data to ${message.receiver}');
+                print(agentName + ' returning data');
                 MessagePassing messagePassing = MessagePassing();
                 messagePassing.sendMessage(message);
                 break;
@@ -104,8 +116,8 @@ class AgentPencarian extends Agent {
   Future<Message> cariGereja(String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
     var conn = await gerejaCollection.find().toList();
-    Message message = Message('Agent Pencarian', sender, "INFORM",
-        Task('data pencarian gereja', conn));
+    Message message =
+        Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
     return message;
   }
 
@@ -115,8 +127,8 @@ class AgentPencarian extends Agent {
         .find(where.sortBy("createdAt", descending: true).limit(1))
         .toList();
 
-    Message message = Message('Agent Pencarian', sender, "INFORM",
-        Task('add aturan pelayanan', conn));
+    Message message =
+        Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
     return message;
   }
 
@@ -131,7 +143,7 @@ class AgentPencarian extends Agent {
         .build();
     var conn = await userCollection.aggregateToStream(pipeline4).toList();
     Message message =
-        Message('Agent Pencarian', sender, "INFORM", Task('cari', conn));
+        Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
     return message;
   }
 
@@ -139,7 +151,7 @@ class AgentPencarian extends Agent {
     var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
     var conn = await userCollection.find().toList();
     Message message =
-        Message('Agent Pencarian', sender, "INFORM", Task('cari', conn));
+        Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
     return message;
   }
 
@@ -167,10 +179,10 @@ class AgentPencarian extends Agent {
     var connUn = await userCollection.find({'banned': 0}).length;
 
     Message message = Message(
-        'Agent Pencarian',
+        agentName,
         sender,
         "INFORM",
-        Task('cari', [
+        Tasks('hasil pencarian', [
           conn,
           connUn,
           connBan,
@@ -186,29 +198,30 @@ class AgentPencarian extends Agent {
 
   Message rejectTask(dynamic task, sender) {
     Message message = Message(
-        "Agent Pencarian",
+        agentName,
         sender,
         "INFORM",
-        Task('error', [
+        Tasks('error', [
           ['failed']
         ]));
 
-    print('Task rejected $sender: $task');
+    print(this.agentName + ' rejected task form $sender: ${task.action}');
     return message;
   }
 
   Message overTime(sender) {
     Message message = Message(
         sender,
-        "Agent Pencarian",
+        agentName,
         "INFORM",
-        Task('error', [
+        Tasks('error', [
           ['reject over time']
         ]));
     return message;
   }
 
   void _initAgent() {
+    this.agentName = "Agent Pencarian";
     _plan = [
       Plan("cari gereja", "REQUEST", _estimatedTime),
       Plan("cari gereja terakhir", "REQUEST", _estimatedTime),

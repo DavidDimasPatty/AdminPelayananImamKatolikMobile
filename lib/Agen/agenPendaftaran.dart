@@ -18,10 +18,11 @@ class AgentPendaftaran extends Agent {
   List<Plan> _plan = [];
   List<Goals> _goals = [];
   List<dynamic> pencarianData = [];
-
+  String agentName = "";
   bool stop = false;
   int _estimatedTime = 5;
-
+  List _Message = [];
+  List _Sender = [];
   bool canPerformTask(dynamic message) {
     for (var p in _plan) {
       if (p.goals == message.task.action && p.protocol == message.protocol) {
@@ -31,8 +32,16 @@ class AgentPendaftaran extends Agent {
     return false;
   }
 
-  Future<dynamic> performTask(Message msg, String sender) async {
-    print('Agent Pendaftaran received message from $sender');
+  Future<dynamic> receiveMessage(Message msg, String sender) {
+    print(agentName + ' received message from $sender');
+    _Message.add(msg);
+    _Sender.add(sender);
+    return performTask();
+  }
+
+  Future<dynamic> performTask() async {
+    Message msg = _Message.last;
+    String sender = _Sender.last;
     dynamic task = msg.task;
     for (var p in _plan) {
       if (p.goals == task.action) {
@@ -64,8 +73,7 @@ class AgentPendaftaran extends Agent {
                 }
               }
               if (checkGoals == true) {
-                print(
-                    'Agent Pendaftaran returning data to ${message.receiver}');
+                print(agentName + ' returning data to ${message.receiver}');
                 MessagePassing messagePassing = MessagePassing();
                 messagePassing.sendMessage(message);
                 break;
@@ -78,14 +86,6 @@ class AgentPendaftaran extends Agent {
         }
       }
     }
-  }
-
-  messageSetData(task) {
-    pencarianData.add(task);
-  }
-
-  Future<List> getDataPencarian() async {
-    return pencarianData;
   }
 
   Future<Message> action(String goals, dynamic data, String sender) async {
@@ -101,9 +101,6 @@ class AgentPendaftaran extends Agent {
       case "add gereja":
         return addGereja(data.data, sender);
 
-      case "add aturan pelayanan":
-        return addAturanPelayanan(data.data, sender);
-
       default:
         return rejectTask(data, data.sender);
     }
@@ -116,12 +113,12 @@ class AgentPendaftaran extends Agent {
         modify.set('banned', data[1]).set("updatedAt", DateTime.now()));
 
     if (update.isSuccess) {
-      Message message =
-          Message('Agent Pendaftaran', sender, "INFORM", Task('cari', "oke"));
+      Message message = Message(
+          agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
       return message;
     } else {
-      Message message = Message(
-          'Agent Pendaftaran', sender, "INFORM", Task('cari', "failed"));
+      Message message = Message(agentName, sender, "INFORM",
+          Tasks('status modifikasi data', "failed"));
       return message;
     }
   }
@@ -132,12 +129,12 @@ class AgentPendaftaran extends Agent {
     var update = await imamCollection.updateOne(where.eq('_id', data[0]),
         modify.set('banned', data[1]).set("updatedAt", DateTime.now()));
     if (update.isSuccess) {
-      Message message =
-          Message('Agent Pendaftaran', sender, "INFORM", Task('cari', "oke"));
+      Message message = Message(
+          agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
       return message;
     } else {
-      Message message = Message(
-          'Agent Pendaftaran', sender, "INFORM", Task('cari', "failed"));
+      Message message = Message(agentName, sender, "INFORM",
+          Tasks('status modifikasi data', "failed"));
       return message;
     }
   }
@@ -149,12 +146,12 @@ class AgentPendaftaran extends Agent {
         modify.set('banned', data[1]).set("updatedAt", DateTime.now()));
 
     if (update.isSuccess) {
-      Message message =
-          Message('Agent Pendaftaran', sender, "INFORM", Task('cari', "oke"));
+      Message message = Message(
+          agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
       return message;
     } else {
-      Message message = Message(
-          'Agent Pendaftaran', sender, "INFORM", Task('cari', "failed"));
+      Message message = Message(agentName, sender, "INFORM",
+          Tasks('status modifikasi data', "failed"));
       return message;
     }
   }
@@ -177,15 +174,17 @@ class AgentPendaftaran extends Agent {
       "notif": true,
       "createdAt": DateTime.now(),
       "updatedAt": DateTime.now(),
-      "updatedBy": data[4]
+      "updatedBy": data[5],
+      "createdBy": data[5],
+      "role": data[4]
     });
     if (addImam.isSuccess) {
-      Message message =
-          Message('Agent Pendaftaran', sender, "INFORM", Task('cari', "oke"));
+      Message message = Message(
+          agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
       return message;
     } else {
-      Message message = Message(
-          'Agent Pendaftaran', sender, "INFORM", Task('cari', "failed"));
+      Message message = Message(agentName, sender, "INFORM",
+          Tasks('status modifikasi data', "failed"));
       return message;
     }
   }
@@ -211,69 +210,42 @@ class AgentPendaftaran extends Agent {
     });
 
     if (addGereja.isSuccess) {
-      Message message = Message('Agent Pendaftaran', 'Agent Pencarian',
-          "REQUEST", Task('cari gereja terakhir', "oke"));
+      Message message = Message(agentName, 'Agent Pencarian', "REQUEST",
+          Tasks('status modifikasi data', "oke"));
       return message;
     } else {
-      Message message = Message(
-          'Agent Pendaftaran', sender, "INFORM", Task('cari', "failed"));
-      return message;
-    }
-  }
-
-  Future<Message> addAturanPelayanan(dynamic data, String sender) async {
-    var aturanCollection =
-        MongoDatabase.db.collection(ATURAN_PELAYANAN_COLLECTION);
-
-    var addAturan = await aturanCollection.insertOne({
-      "idGereja": data[0]['_id'],
-      "baptis": "",
-      "komuni": "",
-      "krisma": "",
-      "perkawinan": "",
-      "perminyakan": "",
-      "tobat": "",
-      "pemberkatan": "",
-      "updatedAt": DateTime.now(),
-      "updatedBy": ObjectId(),
-    });
-
-    if (addAturan.isSuccess) {
-      Message message =
-          Message('Agent Pendaftaran', 'View', "INFORM", Task('cari', "oke"));
-      return message;
-    } else {
-      Message message = Message(
-          'Agent Pendaftaran', 'View', "INFORM", Task('cari', "failed"));
+      Message message = Message(agentName, sender, "INFORM",
+          Tasks('status modifikasi data', "failed"));
       return message;
     }
   }
 
   Message rejectTask(dynamic task, sender) {
     Message message = Message(
-        "Agent Pendaftaran",
+        agentName,
         sender,
         "INFORM",
-        Task('error', [
+        Tasks('error', [
           ['failed']
         ]));
 
-    print('Task rejected $sender: $task');
+    print(this.agentName + ' rejected task form $sender: ${task.action}');
     return message;
   }
 
   Message overTime(sender) {
     Message message = Message(
         sender,
-        "Agent Pendaftaran",
+        agentName,
         "INFORM",
-        Task('error', [
+        Tasks('error', [
           ['reject over time']
         ]));
     return message;
   }
 
   void _initAgent() {
+    this.agentName = "Agent Pendaftaran";
     _plan = [
       Plan("update user", "REQUEST", _estimatedTime),
       Plan("update imam", "REQUEST", _estimatedTime),

@@ -82,7 +82,9 @@ class AgentAkun extends Agent {
   List<Plan> _plan = [];
   List<Goals> _goals = [];
   List<dynamic> pencarianData = [];
-
+  String agentName = "";
+  List _Message = [];
+  List _Sender = [];
   bool stop = false;
   int _estimatedTime = 5;
 
@@ -95,8 +97,16 @@ class AgentAkun extends Agent {
     return false;
   }
 
-  Future<dynamic> performTask(Message msg, String sender) async {
-    print('Agent Akun received message from $sender');
+  Future<dynamic> receiveMessage(Message msg, String sender) {
+    print(agentName + ' received message from $sender');
+    _Message.add(msg);
+    _Sender.add(sender);
+    return performTask();
+  }
+
+  Future<dynamic> performTask() async {
+    Message msg = _Message.last;
+    String sender = _Sender.last;
     dynamic task = msg.task;
     for (var p in _plan) {
       if (p.goals == task.action) {
@@ -109,7 +119,7 @@ class AgentAkun extends Agent {
           messagePassing.sendMessage(msg);
         });
 
-        Message message = await action(p.goals, task, sender);
+        Message message = await action(p.goals, task.data, sender);
 
         if (stop == false) {
           if (timer.isActive) {
@@ -128,7 +138,7 @@ class AgentAkun extends Agent {
                 }
               }
               if (checkGoals == true) {
-                print('Agent Akun returning data to ${message.receiver}');
+                print(agentName + ' returning data to ${message.receiver}');
                 MessagePassing messagePassing = MessagePassing();
                 messagePassing.sendMessage(message);
                 break;
@@ -143,61 +153,53 @@ class AgentAkun extends Agent {
     }
   }
 
-  messageSetData(task) {
-    pencarianData.add(task);
-  }
-
-  Future<List> getDataPencarian() async {
-    return pencarianData;
-  }
-
   Future<Message> action(String goals, dynamic data, String sender) async {
     switch (goals) {
       case "login":
-        return login(data.data, sender);
+        return login(data, sender);
 
       default:
-        return rejectTask(data, data.sender);
+        return rejectTask(data, sender);
     }
   }
 
   Future<Message> login(dynamic data, String sender) async {
-    var userCollection = await MongoDatabase.db.collection(ADMIN_COLLECTION);
+    var adminCollection = await MongoDatabase.db.collection(ADMIN_COLLECTION);
 
-    var conn = await MongoDatabase.db
-        .collection(ADMIN_COLLECTION)
+    var conn = await adminCollection
         .find({'user': data[0], 'password': data[1]}).toList();
 
-    Message message =
-        Message('Agent Akun', sender, "INFORM", Task('cari', conn));
+    Message message = Message(agentName, sender, "INFORM",
+        Tasks('status modifikasi/ pencarian data akun', conn));
     return message;
   }
 
   Message rejectTask(dynamic task, sender) {
     Message message = Message(
-        "Agent Akun",
+        agentName,
         sender,
         "INFORM",
-        Task('error', [
+        Tasks('error', [
           ['failed']
         ]));
 
-    print('Task rejected $sender: $task');
+    print(agentName + ' rejected task form $sender: ${task.action}');
     return message;
   }
 
   Message overTime(sender) {
     Message message = Message(
         sender,
-        "Agent Akun",
+        agentName,
         "INFORM",
-        Task('error', [
+        Tasks('error', [
           ['reject over time']
         ]));
     return message;
   }
 
   void _initAgent() {
+    this.agentName = "Agent Akun";
     _plan = [
       Plan("login", "REQUEST", _estimatedTime),
     ];

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
 import 'package:admin_pelayanan_katolik/Agen/MessagePassing.dart';
+import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 
 import 'package:admin_pelayanan_katolik/view/gereja/daftarGereja.dart';
 import 'package:flutter/material.dart';
@@ -53,10 +54,10 @@ class _addGereja extends State<addGereja> {
 
     Completer<void> completer = Completer<void>();
     Message message = Message(
-        'View',
+        'Agent Page',
         'Agent Pendaftaran',
         "REQUEST",
-        Task('add gereja', [
+        Tasks('add gereja', [
           nama.text,
           alamat.text,
           paroki.text,
@@ -69,10 +70,12 @@ class _addGereja extends State<addGereja> {
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
-    completer.complete();
-    var hasil = await messagePassing.messageGetToView();
+    var hasilDaftar = await AgentPage.getDataPencarian();
 
-    if (hasil == "failed") {
+    completer.complete();
+
+    await completer.future;
+    if (hasilDaftar == "failed") {
       Fluttertoast.showToast(
           msg: "Gagal menambahkan Gereja",
           toastLength: Toast.LENGTH_SHORT,

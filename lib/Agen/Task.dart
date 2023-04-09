@@ -1,6 +1,6 @@
-class Task {
+class Tasks {
   final String action;
   final dynamic data;
 
-  Task(this.action, this.data);
+  Tasks(this.action, this.data);
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
 import 'package:admin_pelayanan_katolik/Agen/Task.dart';
+import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 
 import 'package:admin_pelayanan_katolik/view/gereja/daftarGereja.dart';
 import 'package:flutter/material.dart';
@@ -30,9 +31,12 @@ class _addImam extends State<addImam> {
   TextEditingController password = new TextEditingController();
   _addImam(this.id);
   var idGerejaSelected;
+  var idRoleSelected;
   var gereja = [];
-  var idGereja = [];
 
+  var idGereja = [];
+  var role = ["Imam", "Sekretariat"];
+  var idRole = [0, 1];
   Future submit() async {
     // Messages msg = new Messages();
     // await msg.addReceiver("agenPendaftaran");
@@ -50,17 +54,27 @@ class _addImam extends State<addImam> {
     // hasil = await AgenPage().receiverTampilan();
     Completer<void> completer = Completer<void>();
     Message message = Message(
-        'View',
+        'Agent Page',
         'Agent Pendaftaran',
         "REQUEST",
-        Task('add imam',
-            [email.text, password.text, idGerejaSelected, nama.text, id]));
+        Tasks('add imam', [
+          email.text,
+          password.text,
+          idGerejaSelected,
+          nama.text,
+          idRoleSelected,
+          id
+        ]));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
+    var hasilDaftar = await AgentPage.getDataPencarian();
+
     completer.complete();
-    var hasil = await messagePassing.messageGetToView();
-    if (hasil == "failed") {
+
+    await completer.future;
+
+    if (hasilDaftar == "failed") {
       Fluttertoast.showToast(
           msg: "Gagal menambahkan Imam",
           toastLength: Toast.LENGTH_SHORT,
@@ -99,16 +113,16 @@ class _addImam extends State<addImam> {
     // return hasil;
     Completer<void> completer = Completer<void>();
     Message message = Message(
-        'View', 'Agent Pencarian', "REQUEST", Task('cari gereja', null));
+        'Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari gereja', null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
+    var hasilPencarian = await AgentPage.getDataPencarian();
+
     completer.complete();
-    var result = await messagePassing.messageGetToView();
 
     await completer.future;
-
-    return result;
+    return await hasilPencarian;
   }
 
   // void initState() {
@@ -280,6 +294,39 @@ class _addImam extends State<addImam> {
                             padding: EdgeInsets.symmetric(vertical: 10),
                           ),
                           Text(
+                            "Role",
+                            textAlign: TextAlign.left,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                          ),
+                          DropdownSearch<dynamic>(
+                            // popupProps: PopupProps.menu(
+                            //   showSelectedItems: true,
+                            //   disabledItemFn: (String s) => s.startsWith('I'),
+                            // ),
+                            items: role,
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                labelText: "Pilih Role",
+                                hintText: "Pilih Role",
+                              ),
+                            ),
+                            onChanged: (dynamic? data) {
+                              var position = role.indexOf(data);
+                              idRoleSelected = idRole[position];
+                            },
+                          ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                          ),
+                          Text(
                             "Gereja",
                             textAlign: TextAlign.left,
                           ),
@@ -301,7 +348,6 @@ class _addImam extends State<addImam> {
                             onChanged: (dynamic? data) {
                               var position = gereja.indexOf(data);
                               idGerejaSelected = idGereja[position];
-                              print(idGerejaSelected);
                             },
                           ),
                         ],

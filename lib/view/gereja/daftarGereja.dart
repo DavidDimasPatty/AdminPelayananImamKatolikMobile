@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/view/gereja/addGereja.dart';
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,8 @@ class DaftarGereja extends StatefulWidget {
 }
 
 class _DaftarGereja extends State<DaftarGereja> {
-  List daftarUser = [];
+  List hasil = [];
+  StreamController _controller = StreamController();
   bool isLoading = true;
   List dummyTemp = [];
 
@@ -37,16 +39,16 @@ class _DaftarGereja extends State<DaftarGereja> {
 
     Completer<void> completer = Completer<void>();
     Message message = Message(
-        'View', 'Agent Pencarian', "REQUEST", Task('cari gereja', null));
+        'Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari gereja', null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
+    var hasilPencarian = await AgentPage.getDataPencarian();
+
     completer.complete();
-    var result = await messagePassing.messageGetToView();
 
     await completer.future;
-
-    return result;
+    return await hasilPencarian;
   }
 
   @override
@@ -54,8 +56,9 @@ class _DaftarGereja extends State<DaftarGereja> {
     super.initState();
     callDb().then((result) {
       setState(() {
-        daftarUser.addAll(result);
+        hasil.addAll(result);
         dummyTemp.addAll(result);
+        _controller.add(result);
       });
     });
   }
@@ -68,19 +71,17 @@ class _DaftarGereja extends State<DaftarGereja> {
             .toString()
             .toLowerCase()
             .contains(query.toLowerCase())) {
-          print("SOORRRY");
           listOMaps.add(item);
         }
       }
       setState(() {
-        daftarUser.clear();
-        daftarUser.addAll(listOMaps);
+        hasil.clear();
+        hasil.addAll(listOMaps);
       });
-      return daftarUser;
     } else {
       setState(() {
-        daftarUser.clear();
-        daftarUser.addAll(dummyTemp);
+        hasil.clear();
+        hasil.addAll(dummyTemp);
       });
     }
   }
@@ -98,15 +99,17 @@ class _DaftarGereja extends State<DaftarGereja> {
 
     // hasil = await AgenPage().receiverTampilan();
     Completer<void> completer = Completer<void>();
-    Message message = Message('View', 'Agent Pendaftaran', "REQUEST",
-        Task('update gereja', [idGereja, status]));
+    Message message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST",
+        Tasks('update gereja', [idGereja, status]));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
-    completer.complete();
-    var hasil = await messagePassing.messageGetToView();
+    var hasilDaftar = await AgentPage.getDataPencarian();
 
-    if (hasil == "fail") {
+    completer.complete();
+
+    await completer.future;
+    if (hasilDaftar == "fail") {
       Fluttertoast.showToast(
           msg: "Gagal Banned Gereja",
           toastLength: Toast.LENGTH_SHORT,
@@ -126,28 +129,26 @@ class _DaftarGereja extends State<DaftarGereja> {
           fontSize: 16.0);
       callDb().then((result) {
         setState(() {
-          daftarUser.clear();
+          hasil.clear();
           dummyTemp.clear();
-          daftarUser.addAll(result);
+          hasil.addAll(result);
           dummyTemp.addAll(result);
-          filterSearchResults(editingController.text);
+          _controller.add(result);
         });
       });
     }
   }
 
   Future pullRefresh() async {
-    setState(() {
-      callDb().then((result) {
-        setState(() {
-          daftarUser.clear();
-          dummyTemp.clear();
-          daftarUser.addAll(result);
-          dummyTemp.addAll(result);
-          filterSearchResults(editingController.text);
-        });
+    callDb().then((result) {
+      setState(() {
+        hasil.clear();
+        dummyTemp.clear();
+        hasil.clear();
+        hasil.addAll(result);
+        dummyTemp.addAll(result);
+        _controller.add(result);
       });
-      ;
     });
   }
 
@@ -216,13 +217,23 @@ class _DaftarGereja extends State<DaftarGereja> {
             Padding(padding: EdgeInsets.symmetric(vertical: 10)),
             /////////
 
-            FutureBuilder(
-                future: callDb(),
-                builder: (context, AsyncSnapshot snapshot) {
+            StreamBuilder(
+                stream: _controller.stream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  }
+
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
                   try {
                     return Column(children: [
-                      // for (var i in daftarUser)
-                      for (var i in daftarUser)
+                      for (var i in hasil)
                         InkWell(
                           borderRadius: new BorderRadius.circular(24),
                           onTap: () {
@@ -316,19 +327,8 @@ class _DaftarGereja extends State<DaftarGereja> {
                                                         i["_id"], 1);
                                                     Navigator.pop(context);
                                                     setState(() {
-                                                      callDb().then((result) {
-                                                        setState(() {
-                                                          daftarUser.clear();
-                                                          dummyTemp.clear();
-                                                          daftarUser
-                                                              .addAll(result);
-                                                          dummyTemp
-                                                              .addAll(result);
-                                                          filterSearchResults(
-                                                              editingController
-                                                                  .text);
-                                                        });
-                                                      });
+                                                      callDb()
+                                                          .then((result) {});
                                                     });
                                                   },
                                                   child: const Text('Ya'),
@@ -371,19 +371,8 @@ class _DaftarGereja extends State<DaftarGereja> {
                                                         i["_id"], 0);
                                                     Navigator.pop(context);
                                                     setState(() {
-                                                      callDb().then((result) {
-                                                        setState(() {
-                                                          daftarUser.clear();
-                                                          dummyTemp.clear();
-                                                          daftarUser
-                                                              .addAll(result);
-                                                          dummyTemp
-                                                              .addAll(result);
-                                                          filterSearchResults(
-                                                              editingController
-                                                                  .text);
-                                                        });
-                                                      });
+                                                      callDb()
+                                                          .then((result) {});
                                                     });
                                                   },
                                                   child: const Text('Ya'),

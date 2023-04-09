@@ -23,9 +23,11 @@ class AgentSetting extends Agent {
   List<Plan> _plan = [];
   List<Goals> _goals = [];
   List<dynamic> pencarianData = [];
-
+  String agentName = "";
   bool stop = false;
-  int _estimatedTime = 5;
+  int _estimatedTime = 10;
+  List _Message = [];
+  List _Sender = [];
 
   bool canPerformTask(dynamic message) {
     for (var p in _plan) {
@@ -36,8 +38,16 @@ class AgentSetting extends Agent {
     return false;
   }
 
-  Future<dynamic> performTask(Message msg, String sender) async {
-    print('Agent Setting received message from $sender');
+  Future<dynamic> receiveMessage(Message msg, String sender) {
+    print(agentName + ' received message from $sender');
+    _Message.add(msg);
+    _Sender.add(sender);
+    return performTask();
+  }
+
+  Future<dynamic> performTask() async {
+    Message msg = _Message.last;
+    String sender = _Sender.last;
     dynamic task = msg.task;
     for (var p in _plan) {
       if (p.goals == task.action) {
@@ -50,7 +60,8 @@ class AgentSetting extends Agent {
           messagePassing.sendMessage(msg);
         });
 
-        Message message = await action(p.goals, task, sender);
+        Message message = await action(p.goals, task.data, sender);
+        print(message.task.data.runtimeType);
 
         if (stop == false) {
           if (timer.isActive) {
@@ -69,7 +80,7 @@ class AgentSetting extends Agent {
                 }
               }
               if (checkGoals == true) {
-                print('Agent Setting returning data to ${message.receiver}');
+                print(agentName + ' returning data to ${message.receiver}');
                 MessagePassing messagePassing = MessagePassing();
                 messagePassing.sendMessage(message);
                 break;
@@ -84,21 +95,13 @@ class AgentSetting extends Agent {
     }
   }
 
-  messageSetData(task) {
-    pencarianData.add(task);
-  }
-
-  Future<List> getDataPencarian() async {
-    return pencarianData;
-  }
-
   Future<Message> action(String goals, dynamic data, String sender) async {
     switch (goals) {
       case "setting user":
-        return settinganUser(data.data, sender);
+        return settinganUser(data, sender);
 
       default:
-        return rejectTask(data, data.sender);
+        return rejectTask(data, sender);
     }
   }
 
@@ -108,41 +111,37 @@ class AgentSetting extends Agent {
     var statusM = await MongoDatabase.connect();
     WidgetsFlutterBinding.ensureInitialized();
 
-    runApp(await MaterialApp(
-      title: 'Navigation Basics',
-      home: Login(),
-    ));
-
     Message message =
-        Message('Agent Setting', sender, "INFORM", Task('status', "oke"));
+        Message(agentName, sender, "INFORM", Tasks('status aplikasi', "oke"));
     return message;
   }
 
   Message rejectTask(dynamic task, sender) {
     Message message = Message(
-        "Agent Setting",
+        agentName,
         sender,
         "INFORM",
-        Task('error', [
+        Tasks('error', [
           ['failed']
         ]));
 
-    print('Task rejected $sender: $task');
+    print(this.agentName + ' rejected task form $sender: ${task.action}');
     return message;
   }
 
   Message overTime(sender) {
     Message message = Message(
         sender,
-        "Agent Setting",
+        agentName,
         "INFORM",
-        Task('error', [
+        Tasks('error', [
           ['reject over time']
         ]));
     return message;
   }
 
   void _initAgent() {
+    this.agentName = "Agent Setting";
     _plan = [
       Plan("setting user", "REQUEST", _estimatedTime),
     ];

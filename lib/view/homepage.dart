@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
 import 'package:admin_pelayanan_katolik/Agen/MessagePassing.dart';
 import 'package:admin_pelayanan_katolik/Agen/Task.dart';
+import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 
 import 'package:admin_pelayanan_katolik/FadeAnimation.dart';
 import 'package:admin_pelayanan_katolik/view/gereja/daftarGereja.dart';
@@ -34,16 +35,16 @@ class _HomePage extends State<HomePage> {
     // return await AgenPage().receiverTampilan();
     Completer<void> completer = Completer<void>();
     Message message = Message(
-        'View', 'Agent Pencarian', "REQUEST", Task('cari jumlah', null));
+        'Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari jumlah', null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
+    var hasilPencarian = await AgentPage.getDataPencarian();
+
     completer.complete();
-    var result = await messagePassing.messageGetToView();
 
     await completer.future;
-
-    return result;
+    return await hasilPencarian;
   }
 
   @override

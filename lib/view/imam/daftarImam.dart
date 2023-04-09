@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
 import 'package:admin_pelayanan_katolik/Agen/MessagePassing.dart';
 import 'package:admin_pelayanan_katolik/Agen/Task.dart';
+import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 
 import 'package:admin_pelayanan_katolik/view/imam/addImam.dart';
 import 'package:anim_search_bar/anim_search_bar.dart';
@@ -17,8 +18,8 @@ class DaftarImam extends StatefulWidget {
 }
 
 class _DaftarImam extends State<DaftarImam> {
-  List daftarUser = [];
-
+  List hasil = [];
+  StreamController _controller = StreamController();
   List dummyTemp = [];
 
   final id;
@@ -37,17 +38,17 @@ class _DaftarImam extends State<DaftarImam> {
 
     // return hasil;
     Completer<void> completer = Completer<void>();
-    Message message =
-        Message('View', 'Agent Pencarian', "REQUEST", Task('cari imam', null));
+    Message message = Message(
+        'Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari imam', null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
+    var hasilPencarian = await AgentPage.getDataPencarian();
+
     completer.complete();
-    var result = await messagePassing.messageGetToView();
 
     await completer.future;
-
-    return result;
+    return await hasilPencarian;
   }
 
   @override
@@ -55,8 +56,9 @@ class _DaftarImam extends State<DaftarImam> {
     super.initState();
     callDb().then((result) {
       setState(() {
-        daftarUser.addAll(result);
+        hasil.addAll(result);
         dummyTemp.addAll(result);
+        _controller.add(result);
       });
     });
   }
@@ -73,14 +75,13 @@ class _DaftarImam extends State<DaftarImam> {
         }
       }
       setState(() {
-        daftarUser.clear();
-        daftarUser.addAll(listOMaps);
+        hasil.clear();
+        hasil.addAll(listOMaps);
       });
-      return daftarUser;
     } else {
       setState(() {
-        daftarUser.clear();
-        daftarUser.addAll(dummyTemp);
+        hasil.clear();
+        hasil.addAll(dummyTemp);
       });
     }
   }
@@ -98,17 +99,18 @@ class _DaftarImam extends State<DaftarImam> {
     // hasil = await AgenPage().receiverTampilan();
 
     Completer<void> completer = Completer<void>();
-    Message message = Message('View', 'Agent Pendaftaran', "REQUEST",
-        Task('update imam', [idImam, status]));
+    Message message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST",
+        Tasks('update imam', [idImam, status]));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
+    var hasilDaftar = await AgentPage.getDataPencarian();
+
     completer.complete();
-    var hasil = await messagePassing.messageGetToView();
 
     await completer.future;
 
-    if (hasil == "failed") {
+    if (hasilDaftar == "failed") {
       Fluttertoast.showToast(
           msg: "Gagal Banned Imam",
           toastLength: Toast.LENGTH_SHORT,
@@ -117,7 +119,7 @@ class _DaftarImam extends State<DaftarImam> {
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
-    } else if (hasil == "oke") {
+    } else if (hasilDaftar == "oke") {
       Fluttertoast.showToast(
           msg: "Berhasil Banned Imam",
           toastLength: Toast.LENGTH_SHORT,
@@ -128,28 +130,27 @@ class _DaftarImam extends State<DaftarImam> {
           fontSize: 16.0);
       callDb().then((result) {
         setState(() {
-          daftarUser.clear();
+          hasil.clear();
           dummyTemp.clear();
-          daftarUser.addAll(result);
+          hasil.clear();
+          hasil.addAll(result);
           dummyTemp.addAll(result);
-          filterSearchResults(editingController.text);
+          _controller.add(result);
         });
       });
     }
   }
 
   Future pullRefresh() async {
-    setState(() {
-      callDb().then((result) {
-        setState(() {
-          daftarUser.clear();
-          dummyTemp.clear();
-          daftarUser.addAll(result);
-          dummyTemp.addAll(result);
-          filterSearchResults(editingController.text);
-        });
+    callDb().then((result) {
+      setState(() {
+        hasil.clear();
+        dummyTemp.clear();
+        hasil.clear();
+        hasil.addAll(result);
+        dummyTemp.addAll(result);
+        _controller.add(result);
       });
-      ;
     });
   }
 
@@ -217,12 +218,23 @@ class _DaftarImam extends State<DaftarImam> {
             Padding(padding: EdgeInsets.symmetric(vertical: 10)),
             Padding(padding: EdgeInsets.symmetric(vertical: 10)),
             /////////
-            FutureBuilder(
-                future: callDb(),
-                builder: (context, AsyncSnapshot snapshot) {
+            StreamBuilder(
+                stream: _controller.stream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  }
+
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
                   try {
                     return Column(children: [
-                      for (var i in daftarUser)
+                      for (var i in hasil)
                         InkWell(
                           borderRadius: new BorderRadius.circular(24),
                           onTap: () {
@@ -325,19 +337,8 @@ class _DaftarImam extends State<DaftarImam> {
                                                         i["_id"], 1);
                                                     Navigator.pop(context);
                                                     setState(() {
-                                                      callDb().then((result) {
-                                                        setState(() {
-                                                          daftarUser.clear();
-                                                          dummyTemp.clear();
-                                                          daftarUser
-                                                              .addAll(result);
-                                                          dummyTemp
-                                                              .addAll(result);
-                                                          filterSearchResults(
-                                                              editingController
-                                                                  .text);
-                                                        });
-                                                      });
+                                                      callDb()
+                                                          .then((result) {});
                                                     });
                                                   },
                                                   child: const Text('Ya'),
@@ -380,19 +381,8 @@ class _DaftarImam extends State<DaftarImam> {
                                                         i["_id"], 0);
                                                     Navigator.pop(context);
                                                     setState(() {
-                                                      callDb().then((result) {
-                                                        setState(() {
-                                                          daftarUser.clear();
-                                                          dummyTemp.clear();
-                                                          daftarUser
-                                                              .addAll(result);
-                                                          dummyTemp
-                                                              .addAll(result);
-                                                          filterSearchResults(
-                                                              editingController
-                                                                  .text);
-                                                        });
-                                                      });
+                                                      callDb()
+                                                          .then((result) {});
                                                     });
                                                   },
                                                   child: const Text('Ya'),
