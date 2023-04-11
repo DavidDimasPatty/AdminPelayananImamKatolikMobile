@@ -26,17 +26,6 @@ class _DaftarImam extends State<DaftarImam> {
   _DaftarImam(this.id);
 
   Future callDb() async {
-    // Messages msg = new Messages();
-    // await msg.addReceiver("agenPencarian");
-    // await msg.setContent([
-    //   ["cari imam"]
-    // ]);
-    // List hasil = [];
-    // await msg.send();
-    // await Future.delayed(Duration(seconds: 1));
-    // hasil = await AgenPage().receiverTampilan();
-
-    // return hasil;
     Completer<void> completer = Completer<void>();
     Message message = Message(
         'Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari imam', null));
@@ -87,17 +76,6 @@ class _DaftarImam extends State<DaftarImam> {
   }
 
   Future updateImam(idImam, status) async {
-    // Messages msg = new Messages();
-    // await msg.addReceiver("agenPendaftaran");
-    // await msg.setContent([
-    //   ["update imam"],
-    //   [idKegiatan],
-    //   [status]
-    // ]);
-    // var hasil;
-    // await msg.send();
-    // hasil = await AgenPage().receiverTampilan();
-
     Completer<void> completer = Completer<void>();
     Message message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST",
         Tasks('update imam', [idImam, status]));
@@ -237,14 +215,7 @@ class _DaftarImam extends State<DaftarImam> {
                       for (var i in hasil)
                         InkWell(
                           borderRadius: new BorderRadius.circular(24),
-                          onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) =>
-                            //           KrismaUser(names, idUser, idGereja, i['_id'])),
-                            // );
-                          },
+                          onTap: () {},
                           child: Container(
                               margin: EdgeInsets.only(
                                   right: 15, left: 15, bottom: 20),
@@ -282,16 +253,7 @@ class _DaftarImam extends State<DaftarImam> {
                                       fontWeight: FontWeight.w300),
                                   textAlign: TextAlign.center,
                                 ),
-                                // Text(
-                                //   'Paroki: ' + i['paroki'].toString(),
-                                //   style: TextStyle(
-                                //       color: Colors.white, fontSize: 12),
-                                // ),
-                                // Text(
-                                //   'Address: ' + i['address'].toString(),
-                                //   style: TextStyle(
-                                //       color: Colors.white, fontSize: 12),
-                                // ),
+
                                 if (i['banned'] == 0)
                                   Text(
                                     'Banned: No',

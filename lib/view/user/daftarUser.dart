@@ -26,16 +26,6 @@ class _DaftarUser extends State<DaftarUser> {
   _DaftarUser(this.id);
 
   Future callDb() async {
-    // Messages msg = new Messages();
-    // await msg.addReceiver("agenPencarian");
-    // await msg.setContent([
-    //   ["cari user"]
-    // ]);
-    // List hasil = [];
-    // await msg.send();
-    // await Future.delayed(Duration(seconds: 1));
-    // hasil = await AgenPage().receiverTampilan();
-    // return hasil;
     Completer<void> completer = Completer<void>();
     Message message = Message(
         'Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari user', null));
@@ -87,16 +77,6 @@ class _DaftarUser extends State<DaftarUser> {
   }
 
   Future updateUser(idUser, status) async {
-    // Messages msg = new Messages();
-    // await msg.addReceiver("agenPencarian");
-    // await msg.setContent([
-    //   ["update user"],
-    //   [idUser],
-    //   [status]
-    // ]);
-    // var hasil;
-    // await msg.send();
-    // hasil = await AgenPage().receiverTampilan();
     Completer<void> completer = Completer<void>();
     Message message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST",
         Tasks('update user', [idUser, status]));

@@ -25,14 +25,6 @@ class _HomePage extends State<HomePage> {
   _HomePage(this.id);
 
   Future callJumlah() async {
-    // Messages msg = new Messages();
-    // await msg.addReceiver("agenPencarian");
-    // await msg.setContent([
-    //   ["cari jumlah"]
-    // ]);
-    // await msg.send();
-    // await Future.delayed(Duration(seconds: 1));
-    // return await AgenPage().receiverTampilan();
     Completer<void> completer = Completer<void>();
     Message message = Message(
         'Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari jumlah', null));

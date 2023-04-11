@@ -27,16 +27,6 @@ class _DaftarGereja extends State<DaftarGereja> {
   _DaftarGereja(this.id);
 
   Future<List> callDb() async {
-    // Messages msg = new Messages();
-    // await msg.addReceiver("agenPencarian");
-    // await msg.setContent([
-    //   ["cari gereja"]
-    // ]);
-    // List hasil;
-    // await msg.send();
-    // await Future.delayed(Duration(seconds: 1));
-    // return await AgenPage().receiverTampilan();
-
     Completer<void> completer = Completer<void>();
     Message message = Message(
         'Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari gereja', null));
@@ -87,17 +77,6 @@ class _DaftarGereja extends State<DaftarGereja> {
   }
 
   Future updateGereja(idGereja, status) async {
-    // Messages msg = new Messages();
-    // await msg.addReceiver("agenPencarian");
-    // await msg.setContent([
-    //   ["update gereja"],
-    //   [idKegiatan],
-    //   [status]
-    // ]);
-    // var hasil;
-    // await msg.send();
-
-    // hasil = await AgenPage().receiverTampilan();
     Completer<void> completer = Completer<void>();
     Message message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST",
         Tasks('update gereja', [idGereja, status]));
