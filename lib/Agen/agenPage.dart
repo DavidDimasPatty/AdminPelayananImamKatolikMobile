@@ -215,13 +215,10 @@ class AgentPage extends Agent {
   void _initAgent() {
     this.agentName = "Agent Page";
     _plan = [
-      Plan("status modifikasi data", "INFORM",
-          _estimatedTime), //come from agen Pendaftaran
-      Plan("hasil pencarian", "INFORM",
-          _estimatedTime), //come from agen Pencarian
-      Plan(
-          "status aplikasi", "INFORM", _estimatedTime), //come from agen Setting
-      Plan("status modifikasi/ pencarian data akun", "INFORM", _estimatedTime),
+      Plan("status modifikasi data", "INFORM"), //come from agen Pendaftaran
+      Plan("hasil pencarian", "INFORM"), //come from agen Pencarian
+      Plan("status aplikasi", "INFORM"), //come from agen Setting
+      Plan("status modifikasi/ pencarian data akun", "INFORM"),
     ];
     _goals = [
       Goals("status modifikasi data", String, 5),

@@ -49,46 +49,47 @@ class AgentSetting extends Agent {
     Message msg = _Message.last;
     String sender = _Sender.last;
     dynamic task = msg.task;
-    for (var p in _plan) {
-      if (p.goals == task.action) {
-        Timer timer = Timer.periodic(Duration(seconds: p.time), (timer) {
-          stop = true;
-          timer.cancel();
+    var planQuest =
+        _plan.where((element) => element.goals == task.action).toList();
+    Plan p = planQuest[0];
+    var goalsQuest =
+        _goals.where((element) => element.request == p.goals).toList();
+    int clock = goalsQuest[0].time;
+    Goals goalquest = goalsQuest[0];
 
+    Timer timer = Timer.periodic(Duration(seconds: clock), (timer) {
+      stop = true;
+      timer.cancel();
+
+      MessagePassing messagePassing = MessagePassing();
+      Message msg = rejectTask(task, sender);
+      messagePassing.sendMessage(msg);
+      return;
+    });
+
+    Message message = await action(p.goals, task.data, sender);
+
+    if (stop == false) {
+      if (timer.isActive) {
+        timer.cancel();
+        bool checkGoals = false;
+        if (message.task.data.runtimeType == String &&
+            message.task.data == "failed") {
           MessagePassing messagePassing = MessagePassing();
           Message msg = rejectTask(task, sender);
           messagePassing.sendMessage(msg);
-        });
+        } else {
+          if (goalquest.request == p.goals &&
+              goalquest.goals == message.task.data.runtimeType) {
+            checkGoals = true;
+          }
 
-        Message message = await action(p.goals, task.data, sender);
-        print(message.task.data.runtimeType);
-
-        if (stop == false) {
-          if (timer.isActive) {
-            timer.cancel();
-            bool checkGoals = false;
-            if (message.task.data.runtimeType == String &&
-                message.task.data == "failed") {
-              MessagePassing messagePassing = MessagePassing();
-              Message msg = rejectTask(task, sender);
-              messagePassing.sendMessage(msg);
-            } else {
-              for (var g in _goals) {
-                if (g.request == p.goals &&
-                    g.goals == message.task.data.runtimeType) {
-                  checkGoals = true;
-                }
-              }
-              if (checkGoals == true) {
-                print(agentName + ' returning data to ${message.receiver}');
-                MessagePassing messagePassing = MessagePassing();
-                messagePassing.sendMessage(message);
-                break;
-              } else {
-                rejectTask(task, sender);
-              }
-              break;
-            }
+          if (checkGoals == true) {
+            print(agentName + ' returning data to ${message.receiver}');
+            MessagePassing messagePassing = MessagePassing();
+            messagePassing.sendMessage(message);
+          } else {
+            rejectTask(task, sender);
           }
         }
       }
@@ -143,7 +144,7 @@ class AgentSetting extends Agent {
   void _initAgent() {
     this.agentName = "Agent Setting";
     _plan = [
-      Plan("setting user", "REQUEST", _estimatedTime),
+      Plan("setting user", "REQUEST"),
     ];
     _goals = [
       Goals("setting user", String, 6),
