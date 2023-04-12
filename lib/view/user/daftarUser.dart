@@ -19,6 +19,8 @@ class DaftarUser extends StatefulWidget {
 class _DaftarUser extends State<DaftarUser> {
   List hasil = [];
   StreamController _controller = StreamController();
+  ScrollController _scrollController = ScrollController();
+  int data = 5;
 
   List dummyTemp = [];
 
@@ -138,6 +140,14 @@ class _DaftarUser extends State<DaftarUser> {
     editingController.addListener(() async {
       await filterSearchResults(editingController.text);
     });
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        setState(() {
+          data = data + 5;
+        });
+      }
+    });
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
@@ -149,6 +159,7 @@ class _DaftarUser extends State<DaftarUser> {
         body: RefreshIndicator(
           onRefresh: pullRefresh,
           child: ListView(
+            controller: _scrollController,
             shrinkWrap: true,
             padding: EdgeInsets.only(right: 15, left: 15),
             children: <Widget>[
@@ -187,7 +198,7 @@ class _DaftarUser extends State<DaftarUser> {
                     }
                     try {
                       return Column(children: [
-                        for (var i in hasil)
+                        for (var i in hasil.take(data))
                           InkWell(
                             borderRadius: new BorderRadius.circular(24),
                             onTap: () {},

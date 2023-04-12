@@ -20,6 +20,8 @@ class DaftarGereja extends StatefulWidget {
 class _DaftarGereja extends State<DaftarGereja> {
   List hasil = [];
   StreamController _controller = StreamController();
+  ScrollController _scrollController = ScrollController();
+  int data = 5;
   bool isLoading = true;
   List dummyTemp = [];
 
@@ -137,6 +139,14 @@ class _DaftarGereja extends State<DaftarGereja> {
     editingController.addListener(() async {
       await filterSearchResults(editingController.text);
     });
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        setState(() {
+          data = data + 5;
+        });
+      }
+    });
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -148,6 +158,7 @@ class _DaftarGereja extends State<DaftarGereja> {
       body: RefreshIndicator(
         onRefresh: pullRefresh,
         child: ListView(
+          controller: _scrollController,
           shrinkWrap: true,
           padding: EdgeInsets.only(right: 15, left: 15),
           children: <Widget>[
@@ -212,7 +223,7 @@ class _DaftarGereja extends State<DaftarGereja> {
                   }
                   try {
                     return Column(children: [
-                      for (var i in hasil)
+                      for (var i in hasil.take(data))
                         InkWell(
                           borderRadius: new BorderRadius.circular(24),
                           onTap: () {
