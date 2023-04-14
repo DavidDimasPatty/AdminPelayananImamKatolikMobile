@@ -1,67 +1,3 @@
-// import 'dart:developer';
-
-// import 'package:admin_pelayanan_katolik/DatabaseFolder/data.dart';
-// import 'package:mongo_dart/mongo_dart.dart';
-// import '../DatabaseFolder/mongodb.dart';
-// import 'messages.dart';
-
-// class AgenAkun {
-//   AgenAkun() {
-//     ResponsBehaviour();
-//   }
-
-//   ResponsBehaviour() async {
-//     Messages msg = Messages();
-
-//     var data = await msg.receive();
-//     action() async {
-//       try {
-//         if (data.runtimeType == List<List<dynamic>>) {
-//           if (await data[0][0] == "cari admin") {
-//             // var userCollection =
-//             //     await MongoDatabase.db.collection(ADMIN_COLLECTION);
-
-//             await MongoDatabase.db
-//                 .collection(ADMIN_COLLECTION)
-//                 .find({'user': data[1][0], 'password': data[2][0]})
-//                 .toList()
-//                 .then((result) async {
-//                   if (await result != 0) {
-//                     msg.addReceiver("agenPage");
-//                     msg.setContent(result);
-//                     msg.send();
-//                   } else {
-//                     msg.addReceiver("agenPage");
-//                     msg.setContent(result);
-//                     msg.send();
-//                   }
-//                 });
-//           }
-//         }
-//       } catch (e) {
-//         return 0;
-//       }
-//     }
-
-//     action();
-//   }
-
-//   ReadyBehaviour() {
-//     Messages msg = Messages();
-//     var data = msg.receive();
-//     action() {
-//       try {
-//         if (data == "ready") {
-//           print("Agen Pencarian Ready");
-//         }
-//       } catch (e) {
-//         return 0;
-//       }
-//     }
-
-//     action();
-//   }
-// }
 import 'dart:async';
 
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
@@ -79,17 +15,11 @@ class AgentAkun extends Agent {
   AgentAkun() {
     _initAgent();
   }
-  List<Plan> _plan = [];
-  List<Goals> _goals = [];
-  List<dynamic> pencarianData = [];
-  String agentName = "";
-  List _Message = [];
-  List _Sender = [];
-  bool stop = false;
-  int _estimatedTime = 5;
+
+  static int _estimatedTime = 5;
 
   bool canPerformTask(dynamic message) {
-    for (var p in _plan) {
+    for (var p in plan) {
       if (p.goals == message.task.action && p.protocol == message.protocol) {
         return true;
       }
@@ -99,19 +29,19 @@ class AgentAkun extends Agent {
 
   Future<dynamic> receiveMessage(Message msg, String sender) {
     print(agentName + ' received message from $sender');
-    _Message.add(msg);
-    _Sender.add(sender);
+    Messages.add(msg);
+    Senders.add(sender);
     return performTask();
   }
 
   Future<dynamic> performTask() async {
-    Message msgCome = _Message.last;
+    Message msgCome = Messages.last;
 
-    String sender = _Sender.last;
+    String sender = Senders.last;
     dynamic task = msgCome.task;
 
     var goalsQuest =
-        _goals.where((element) => element.request == task.action).toList();
+        goals.where((element) => element.request == task.action).toList();
     int clock = goalsQuest[0].time;
 
     Timer timer = Timer.periodic(Duration(seconds: clock), (timer) {
@@ -141,7 +71,7 @@ class AgentAkun extends Agent {
           Message msg = rejectTask(msgCome, sender);
           return messagePassing.sendMessage(msg);
         } else {
-          for (var g in _goals) {
+          for (var g in goals) {
             if (g.request == task.action &&
                 g.goals == message.task.data.runtimeType) {
               checkGoals = true;
@@ -212,10 +142,10 @@ class AgentAkun extends Agent {
 
   void _initAgent() {
     this.agentName = "Agent Akun";
-    _plan = [
+    this.plan = [
       Plan("login", "REQUEST"),
     ];
-    _goals = [
+    this.goals = [
       Goals("login", List<Map<String, Object?>>, _estimatedTime),
     ];
   }

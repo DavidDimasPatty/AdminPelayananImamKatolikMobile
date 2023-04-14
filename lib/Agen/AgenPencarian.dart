@@ -16,16 +16,10 @@ class AgentPencarian extends Agent {
     _initAgent();
   }
 
-  List<Plan> _plan = [];
-  List<Goals> _goals = [];
   static int _estimatedTime = 5;
-  bool stop = false;
-  String agentName = "";
-  List _Message = [];
-  List _Sender = [];
 
   bool canPerformTask(dynamic message) {
-    for (var p in _plan) {
+    for (var p in plan) {
       if (p.goals == message.task.action && p.protocol == message.protocol) {
         return true;
       }
@@ -35,19 +29,19 @@ class AgentPencarian extends Agent {
 
   Future<dynamic> receiveMessage(Message msg, String sender) {
     print(agentName + ' received message from $sender');
-    _Message.add(msg);
-    _Sender.add(sender);
+    Messages.add(msg);
+    Senders.add(sender);
     return performTask();
   }
 
   Future<dynamic> performTask() async {
-    Message msgCome = _Message.last;
+    Message msgCome = Messages.last;
 
-    String sender = _Sender.last;
+    String sender = Senders.last;
     dynamic task = msgCome.task;
 
     var goalsQuest =
-        _goals.where((element) => element.request == task.action).toList();
+        goals.where((element) => element.request == task.action).toList();
     int clock = goalsQuest[0].time;
 
     Timer timer = Timer.periodic(Duration(seconds: clock), (timer) {
@@ -77,7 +71,7 @@ class AgentPencarian extends Agent {
           Message msg = rejectTask(msgCome, sender);
           return messagePassing.sendMessage(msg);
         } else {
-          for (var g in _goals) {
+          for (var g in goals) {
             if (g.request == task.action &&
                 g.goals == message.task.data.runtimeType) {
               checkGoals = true;
@@ -204,7 +198,7 @@ class AgentPencarian extends Agent {
 
   Message rejectTask(dynamic task, sender) {
     Message message = Message(
-        "Agent Akun",
+        agentName,
         sender,
         "INFORM",
         Tasks('error', [
@@ -232,14 +226,14 @@ class AgentPencarian extends Agent {
 
   void _initAgent() {
     this.agentName = "Agent Pencarian";
-    _plan = [
+    plan = [
       Plan("cari gereja", "REQUEST"),
       Plan("cari gereja terakhir", "REQUEST"),
       Plan("cari imam", "REQUEST"),
       Plan("cari user", "REQUEST"),
       Plan("cari jumlah", "REQUEST")
     ];
-    _goals = [
+    goals = [
       Goals("cari gereja", List<Map<String, Object?>>, _estimatedTime),
       Goals("cari gereja terakhir", List<Map<String, Object?>>, _estimatedTime),
       Goals("cari imam", List<Map<String, Object?>>, _estimatedTime),
