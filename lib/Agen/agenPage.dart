@@ -232,4 +232,10 @@ class AgentPage extends Agent {
   void action(String goals, data, String sender) {
     messageSetData(data);
   }
+
+  @override
+  Message overTime(task, sender) {
+    // TODO: implement overTime
+    throw UnimplementedError();
+  }
 }

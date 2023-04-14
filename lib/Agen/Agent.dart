@@ -9,6 +9,7 @@ abstract class Agent {
 
   Future<dynamic> performTask();
 
-  void rejectTask(dynamic task, String sender);
-  void action(String goals, dynamic data, String sender);
+  Message rejectTask(dynamic task, String sender);
+  Message overTime(dynamic task, sender);
+  action(String goals, dynamic data, String sender);
 }
