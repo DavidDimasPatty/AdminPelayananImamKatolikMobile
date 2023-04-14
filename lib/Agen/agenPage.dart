@@ -12,24 +12,8 @@ class AgentPage extends Agent {
     _initAgent();
   }
   static List<dynamic> dataView = [];
-  static int _estimatedTime = 1;
 
-  bool canPerformTask(dynamic message) {
-    for (var p in plan) {
-      if (p.goals == message.task.action && p.protocol == message.protocol) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  Future<dynamic> receiveMessage(Message msg, String sender) {
-    print(agentName + ' received message from $sender');
-    Messages.add(msg);
-    Senders.add(sender);
-    return performTask();
-  }
-
+  @override
   Future performTask() async {
     Message msg = Messages.last;
     String sender = Senders.last;
@@ -48,30 +32,14 @@ class AgentPage extends Agent {
     return dataView.last;
   }
 
-  // waitData(data) async {
-  //   await Future.delayed(data);
-  // }
-
-  Message rejectTask(dynamic task, sender) {
-    Message message = Message(
-        agentName,
-        sender,
-        "INFORM",
-        Tasks('error', [
-          ['failed']
-        ]));
-
-    print(agentName + ' rejected task form $sender: ${task.action}');
-    return message;
-  }
-
   void _initAgent() {
-    this.agentName = "Agent Page";
+    agentName = "Agent Page";
     plan = [
       Plan("status modifikasi data", "INFORM"), //come from agen Pendaftaran
       Plan("hasil pencarian", "INFORM"), //come from agen Pencarian
       Plan("status aplikasi", "INFORM"), //come from agen Setting
-      Plan("status modifikasi/ pencarian data akun", "INFORM"),
+      Plan("status modifikasi/ pencarian data akun",
+          "INFORM"), //come from agen Akun
     ];
     goals = [
       Goals("status modifikasi data", String, 5),
@@ -82,13 +50,19 @@ class AgentPage extends Agent {
   }
 
   @override
-  void action(String goals, data, String sender) {
+  action(String goals, data, String sender) {
     messageSetData(data);
   }
 
   @override
   Message overTime(task, sender) {
     // TODO: implement overTime
+    throw UnimplementedError();
+  }
+
+  @override
+  addEstimatedTime() {
+    // TODO: implement addEstimatedTime
     throw UnimplementedError();
   }
 }
