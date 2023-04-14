@@ -16,7 +16,7 @@ class AgentSetting extends Agent {
   AgentSetting() {
     _initAgent();
   }
-  static int _estimatedTime = 5;
+  static int _estimatedTime = 10;
 
   bool canPerformTask(dynamic message) {
     for (var p in plan) {
@@ -49,7 +49,7 @@ class AgentSetting extends Agent {
       timer.cancel();
       _estimatedTime++;
       MessagePassing messagePassing = MessagePassing();
-      Message msg = overTime(task, sender);
+      Message msg = overTime(msgCome, sender);
       messagePassing.sendMessage(msg);
     });
 

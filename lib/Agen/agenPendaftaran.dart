@@ -47,7 +47,7 @@ class AgentPendaftaran extends Agent {
       timer.cancel();
       _estimatedTime++;
       MessagePassing messagePassing = MessagePassing();
-      Message msg = overTime(task, sender);
+      Message msg = overTime(msgCome, sender);
       messagePassing.sendMessage(msg);
     });
 
