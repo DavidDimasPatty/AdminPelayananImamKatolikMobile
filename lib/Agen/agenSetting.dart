@@ -46,9 +46,10 @@ class AgentSetting extends Agent {
   }
 
   Future<dynamic> performTask() async {
-    Message msg = _Message.last;
+    Message msgCome = _Message.last;
+
     String sender = _Sender.last;
-    dynamic task = msg.task;
+    dynamic task = msgCome.task;
 
     var goalsQuest =
         _goals.where((element) => element.request == task.action).toList();
@@ -57,14 +58,19 @@ class AgentSetting extends Agent {
     Timer timer = Timer.periodic(Duration(seconds: clock), (timer) {
       stop = true;
       timer.cancel();
-
+      _estimatedTime++;
       MessagePassing messagePassing = MessagePassing();
-      Message msg = rejectTask(task, sender);
+      Message msg = overTime(task, sender);
       messagePassing.sendMessage(msg);
-      return;
     });
 
-    Message message = await action(task.action, task.data, sender);
+    Message message;
+    try {
+      message = await action(task.action, msgCome, sender);
+    } catch (e) {
+      message = Message(
+          agentName, sender, "INFORM", Tasks('lack of parameters', "failed"));
+    }
 
     if (stop == false) {
       if (timer.isActive) {
@@ -73,8 +79,8 @@ class AgentSetting extends Agent {
         if (message.task.data.runtimeType == String &&
             message.task.data == "failed") {
           MessagePassing messagePassing = MessagePassing();
-          Message msg = rejectTask(task, sender);
-          messagePassing.sendMessage(msg);
+          Message msg = rejectTask(msgCome, sender);
+          return messagePassing.sendMessage(msg);
         } else {
           for (var g in _goals) {
             if (g.request == task.action &&
@@ -89,7 +95,7 @@ class AgentSetting extends Agent {
             MessagePassing messagePassing = MessagePassing();
             messagePassing.sendMessage(message);
           } else {
-            rejectTask(task, sender);
+            rejectTask(message, sender);
           }
         }
       }
@@ -99,7 +105,7 @@ class AgentSetting extends Agent {
   Future<Message> action(String goals, dynamic data, String sender) async {
     switch (goals) {
       case "setting user":
-        return settinganUser(data, sender);
+        return settinganUser(data.task.data, sender);
 
       default:
         return rejectTask(data, sender);
@@ -119,6 +125,20 @@ class AgentSetting extends Agent {
 
   Message rejectTask(dynamic task, sender) {
     Message message = Message(
+        "Agent Akun",
+        sender,
+        "INFORM",
+        Tasks('error', [
+          ['failed']
+        ]));
+
+    print(this.agentName +
+        ' rejected task from $sender because not capable of doing: ${task.task.action} with protocol ${task.protocol}');
+    return message;
+  }
+
+  Message overTime(dynamic task, sender) {
+    Message message = Message(
         agentName,
         sender,
         "INFORM",
@@ -126,18 +146,8 @@ class AgentSetting extends Agent {
           ['failed']
         ]));
 
-    print(this.agentName + ' rejected task form $sender: ${task.action}');
-    return message;
-  }
-
-  Message overTime(sender) {
-    Message message = Message(
-        sender,
-        agentName,
-        "INFORM",
-        Tasks('error', [
-          ['reject over time']
-        ]));
+    print(this.agentName +
+        ' rejected task from $sender because takes time too long: ${task.task.action}');
     return message;
   }
 
@@ -147,7 +157,7 @@ class AgentSetting extends Agent {
       Plan("setting user", "REQUEST"),
     ];
     _goals = [
-      Goals("setting user", String, 6),
+      Goals("setting user", String, _estimatedTime),
     ];
   }
 }

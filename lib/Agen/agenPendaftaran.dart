@@ -40,9 +40,10 @@ class AgentPendaftaran extends Agent {
   }
 
   Future<dynamic> performTask() async {
-    Message msg = _Message.last;
+    Message msgCome = _Message.last;
+
     String sender = _Sender.last;
-    dynamic task = msg.task;
+    dynamic task = msgCome.task;
 
     var goalsQuest =
         _goals.where((element) => element.request == task.action).toList();
@@ -51,14 +52,19 @@ class AgentPendaftaran extends Agent {
     Timer timer = Timer.periodic(Duration(seconds: clock), (timer) {
       stop = true;
       timer.cancel();
-
+      _estimatedTime++;
       MessagePassing messagePassing = MessagePassing();
-      Message msg = rejectTask(task, sender);
+      Message msg = overTime(task, sender);
       messagePassing.sendMessage(msg);
-      return;
     });
 
-    Message message = await action(task.action, task.data, sender);
+    Message message;
+    try {
+      message = await action(task.action, msgCome, sender);
+    } catch (e) {
+      message = Message(
+          agentName, sender, "INFORM", Tasks('lack of parameters', "failed"));
+    }
 
     if (stop == false) {
       if (timer.isActive) {
@@ -67,8 +73,8 @@ class AgentPendaftaran extends Agent {
         if (message.task.data.runtimeType == String &&
             message.task.data == "failed") {
           MessagePassing messagePassing = MessagePassing();
-          Message msg = rejectTask(task, sender);
-          messagePassing.sendMessage(msg);
+          Message msg = rejectTask(msgCome, sender);
+          return messagePassing.sendMessage(msg);
         } else {
           for (var g in _goals) {
             if (g.request == task.action &&
@@ -83,7 +89,7 @@ class AgentPendaftaran extends Agent {
             MessagePassing messagePassing = MessagePassing();
             messagePassing.sendMessage(message);
           } else {
-            rejectTask(task, sender);
+            rejectTask(message, sender);
           }
         }
       }
@@ -93,15 +99,15 @@ class AgentPendaftaran extends Agent {
   Future<Message> action(String goals, dynamic data, String sender) async {
     switch (goals) {
       case "update user":
-        return updateUser(data, sender);
+        return updateUser(data.task.data, sender);
       case "update imam":
-        return updateImam(data, sender);
+        return updateImam(data.task.data, sender);
       case "update gereja":
-        return updateGereja(data, sender);
+        return updateGereja(data.task.data, sender);
       case "add imam":
-        return addImam(data, sender);
+        return addImam(data.task.data, sender);
       case "add gereja":
-        return addGereja(data, sender);
+        return addGereja(data.task.data, sender);
 
       default:
         return rejectTask(data, sender);
@@ -224,6 +230,20 @@ class AgentPendaftaran extends Agent {
 
   Message rejectTask(dynamic task, sender) {
     Message message = Message(
+        "Agent Akun",
+        sender,
+        "INFORM",
+        Tasks('error', [
+          ['failed']
+        ]));
+
+    print(this.agentName +
+        ' rejected task from $sender because not capable of doing: ${task.task.action} with protocol ${task.protocol}');
+    return message;
+  }
+
+  Message overTime(dynamic task, sender) {
+    Message message = Message(
         agentName,
         sender,
         "INFORM",
@@ -231,18 +251,8 @@ class AgentPendaftaran extends Agent {
           ['failed']
         ]));
 
-    print(this.agentName + ' rejected task form $sender: ${task.action}');
-    return message;
-  }
-
-  Message overTime(sender) {
-    Message message = Message(
-        sender,
-        agentName,
-        "INFORM",
-        Tasks('error', [
-          ['reject over time']
-        ]));
+    print(this.agentName +
+        ' rejected task from $sender because takes time too long: ${task.task.action}');
     return message;
   }
 
@@ -257,12 +267,12 @@ class AgentPendaftaran extends Agent {
       Plan("add aturan pelayanan", "INFORM"),
     ];
     _goals = [
-      Goals("update user", String, 2),
-      Goals("update imam", String, 2),
-      Goals("update gereja", String, 2),
-      Goals("add imam", String, 2),
-      Goals("add gereja", String, 2),
-      Goals("add aturan pelayanan", String, 2),
+      Goals("update user", String, _estimatedTime),
+      Goals("update imam", String, _estimatedTime),
+      Goals("update gereja", String, _estimatedTime),
+      Goals("add imam", String, _estimatedTime),
+      Goals("add gereja", String, _estimatedTime),
+      Goals("add aturan pelayanan", String, _estimatedTime),
     ];
   }
 }
