@@ -59,7 +59,7 @@ class _DaftarUser extends State<DaftarUser> {
     if (query.isNotEmpty) {
       List<Map<String, dynamic>> listOMaps = <Map<String, dynamic>>[];
       for (var item in dummyTemp) {
-        if (item['name']
+        if (item['nama']
             .toString()
             .toLowerCase()
             .contains(query.toLowerCase())) {
@@ -221,7 +221,7 @@ class _DaftarUser extends State<DaftarUser> {
                                 ),
                                 child: Column(children: <Widget>[
                                   Text(
-                                    "Nama :" + i['name'],
+                                    "Nama :" + i['nama'],
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 20.0,

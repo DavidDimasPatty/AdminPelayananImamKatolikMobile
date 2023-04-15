@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
+import 'package:admin_pelayanan_katolik/DatabaseFolder/modelDB.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 import '../DatabaseFolder/data.dart';
@@ -88,26 +89,11 @@ class AgentPendaftaran extends Agent {
 
   Future<Message> addImam(dynamic data, String sender) async {
     var imamCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
+    var configJson = modelDB.imam(data[0], data[1], data[2], data[3], "", "", 0,
+        data[4], 1, 1, 1, 1, DateTime.now(), DateTime.now(), data[5], data[5]);
 
-    var addImam = await imamCollection.insertOne({
-      "email": data[0],
-      "password": data[1],
-      "idGereja": data[2],
-      "name": data[3],
-      "picture": "",
-      "notelp": "",
-      "statusPemberkatan": 0,
-      "statusPerminyakan": 0,
-      "statusTobat": 0,
-      "statusPerkawinan": 0,
-      "banned": 0,
-      "notif": true,
-      "createdAt": DateTime.now(),
-      "updatedAt": DateTime.now(),
-      "updatedBy": data[5],
-      "createdBy": data[5],
-      "role": data[4]
-    });
+    var addImam = await imamCollection.insertOne(configJson);
+
     if (addImam.isSuccess) {
       Message message = Message(
           agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
@@ -119,25 +105,25 @@ class AgentPendaftaran extends Agent {
     }
   }
 
-/////////////////BELOM KELARRRRE
   Future<Message> addGereja(dynamic data, String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
 
-    var addGereja = await gerejaCollection.insertOne({
-      "nama": data[0],
-      "address": data[1],
-      "paroki": data[2],
-      "lingkungan": data[3],
-      "deskripsi": data[4],
-      "lat": data[5],
-      "lng": data[6],
-      "gambar": "",
-      "banned": 0,
-      "createdAt": DateTime.now(),
-      "createdBy": data[7],
-      "updatedAt": DateTime.now(),
-      "updatedBy": data[7]
-    });
+    var configJson = modelDB.Gereja(
+        data[0],
+        data[1],
+        data[2],
+        data[3],
+        data[4],
+        data[5],
+        data[6],
+        0,
+        "",
+        DateTime.now(),
+        data[7],
+        DateTime.now(),
+        data[7]);
+
+    var addGereja = await gerejaCollection.insertOne(configJson);
 
     if (addGereja.isSuccess) {
       Message message = Message(agentName, 'Agent Pencarian', "REQUEST",

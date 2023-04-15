@@ -59,7 +59,7 @@ class _DaftarImam extends State<DaftarImam> {
     if (query.isNotEmpty) {
       List<Map<String, dynamic>> listOMaps = <Map<String, dynamic>>[];
       for (var item in dummyTemp) {
-        if (item['name']
+        if (item['nama']
             .toString()
             .toLowerCase()
             .contains(query.toLowerCase())) {
@@ -249,7 +249,7 @@ class _DaftarImam extends State<DaftarImam> {
                                 //Color(Colors.blue);
 
                                 Text(
-                                  "Nama: " + i['name'],
+                                  "Nama: " + i['nama'],
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 20.0,
