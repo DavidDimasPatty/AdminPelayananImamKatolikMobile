@@ -61,9 +61,16 @@ class AgentPencarian extends Agent {
     var conn = await gerejaCollection
         .find(where.sortBy("createdAt", descending: true).limit(1))
         .toList();
-
-    Message message = Message(agentName, sender, "INFORM",
+    Completer<void> completer = Completer<void>();
+    Message message2 = Message(agentName, sender, "INFORM",
         Tasks('add aturan pelayanan', [data, conn]));
+    MessagePassing messagePassing = MessagePassing();
+    await messagePassing.sendMessage(message2);
+    Message message = Message(
+        agentName, sender, "INFORM", Tasks('wait Agent Pendaftaran', null));
+    completer.complete();
+
+    await completer.future;
     return message;
   }
 
@@ -137,7 +144,7 @@ class AgentPencarian extends Agent {
   }
 
   void _initAgent() {
-    this.agentName = "Agent Pencarian";
+    agentName = "Agent Pencarian";
     plan = [
       Plan("cari gereja", "REQUEST"),
       Plan("cari gereja terakhir", "REQUEST"),
@@ -148,7 +155,7 @@ class AgentPencarian extends Agent {
     goals = [
       Goals("cari gereja", List<Map<String, Object?>>,
           _timeAction["cari gereja"]),
-      Goals("cari gereja terakhir", List<Map<String, Object?>>,
+      Goals("cari gereja terakhir", List<dynamic>,
           _timeAction["cari gereja terakhir"]),
       Goals("cari imam", List<Map<String, Object?>>, _timeAction["cari imam"]),
       Goals("cari user", List<Map<String, Object?>>, _timeAction["cari user"]),

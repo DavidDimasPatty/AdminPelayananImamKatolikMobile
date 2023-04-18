@@ -137,8 +137,16 @@ class AgentPendaftaran extends Agent {
     var addGereja = await gerejaCollection.insertOne(configJson);
 
     if (addGereja.isSuccess) {
-      Message message = Message(agentName, 'Agent Pencarian', "REQUEST",
+      Completer<void> completer = Completer<void>();
+      Message message2 = Message(agentName, 'Agent Pencarian', "REQUEST",
           Tasks('cari gereja terakhir', data[7]));
+      MessagePassing messagePassing = MessagePassing();
+      await messagePassing.sendMessage(message2);
+      Message message = Message(
+          agentName, sender, "INFORM", Tasks('wait Agent Pencarian', null));
+      completer.complete();
+
+      await completer.future;
       return message;
     } else {
       Message message = Message(agentName, sender, "INFORM",
@@ -157,7 +165,7 @@ class AgentPendaftaran extends Agent {
     var addAturan = await aturanPelayananCollection.insertOne(configJson);
 
     if (addAturan.isSuccess) {
-      Message message = Message(agentName, 'Agent Page', "REQUEST",
+      Message message = Message(agentName, 'Agent Page', "INFORM",
           Tasks('status modifikasi data', "oke"));
       return message;
     } else {

@@ -75,7 +75,7 @@ class _addGereja extends State<addGereja> {
     completer.complete();
 
     await completer.future;
-    if (hasilDaftar == "failed") {
+    if (hasilDaftar != "oke") {
       Fluttertoast.showToast(
           msg: "Gagal menambahkan Gereja",
           toastLength: Toast.LENGTH_SHORT,

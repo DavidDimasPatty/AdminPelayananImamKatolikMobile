@@ -74,7 +74,7 @@ class _addImam extends State<addImam> {
 
     await completer.future;
 
-    if (hasilDaftar == "failed") {
+    if (hasilDaftar != "oke") {
       Fluttertoast.showToast(
           msg: "Gagal menambahkan Imam",
           toastLength: Toast.LENGTH_SHORT,
