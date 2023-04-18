@@ -16,28 +16,39 @@ class AgentPendaftaran extends Agent {
   AgentPendaftaran() {
     _initAgent();
   }
+
   static int _estimatedTime = 5;
+  static Map<String, int> _timeAction = {
+    "update user": _estimatedTime,
+    "update imam": _estimatedTime,
+    "update gereja": _estimatedTime,
+    "add imam": _estimatedTime,
+    "add gereja": _estimatedTime,
+    "add aturan pelayanan": _estimatedTime,
+  };
 
   @override
   Future<Message> action(String goals, dynamic data, String sender) async {
     switch (goals) {
       case "update user":
-        return updateUser(data.task.data, sender);
+        return _updateUser(data.task.data, sender);
       case "update imam":
-        return updateImam(data.task.data, sender);
+        return _updateImam(data.task.data, sender);
       case "update gereja":
-        return updateGereja(data.task.data, sender);
+        return _updateGereja(data.task.data, sender);
       case "add imam":
-        return addImam(data.task.data, sender);
+        return _addImam(data.task.data, sender);
       case "add gereja":
-        return addGereja(data.task.data, sender);
+        return _addGereja(data.task.data, sender);
+      case "add aturan pelayanan":
+        return _addAturanPelayanan(data.task.data, sender);
 
       default:
         return rejectTask(data, sender);
     }
   }
 
-  Future<Message> updateUser(dynamic data, String sender) async {
+  Future<Message> _updateUser(dynamic data, String sender) async {
     var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
 
     var update = await userCollection.updateOne(where.eq('_id', data[0]),
@@ -54,7 +65,7 @@ class AgentPendaftaran extends Agent {
     }
   }
 
-  Future<Message> updateImam(dynamic data, String sender) async {
+  Future<Message> _updateImam(dynamic data, String sender) async {
     var imamCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
 
     var update = await imamCollection.updateOne(where.eq('_id', data[0]),
@@ -70,7 +81,7 @@ class AgentPendaftaran extends Agent {
     }
   }
 
-  Future<Message> updateGereja(dynamic data, String sender) async {
+  Future<Message> _updateGereja(dynamic data, String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
 
     var update = await gerejaCollection.updateOne(where.eq('_id', data[0]),
@@ -87,7 +98,7 @@ class AgentPendaftaran extends Agent {
     }
   }
 
-  Future<Message> addImam(dynamic data, String sender) async {
+  Future<Message> _addImam(dynamic data, String sender) async {
     var imamCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
     var configJson = modelDB.imam(data[0], data[1], data[2], data[3], "", "", 0,
         data[4], 1, 1, 1, 1, DateTime.now(), DateTime.now(), data[5], data[5]);
@@ -105,7 +116,7 @@ class AgentPendaftaran extends Agent {
     }
   }
 
-  Future<Message> addGereja(dynamic data, String sender) async {
+  Future<Message> _addGereja(dynamic data, String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
 
     var configJson = modelDB.Gereja(
@@ -127,7 +138,7 @@ class AgentPendaftaran extends Agent {
 
     if (addGereja.isSuccess) {
       Message message = Message(agentName, 'Agent Pencarian', "REQUEST",
-          Tasks('status modifikasi data', "oke"));
+          Tasks('cari gereja terakhir', data[7]));
       return message;
     } else {
       Message message = Message(agentName, sender, "INFORM",
@@ -136,9 +147,29 @@ class AgentPendaftaran extends Agent {
     }
   }
 
+  Future<Message> _addAturanPelayanan(dynamic data, String sender) async {
+    var aturanPelayananCollection =
+        MongoDatabase.db.collection(ATURAN_PELAYANAN_COLLECTION);
+
+    var configJson = modelDB.aturanPelayanan(data[1][0]["_id"], "", "", "", "",
+        "", "", "", DateTime.now(), data[0], DateTime.now(), data[0]);
+
+    var addAturan = await aturanPelayananCollection.insertOne(configJson);
+
+    if (addAturan.isSuccess) {
+      Message message = Message(agentName, 'Agent Page', "REQUEST",
+          Tasks('status modifikasi data', "oke"));
+      return message;
+    } else {
+      Message message = Message(agentName, 'Agent Page', "INFORM",
+          Tasks('status modifikasi data', "failed"));
+      return message;
+    }
+  }
+
   @override
-  addEstimatedTime() {
-    _estimatedTime++;
+  addEstimatedTime(String goals) {
+    _timeAction[goals] = _timeAction[goals]! + 1;
   }
 
   void _initAgent() {
@@ -152,12 +183,13 @@ class AgentPendaftaran extends Agent {
       Plan("add aturan pelayanan", "INFORM"),
     ];
     goals = [
-      Goals("update user", String, _estimatedTime),
-      Goals("update imam", String, _estimatedTime),
-      Goals("update gereja", String, _estimatedTime),
-      Goals("add imam", String, _estimatedTime),
-      Goals("add gereja", String, _estimatedTime),
-      Goals("add aturan pelayanan", String, _estimatedTime),
+      Goals("update user", String, _timeAction["update user"]),
+      Goals("update imam", String, _timeAction["update imam"]),
+      Goals("update gereja", String, _timeAction["update gereja"]),
+      Goals("add imam", String, _timeAction["add imam"]),
+      Goals("add gereja", String, _timeAction["add gereja"]),
+      Goals(
+          "add aturan pelayanan", String, _timeAction["add aturan pelayanan"]),
     ];
   }
 }

@@ -17,31 +17,38 @@ class AgentPencarian extends Agent {
   }
 
   static int _estimatedTime = 5;
+  static Map<String, int> _timeAction = {
+    "cari gereja": _estimatedTime,
+    "cari gereja terakhir": _estimatedTime,
+    "cari imam": _estimatedTime,
+    "cari user": _estimatedTime,
+    "cari jumlah": _estimatedTime
+  };
 
   @override
   Future<Message> action(String goals, dynamic data, String sender) async {
     switch (goals) {
       case "cari gereja":
-        return cariGereja(sender);
+        return _cariGereja(sender);
 
       case "cari imam":
-        return cariImam(sender);
+        return _cariImam(sender);
 
       case "cari user":
-        return cariUser(sender);
+        return _cariUser(sender);
 
       case "cari jumlah":
-        return cariJumlah(sender);
+        return _cariJumlah(sender);
 
       case "cari gereja terakhir":
-        return cariGerejaTerakhir(sender);
+        return _cariGerejaTerakhir(data.task.data, sender);
 
       default:
         return rejectTask(data, sender);
     }
   }
 
-  Future<Message> cariGereja(String sender) async {
+  Future<Message> _cariGereja(String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
     var conn = await gerejaCollection.find().toList();
     Message message =
@@ -49,18 +56,18 @@ class AgentPencarian extends Agent {
     return message;
   }
 
-  Future<Message> cariGerejaTerakhir(String sender) async {
+  Future<Message> _cariGerejaTerakhir(dynamic data, String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
     var conn = await gerejaCollection
         .find(where.sortBy("createdAt", descending: true).limit(1))
         .toList();
 
-    Message message =
-        Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
+    Message message = Message(agentName, sender, "INFORM",
+        Tasks('add aturan pelayanan', [data, conn]));
     return message;
   }
 
-  Future<Message> cariImam(String sender) async {
+  Future<Message> _cariImam(String sender) async {
     var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
     final pipeline4 = AggregationPipelineBuilder()
         .addStage(Lookup(
@@ -75,7 +82,7 @@ class AgentPencarian extends Agent {
     return message;
   }
 
-  Future<Message> cariUser(String sender) async {
+  Future<Message> _cariUser(String sender) async {
     var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
     var conn = await userCollection.find().toList();
     Message message =
@@ -83,7 +90,7 @@ class AgentPencarian extends Agent {
     return message;
   }
 
-  Future<Message> cariJumlah(String sender) async {
+  Future<Message> _cariJumlah(String sender) async {
     var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
 
@@ -125,8 +132,8 @@ class AgentPencarian extends Agent {
   }
 
   @override
-  addEstimatedTime() {
-    _estimatedTime++;
+  addEstimatedTime(String goals) {
+    _timeAction[goals] = _timeAction[goals]! + 1;
   }
 
   void _initAgent() {
@@ -139,11 +146,13 @@ class AgentPencarian extends Agent {
       Plan("cari jumlah", "REQUEST")
     ];
     goals = [
-      Goals("cari gereja", List<Map<String, Object?>>, _estimatedTime),
-      Goals("cari gereja terakhir", List<Map<String, Object?>>, _estimatedTime),
-      Goals("cari imam", List<Map<String, Object?>>, _estimatedTime),
-      Goals("cari user", List<Map<String, Object?>>, _estimatedTime),
-      Goals("cari jumlah", List<dynamic>, _estimatedTime)
+      Goals("cari gereja", List<Map<String, Object?>>,
+          _timeAction["cari gereja"]),
+      Goals("cari gereja terakhir", List<Map<String, Object?>>,
+          _timeAction["cari gereja terakhir"]),
+      Goals("cari imam", List<Map<String, Object?>>, _timeAction["cari imam"]),
+      Goals("cari user", List<Map<String, Object?>>, _timeAction["cari user"]),
+      Goals("cari jumlah", List<dynamic>, _timeAction["cari jumlah"])
     ];
   }
 }

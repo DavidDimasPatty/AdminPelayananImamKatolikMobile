@@ -17,19 +17,20 @@ class AgentAkun extends Agent {
   }
 
   static int _estimatedTime = 5;
+  static Map<String, int> _timeAction = {"login": _estimatedTime};
 
   @override
   Future<Message> action(String goals, dynamic data, String sender) async {
     switch (goals) {
       case "login":
-        return login(data.task.data, sender);
+        return _login(data.task.data, sender);
 
       default:
         return rejectTask(data, sender);
     }
   }
 
-  Future<Message> login(dynamic data, String sender) async {
+  Future<Message> _login(dynamic data, String sender) async {
     var adminCollection = await MongoDatabase.db.collection(ADMIN_COLLECTION);
 
     var conn = await adminCollection
@@ -41,8 +42,8 @@ class AgentAkun extends Agent {
   }
 
   @override
-  addEstimatedTime() {
-    _estimatedTime++;
+  addEstimatedTime(String goals) {
+    _timeAction[goals] = _timeAction[goals]! + 1;
   }
 
   void _initAgent() {
@@ -51,7 +52,7 @@ class AgentAkun extends Agent {
       Plan("login", "REQUEST"),
     ];
     goals = [
-      Goals("login", List<Map<String, Object?>>, _estimatedTime),
+      Goals("login", List<Map<String, Object?>>, _timeAction["login"]),
     ];
   }
 }

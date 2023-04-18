@@ -17,18 +17,19 @@ class AgentSetting extends Agent {
     _initAgent();
   }
   static int _estimatedTime = 10;
+  static Map<String, int> _timeAction = {"setting user": _estimatedTime};
 
   Future<Message> action(String goals, dynamic data, String sender) async {
     switch (goals) {
       case "setting user":
-        return settinganUser(data.task.data, sender);
+        return _settingUser(data.task.data, sender);
 
       default:
         return rejectTask(data, sender);
     }
   }
 
-  Future<Message> settinganUser(dynamic data, String sender) async {
+  Future<Message> _settingUser(dynamic data, String sender) async {
     await dotenv.load(fileName: ".env");
     var statusF = await Firebase.initializeApp();
     var statusM = await MongoDatabase.connect();
@@ -40,8 +41,9 @@ class AgentSetting extends Agent {
   }
 
   @override
-  addEstimatedTime() {
-    _estimatedTime++;
+  @override
+  addEstimatedTime(String goals) {
+    _timeAction[goals] = _timeAction[goals]! + 1;
   }
 
   void _initAgent() {
@@ -50,7 +52,7 @@ class AgentSetting extends Agent {
       Plan("setting user", "REQUEST"),
     ];
     goals = [
-      Goals("setting user", String, _estimatedTime),
+      Goals("setting user", String, _timeAction["setting user"]),
     ];
   }
 }
