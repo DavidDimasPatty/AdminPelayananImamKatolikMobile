@@ -15,13 +15,18 @@ abstract class Agent {
   String agentName = "";
   bool stop = false;
 
-  bool canPerformTask(dynamic message) {
-    for (var p in plan) {
-      if (p.goals == message.task.action && p.protocol == message.protocol) {
-        return true;
+  int canPerformTask(Message message) {
+    if (message.task.action == "error") {
+      print(this.agentName + " get error messages");
+      return -2;
+    } else {
+      for (var p in plan) {
+        if (p.goals == message.task.action && p.protocol == message.protocol) {
+          return 1;
+        }
       }
     }
-    return false;
+    return -1;
   }
 
   Future<dynamic> receiveMessage(Message msg, String sender) {
@@ -75,12 +80,18 @@ abstract class Agent {
             }
           }
 
-          if (checkGoals == true) {
+          if (message.task.action == "done") {
+            print(agentName +
+                " Success doing coordination with another agent for task ${task.action}");
+            return null;
+          } else if (checkGoals == true) {
             print(agentName + ' returning data to ${message.receiver}');
             MessagePassing messagePassing = MessagePassing();
-            messagePassing.sendMessage(message);
-          } else {
-            rejectTask(message, sender);
+            return messagePassing.sendMessage(message);
+          } else if (checkGoals == false) {
+            MessagePassing messagePassing = MessagePassing();
+            Message msg = failedGoal(msgCome, sender);
+            return messagePassing.sendMessage(msg);
           }
         }
       }
@@ -113,6 +124,15 @@ abstract class Agent {
 
     print(agentName +
         ' rejected task from $sender because takes time too long: ${task.task.action}');
+    return message;
+  }
+
+  Message failedGoal(dynamic task, sender) {
+    Message message =
+        Message(agentName, sender, "INFORM", Tasks('error', 'failed'));
+
+    print(agentName +
+        " rejecting task from $sender because the result of ${task.task.action} dataType does'nt suit the goal from ${agentName}");
     return message;
   }
 

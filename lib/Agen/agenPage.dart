@@ -12,7 +12,19 @@ class AgentPage extends Agent {
     _initAgent();
   }
   static List<dynamic> dataView = [];
-
+  @override
+  int canPerformTask(Message message) {
+    if (message.task.action == "error") {
+      return 1;
+    } else {
+      for (var p in plan) {
+        if (p.goals == message.task.action && p.protocol == message.protocol) {
+          return 1;
+        }
+      }
+    }
+    return -1;
+  }
   @override
   Future performTask() async {
     Message msg = Messages.last;
@@ -40,12 +52,14 @@ class AgentPage extends Agent {
       Plan("status aplikasi", "INFORM"), //come from agen Setting
       Plan("status modifikasi/ pencarian data akun",
           "INFORM"), //come from agen Akun
+           Plan("error", "INFORM")
     ];
     goals = [
       Goals("status modifikasi data", String, 5),
       Goals("hasil pencarian", String, 5),
       Goals("status aplikasi", String, 5),
       Goals("status modifikasi/ pencarian data akun", String, 5),
+            Goals("error", String, 1),
     ];
   }
 

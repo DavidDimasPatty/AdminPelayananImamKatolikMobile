@@ -100,6 +100,22 @@ class AgentPendaftaran extends Agent {
 
   Future<Message> _addImam(dynamic data, String sender) async {
     var imamCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
+
+    var checkName =
+        await imamCollection.find(where.eq('nama', data[3])).toList();
+
+    var checkEmail =
+        await imamCollection.find(where.eq('email', data[0])).toList();
+
+    if (checkName.length > 0) {
+      Message message = Message(agentName, sender, "INFORM",
+          Tasks("status modifikasi/ pencarian data akun", "nama"));
+      return message;
+    } else if (checkEmail.length > 0) {
+      Message message = Message(agentName, sender, "INFORM",
+          Tasks("status modifikasi/ pencarian data akun", "email"));
+      return message;
+    }
     var configJson = modelDB.imam(data[0], data[1], data[2], data[3], "", "", 0,
         data[4], 1, 1, 1, 1, DateTime.now(), DateTime.now(), data[5], data[5]);
 
@@ -118,7 +134,14 @@ class AgentPendaftaran extends Agent {
 
   Future<Message> _addGereja(dynamic data, String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
+    var checkName =
+        await gerejaCollection.find(where.eq('nama', data[0])).toList();
 
+    if (checkName.length > 0) {
+      Message message = Message(agentName, sender, "INFORM",
+          Tasks("status modifikasi/ pencarian data akun", "nama"));
+      return message;
+    }
     var configJson = modelDB.Gereja(
         data[0],
         data[1],

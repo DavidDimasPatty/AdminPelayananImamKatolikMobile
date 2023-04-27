@@ -75,7 +75,16 @@ class _addGereja extends State<addGereja> {
     completer.complete();
 
     await completer.future;
-    if (hasilDaftar != "oke") {
+    if (hasilDaftar == "nama") {
+      Fluttertoast.showToast(
+          msg: "Nama sudah digunakan",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } else if (hasilDaftar == "failed") {
       Fluttertoast.showToast(
           msg: "Gagal menambahkan Gereja",
           toastLength: Toast.LENGTH_SHORT,
