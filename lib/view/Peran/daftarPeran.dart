@@ -1,37 +1,38 @@
 import 'dart:async';
 
+import 'package:admin_pelayanan_katolik/Agen/Message.dart';
+import 'package:admin_pelayanan_katolik/Agen/MessagePassing.dart';
+import 'package:admin_pelayanan_katolik/Agen/Task.dart';
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
-import 'package:admin_pelayanan_katolik/view/gereja/addGereja.dart';
+import 'package:admin_pelayanan_katolik/view/Peran/addPeran.dart';
+
+import 'package:admin_pelayanan_katolik/view/imam/addImam.dart';
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../../Agen/Message.dart';
-import '../../Agen/MessagePassing.dart';
-import '../../Agen/Task.dart';
-
-class DaftarGereja extends StatefulWidget {
+class DaftarPeran extends StatefulWidget {
   final id;
-  DaftarGereja(this.id);
+  String peran;
+  DaftarPeran(this.id, this.peran);
   @override
-  _DaftarGereja createState() => _DaftarGereja(this.id);
+  _DaftarPeran createState() => _DaftarPeran(this.id, this.peran);
 }
 
-class _DaftarGereja extends State<DaftarGereja> {
+class _DaftarPeran extends State<DaftarPeran> {
   List hasil = [];
+  String peran;
   StreamController _controller = StreamController();
   ScrollController _scrollController = ScrollController();
   int data = 5;
-  bool isLoading = true;
   List dummyTemp = [];
-
   final id;
-  _DaftarGereja(this.id);
+  _DaftarPeran(this.id, this.peran);
 
-  Future<List> callDb() async {
+  Future callDb() async {
     Completer<void> completer = Completer<void>();
-    Message message = Message(
-        'Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari gereja', null));
+    Message message = Message('Agent Page', 'Agent Pencarian', "REQUEST",
+        Tasks('cari ' + peran, null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
@@ -78,10 +79,10 @@ class _DaftarGereja extends State<DaftarGereja> {
     }
   }
 
-  Future updateGereja(idGereja, status) async {
+  Future updatePeran(idPeran, status) async {
     Completer<void> completer = Completer<void>();
     Message message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST",
-        Tasks('update gereja', [idGereja, status]));
+        Tasks('update ' + peran, [idPeran, status]));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
@@ -90,18 +91,19 @@ class _DaftarGereja extends State<DaftarGereja> {
     completer.complete();
 
     await completer.future;
-    if (hasilDaftar == "fail") {
+
+    if (hasilDaftar == "failed") {
       Fluttertoast.showToast(
-          msg: "Gagal Banned Gereja",
+          msg: "Gagal Banned " + peran,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 2,
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
-    } else {
+    } else if (hasilDaftar == "oke") {
       Fluttertoast.showToast(
-          msg: "Berhasil Banned Gereja",
+          msg: "Berhasil Banned " + peran,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 2,
@@ -112,6 +114,7 @@ class _DaftarGereja extends State<DaftarGereja> {
         setState(() {
           hasil.clear();
           dummyTemp.clear();
+          hasil.clear();
           hasil.addAll(result);
           dummyTemp.addAll(result);
           _controller.add(result);
@@ -153,7 +156,7 @@ class _DaftarGereja extends State<DaftarGereja> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
-        title: Text('Daftar Gereja'),
+        title: Text('Daftar ' + peran),
       ),
       body: RefreshIndicator(
         onRefresh: pullRefresh,
@@ -168,7 +171,7 @@ class _DaftarGereja extends State<DaftarGereja> {
                 autoFocus: false,
                 width: 400,
                 rtl: true,
-                helpText: 'Cari Gereja',
+                helpText: 'Cari ' + peran,
                 textController: editingController,
                 onSuffixTap: () {
                   setState(() {
@@ -178,35 +181,35 @@ class _DaftarGereja extends State<DaftarGereja> {
                 onSubmitted: (String) {},
               ),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(right: 10, left: 10),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: IconButton(
-                      color: Colors.black,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => addGereja(id)),
-                        );
-                      },
-                      splashColor: Colors.blue,
-                      splashRadius: 30,
-                      icon: Icon(Icons.add),
+            if (peran != "User")
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(right: 10, left: 10),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: IconButton(
+                        color: Colors.black,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => addPeran(id, peran)),
+                          );
+                        },
+                        splashColor: Colors.blue,
+                        splashRadius: 30,
+                        icon: Icon(Icons.add),
+                      ),
                     ),
                   ),
-                ),
-                Text("Add Gereja")
-              ],
-            ),
+                  Text("Add " + peran)
+                ],
+              ),
             Padding(padding: EdgeInsets.symmetric(vertical: 10)),
             /////////
-
             StreamBuilder(
                 stream: _controller.stream,
                 builder: (context, snapshot) {
@@ -226,14 +229,7 @@ class _DaftarGereja extends State<DaftarGereja> {
                       for (var i in hasil.take(data))
                         InkWell(
                           borderRadius: new BorderRadius.circular(24),
-                          onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) =>
-                            //           KrismaUser(names, idUser, idGereja, i['_id'])),
-                            // );
-                          },
+                          onTap: () {},
                           child: Container(
                               margin: EdgeInsets.only(
                                   right: 15, left: 15, bottom: 20),
@@ -260,18 +256,27 @@ class _DaftarGereja extends State<DaftarGereja> {
                                       color: Colors.white,
                                       fontSize: 20.0,
                                       fontWeight: FontWeight.w300),
-                                  textAlign: TextAlign.left,
+                                  textAlign: TextAlign.center,
                                 ),
-                                Text(
-                                  'Paroki: ' + i['paroki'].toString(),
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12),
-                                ),
-                                Text(
-                                  'Address: ' + i['address'].toString(),
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12),
-                                ),
+                                if (peran == "Imam")
+                                  Text(
+                                    "Gereja: " + i['imamGereja'][0]['nama'],
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w300),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                if (peran == "User")
+                                  Text(
+                                    'Tanggal Daftar: ' +
+                                        i['tanggalDaftar']
+                                            .toString()
+                                            .substring(0, 10),
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  ),
+
                                 if (i['banned'] == 0)
                                   Text(
                                     'Banned: No',
@@ -290,7 +295,7 @@ class _DaftarGereja extends State<DaftarGereja> {
                                     child: RaisedButton(
                                         textColor: Colors.white,
                                         color: Colors.lightBlue,
-                                        child: Text("Banned Gereja"),
+                                        child: Text("Banned " + peran),
                                         shape: new RoundedRectangleBorder(
                                           borderRadius:
                                               new BorderRadius.circular(30.0),
@@ -300,10 +305,10 @@ class _DaftarGereja extends State<DaftarGereja> {
                                             context: context,
                                             builder: (BuildContext context) =>
                                                 AlertDialog(
-                                              title:
-                                                  const Text('Confirm Banned'),
-                                              content: const Text(
-                                                  'Yakin ingin ban Gereja ini?'),
+                                              title: Text('Confirm Banned'),
+                                              content: Text('Yakin ingin ban ' +
+                                                  peran +
+                                                  ' ini?'),
                                               actions: <Widget>[
                                                 TextButton(
                                                   onPressed: () =>
@@ -313,7 +318,7 @@ class _DaftarGereja extends State<DaftarGereja> {
                                                 ),
                                                 TextButton(
                                                   onPressed: () async {
-                                                    await updateGereja(
+                                                    await updatePeran(
                                                         i["_id"], 1);
                                                     Navigator.pop(context);
                                                     setState(() {
@@ -334,7 +339,7 @@ class _DaftarGereja extends State<DaftarGereja> {
                                     child: RaisedButton(
                                         textColor: Colors.white,
                                         color: Colors.lightBlue,
-                                        child: Text("Unbanned Gereja"),
+                                        child: Text("Unbanned " + peran),
                                         shape: new RoundedRectangleBorder(
                                           borderRadius:
                                               new BorderRadius.circular(30.0),
@@ -344,10 +349,11 @@ class _DaftarGereja extends State<DaftarGereja> {
                                             context: context,
                                             builder: (BuildContext context) =>
                                                 AlertDialog(
-                                              title: const Text(
-                                                  'Confirm Unbanned'),
-                                              content: const Text(
-                                                  'Yakin ingin Unbanned Gereja ini?'),
+                                              title: Text('Confirm Unbanned'),
+                                              content: Text(
+                                                  'Yakin ingin Unbanned ' +
+                                                      peran +
+                                                      ' ini?'),
                                               actions: <Widget>[
                                                 TextButton(
                                                   onPressed: () =>
@@ -357,7 +363,7 @@ class _DaftarGereja extends State<DaftarGereja> {
                                                 ),
                                                 TextButton(
                                                   onPressed: () async {
-                                                    await updateGereja(
+                                                    await updatePeran(
                                                         i["_id"], 0);
                                                     Navigator.pop(context);
                                                     setState(() {
@@ -376,10 +382,10 @@ class _DaftarGereja extends State<DaftarGereja> {
                         )
                     ]);
                   } catch (e) {
+                    print(e);
+
                     return Center(child: CircularProgressIndicator());
                   }
-
-                  // return Center(child: CircularProgressIndicator());
                 }),
 
             /////////

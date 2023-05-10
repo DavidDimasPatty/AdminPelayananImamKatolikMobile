@@ -14,31 +14,36 @@ import 'Task.dart';
 
 class AgentPendaftaran extends Agent {
   AgentPendaftaran() {
+    //Konstruktor agen memanggil fungsi initAgent
     _initAgent();
   }
 
   static int _estimatedTime = 5;
+  //Batas waktu awal pengerjaan seluruh tugas agen
   static Map<String, int> _timeAction = {
-    "update user": _estimatedTime,
-    "update imam": _estimatedTime,
-    "update gereja": _estimatedTime,
-    "add imam": _estimatedTime,
-    "add gereja": _estimatedTime,
+    "update User": _estimatedTime,
+    "update Imam": _estimatedTime,
+    "update Gereja": _estimatedTime,
+    "add Imam": _estimatedTime,
+    "add Gereja": _estimatedTime,
     "add aturan pelayanan": _estimatedTime,
   };
 
-  @override
+  //Daftar batas waktu pengerjaan masing-masing tugas
+
   Future<Message> action(String goals, dynamic data, String sender) async {
+    //Daftar tindakan yang bisa dilakukan oleh agen, fungsi ini memilih tindakan
+    //berdasarkan tugas yang berada pada isi pesan
     switch (goals) {
-      case "update user":
+      case "update User":
         return _updateUser(data.task.data, sender);
-      case "update imam":
+      case "update Imam":
         return _updateImam(data.task.data, sender);
-      case "update gereja":
+      case "update Gereja":
         return _updateGereja(data.task.data, sender);
-      case "add imam":
+      case "add Imam":
         return _addImam(data.task.data, sender);
-      case "add gereja":
+      case "add Gereja":
         return _addGereja(data.task.data, sender);
       case "add aturan pelayanan":
         return _addAturanPelayanan(data.task.data, sender);
@@ -165,8 +170,8 @@ class AgentPendaftaran extends Agent {
           Tasks('cari gereja terakhir', data[7]));
       MessagePassing messagePassing = MessagePassing();
       await messagePassing.sendMessage(message2);
-      Message message = Message(
-          agentName, sender, "INFORM", Tasks('wait Agent Pencarian', null));
+      Message message =
+          Message(agentName, sender, "INFORM", Tasks('done', null));
       completer.complete();
 
       await completer.future;
@@ -200,25 +205,30 @@ class AgentPendaftaran extends Agent {
 
   @override
   addEstimatedTime(String goals) {
+    //Fungsi menambahkan batas waktu pengerjaan tugas dengan 1 detik
+
     _timeAction[goals] = _timeAction[goals]! + 1;
   }
 
   void _initAgent() {
+    //Inisialisasi identitas agen
     agentName = "Agent Pendaftaran";
+    //nama agen
     plan = [
-      Plan("update user", "REQUEST"),
-      Plan("update imam", "REQUEST"),
-      Plan("update gereja", "REQUEST"),
-      Plan("add imam", "REQUEST"),
-      Plan("add gereja", "REQUEST"),
+      Plan("update User", "REQUEST"),
+      Plan("update Imam", "REQUEST"),
+      Plan("update Gereja", "REQUEST"),
+      Plan("add Imam", "REQUEST"),
+      Plan("add Gereja", "REQUEST"),
       Plan("add aturan pelayanan", "INFORM"),
     ];
+    //Perencanaan agen
     goals = [
-      Goals("update user", String, _timeAction["update user"]),
-      Goals("update imam", String, _timeAction["update imam"]),
-      Goals("update gereja", String, _timeAction["update gereja"]),
-      Goals("add imam", String, _timeAction["add imam"]),
-      Goals("add gereja", String, _timeAction["add gereja"]),
+      Goals("update User", String, _timeAction["update User"]),
+      Goals("update Imam", String, _timeAction["update Imam"]),
+      Goals("update Gereja", String, _timeAction["update gereja"]),
+      Goals("add Imam", String, _timeAction["add Imam"]),
+      Goals("add Gereja", String, _timeAction["add Gereja"]),
       Goals(
           "add aturan pelayanan", String, _timeAction["add aturan pelayanan"]),
     ];

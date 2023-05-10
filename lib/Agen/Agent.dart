@@ -8,20 +8,26 @@ import 'package:admin_pelayanan_katolik/Agen/Task.dart';
 import 'Message.dart';
 
 abstract class Agent {
-  List<Plan> plan = [];
-  List<Goals> goals = [];
+  List<Plan> //nama agen
+      plan = [];
+  List<Goals> //Perencanaan agen
+      goals = [];
   List Messages = [];
   List Senders = [];
   String agentName = "";
   bool stop = false;
 
   int canPerformTask(Message message) {
+    //Fungsi untuk melakukan pengecekan pada plan agen terhadap
+    //tugas yang berada dalam pesan
     if (message.task.action == "error") {
       print(this.agentName + " get error messages");
+      //Jika terdapat pesan error dari agen lain
       return -2;
     } else {
       for (var p in plan) {
         if (p.goals == message.task.action && p.protocol == message.protocol) {
+          //Jika bisa mengerjakan tugas
           return 1;
         }
       }
@@ -30,36 +36,45 @@ abstract class Agent {
   }
 
   Future<dynamic> receiveMessage(Message msg, String sender) {
+    //Fungsi agen menerima pesan yang dikirim oleh agen pengirim
     print(agentName + ' received message from $sender');
+    //Menambahkan pesan dan nama pengirim ke variabel
     Messages.add(msg);
     Senders.add(sender);
+    //Mengembalikan fungsi performTask
     return performTask();
   }
 
   Future<dynamic> performTask() async {
+    //Fungsi agen mengerjakan tugas yang berada dalam pesan
     Message msgCome = Messages.last;
     String sender = Senders.last;
     dynamic task = msgCome.task;
-
+    //Mengektifitaskan pemanggilan variabel
     var goalsQuest =
         goals.where((element) => element.request == task.action).toList();
     int clock = goalsQuest[0].time as int;
+    //Mendapatkan batas waktu pengerjaan dalam goals terhadap tugas
 
     Timer timer = Timer.periodic(Duration(seconds: clock), (timer) {
       stop = true;
-      timer.cancel();
-      addEstimatedTime(task.action);
-      MessagePassing messagePassing = MessagePassing();
-      Message msg = overTime(msgCome, sender);
+      timer.cancel(); //memberhentikan timer
+      addEstimatedTime(
+          task.action); //menambahkan waktu pengerjaan terhadap tugas tersebut
+      MessagePassing messagePassing =
+          MessagePassing(); //Memanggil distributor pesan
+      Message msg = overTime(msgCome, sender); //Mengirim pesan overtime
       messagePassing.sendMessage(msg);
     });
-
+    //Timer pengerjaan tugas agen
     Message message;
     try {
       message = await action(task.action, msgCome, sender);
+      //Memanggil fungsi action untuk memilih tindakan yang dikerjakan
     } catch (e) {
       message = Message(
           agentName, sender, "INFORM", Tasks('lack of parameters', "failed"));
+      //Jika terdapat error dalam pengerjaan maka pesan gagal
     }
 
     if (stop == false) {

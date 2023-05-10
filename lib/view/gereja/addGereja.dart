@@ -1,13 +1,9 @@
 import 'dart:async';
-
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
 import 'package:admin_pelayanan_katolik/Agen/MessagePassing.dart';
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
-
 import 'package:admin_pelayanan_katolik/view/gereja/daftarGereja.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocode/geocode.dart';
 
@@ -70,7 +66,7 @@ class _addGereja extends State<addGereja> {
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
-    var hasilDaftar = await AgentPage.getDataPencarian();
+    var hasilDaftar = await AgentPage.getData();
 
     completer.complete();
 

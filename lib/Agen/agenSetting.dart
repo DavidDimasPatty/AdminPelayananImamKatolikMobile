@@ -14,12 +14,18 @@ import 'Task.dart';
 
 class AgentSetting extends Agent {
   AgentSetting() {
+    //Konstruktor agen memanggil fungsi initAgent
     _initAgent();
   }
   static int _estimatedTime = 10;
+  //Batas waktu awal pengerjaan seluruh tugas agen
   static Map<String, int> _timeAction = {"setting user": _estimatedTime};
 
+  //Daftar batas waktu pengerjaan masing-masing tugas
+
   Future<Message> action(String goals, dynamic data, String sender) async {
+    //Daftar tindakan yang bisa dilakukan oleh agen, fungsi ini memilih tindakan
+    //berdasarkan tugas yang berada pada isi pesan
     switch (goals) {
       case "setting user":
         return _settingUser(data.task.data, sender);
@@ -43,14 +49,19 @@ class AgentSetting extends Agent {
   @override
   @override
   addEstimatedTime(String goals) {
+    //Fungsi menambahkan batas waktu pengerjaan tugas dengan 1 detik
+
     _timeAction[goals] = _timeAction[goals]! + 1;
   }
 
   void _initAgent() {
+    //Inisialisasi identitas agen
     agentName = "Agent Setting";
+    //nama agen
     plan = [
       Plan("setting user", "REQUEST"),
     ];
+    //Perencanaan agen
     goals = [
       Goals("setting user", String, _timeAction["setting user"]),
     ];

@@ -6,6 +6,7 @@ import 'package:admin_pelayanan_katolik/Agen/Task.dart';
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 
 import 'package:admin_pelayanan_katolik/FadeAnimation.dart';
+import 'package:admin_pelayanan_katolik/view/Peran/daftarPeran.dart';
 import 'package:admin_pelayanan_katolik/view/gereja/daftarGereja.dart';
 import 'package:admin_pelayanan_katolik/view/imam/daftarImam.dart';
 import 'package:admin_pelayanan_katolik/view/user/daftarUser.dart';
@@ -31,7 +32,7 @@ class _HomePage extends State<HomePage> {
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
-    var hasilPencarian = await AgentPage.getDataPencarian();
+    var hasilPencarian = await AgentPage.getData();
 
     completer.complete();
 
@@ -566,7 +567,8 @@ class _HomePage extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => DaftarUser(id)),
+                  MaterialPageRoute(
+                      builder: (context) => DaftarPeran(id, "User")),
                 );
               },
               child: Container(
@@ -603,7 +605,8 @@ class _HomePage extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => DaftarGereja(id)),
+                  MaterialPageRoute(
+                      builder: (context) => DaftarPeran(id, "Gereja")),
                 );
               },
               child: Container(
@@ -639,7 +642,8 @@ class _HomePage extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => DaftarImam(id)),
+                  MaterialPageRoute(
+                      builder: (context) => DaftarPeran(id, "Imam")),
                 );
               },
               child: Container(

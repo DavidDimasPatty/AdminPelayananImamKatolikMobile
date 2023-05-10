@@ -13,28 +13,13 @@ import '../Agen/Task.dart';
 
 class Login extends StatelessWidget {
   Future login(email, password) async {
-    // Messages msg = new Messages();
-    // await msg.addReceiver("agenAkun");
-    // await msg.setContent([
-    //   ["cari admin"],
-    //   [email],
-    //   [password]
-    // ]);
-    // // var hasil;
-    // await msg.send();
-    // await Future.delayed(Duration(seconds: 1));
-    // return await AgenPage().receiverTampilan();
-
-    // // await Future.delayed(Duration(seconds: 1));
-    // hasil = await AgenPage().receiverTampilan();
-    // return hasil;
     Completer<void> completer = Completer<void>();
     Message message = Message('Agent Page', 'Agent Akun', "REQUEST",
         Tasks('login', [email, password]));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
-    var hasilPencarian = await AgentPage.getDataPencarian();
+    var hasilPencarian = await AgentPage.getData();
 
     completer.complete();
 

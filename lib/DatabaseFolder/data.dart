@@ -1,8 +1,9 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-const MONGO_CONN_URL =
-    "mongodb+srv://i18040:wearedead@cluster0.hw29l.mongodb.net/GerejaDB?retryWrites=true&w=majority";
-//const MONGO_CONN_URL = dotenv.env['email'].toString();
+//Inisilisasi variabel koneksi key untuk database GerejaDB di MongoDB
+var MONGO_CONN_URL = dotenv.env['mongo_url'];
+
+///Inisialisasi variabel dengan nilai nama collection pada database GerejaDB di MongoDB
 const USER_COLLECTION = "user";
 const IMAM_COLLECTION = "imam";
 const ADMIN_COLLECTION = "admin";
@@ -19,3 +20,4 @@ const USER_UMUM_COLLECTION = "userUmum";
 const USER_KRISMA_COLLECTION = "userKrisma";
 const PEMBERKATAN_COLLECTION = "pemberkatan";
 const ATURAN_PELAYANAN_COLLECTION = "aturanPelayanan";
+//data-data variabel ini digunakan oleh agen untuk mengakses collection

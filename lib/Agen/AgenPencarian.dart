@@ -13,28 +13,33 @@ import 'Task.dart';
 
 class AgentPencarian extends Agent {
   AgentPencarian() {
+    //Konstruktor agen memanggil fungsi initAgent
     _initAgent();
   }
 
   static int _estimatedTime = 5;
+  //Batas waktu awal pengerjaan seluruh tugas agen
   static Map<String, int> _timeAction = {
-    "cari gereja": _estimatedTime,
+    "cari Gereja": _estimatedTime,
     "cari gereja terakhir": _estimatedTime,
-    "cari imam": _estimatedTime,
-    "cari user": _estimatedTime,
+    "cari Imam": _estimatedTime,
+    "cari User": _estimatedTime,
     "cari jumlah": _estimatedTime
   };
 
-  @override
+  //Daftar batas waktu pengerjaan masing-masing tugas
+
   Future<Message> action(String goals, dynamic data, String sender) async {
+    //Daftar tindakan yang bisa dilakukan oleh agen, fungsi ini memilih tindakan
+    //berdasarkan tugas yang berada pada isi pesan
     switch (goals) {
-      case "cari gereja":
+      case "cari Gereja":
         return _cariGereja(sender);
 
-      case "cari imam":
+      case "cari Imam":
         return _cariImam(sender);
 
-      case "cari user":
+      case "cari User":
         return _cariUser(sender);
 
       case "cari jumlah":
@@ -62,12 +67,13 @@ class AgentPencarian extends Agent {
         .find(where.sortBy("createdAt", descending: true).limit(1))
         .toList();
     Completer<void> completer = Completer<void>();
+
     Message message2 = Message(agentName, sender, "INFORM",
         Tasks('add aturan pelayanan', [data, conn]));
+
     MessagePassing messagePassing = MessagePassing();
     await messagePassing.sendMessage(message2);
-    Message message = Message(
-        agentName, sender, "INFORM", Tasks('wait Agent Pendaftaran', null));
+    Message message = Message(agentName, sender, "INFORM", Tasks('done', null));
     completer.complete();
 
     await completer.future;
@@ -140,25 +146,30 @@ class AgentPencarian extends Agent {
 
   @override
   addEstimatedTime(String goals) {
+    //Fungsi menambahkan batas waktu pengerjaan tugas dengan 1 detik
+
     _timeAction[goals] = _timeAction[goals]! + 1;
   }
 
   void _initAgent() {
+    //Inisialisasi identitas agen
     agentName = "Agent Pencarian";
+    //nama agen
     plan = [
-      Plan("cari gereja", "REQUEST"),
+      Plan("cari Gereja", "REQUEST"),
       Plan("cari gereja terakhir", "REQUEST"),
-      Plan("cari imam", "REQUEST"),
-      Plan("cari user", "REQUEST"),
+      Plan("cari Imam", "REQUEST"),
+      Plan("cari User", "REQUEST"),
       Plan("cari jumlah", "REQUEST")
     ];
+    //Perencanaan agen
     goals = [
-      Goals("cari gereja", List<Map<String, Object?>>,
-          _timeAction["cari gereja"]),
-      Goals("cari gereja terakhir", List<dynamic>,
-          _timeAction["cari gereja terakhir"]),
-      Goals("cari imam", List<Map<String, Object?>>, _timeAction["cari imam"]),
-      Goals("cari user", List<Map<String, Object?>>, _timeAction["cari user"]),
+      Goals("cari Gereja", List<Map<String, Object?>>,
+          _timeAction["cari Gereja"]),
+      Goals(
+          "cari gereja terakhir", String, _timeAction["cari gereja terakhir"]),
+      Goals("cari Imam", List<Map<String, Object?>>, _timeAction["cari Imam"]),
+      Goals("cari User", List<Map<String, Object?>>, _timeAction["cari User"]),
       Goals("cari jumlah", List<dynamic>, _timeAction["cari jumlah"])
     ];
   }

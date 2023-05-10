@@ -9,11 +9,14 @@ import 'Task.dart';
 
 class AgentPage extends Agent {
   AgentPage() {
+    //Konstruktor agen memanggil fungsi initAgent
     _initAgent();
   }
   static List<dynamic> dataView = [];
   @override
   int canPerformTask(Message message) {
+    //Karena data error tetap diterima oleh agen Page maka
+    //fungsi canPerformTask di override oleh agen Page
     if (message.task.action == "error") {
       return 1;
     } else {
@@ -25,8 +28,11 @@ class AgentPage extends Agent {
     }
     return -1;
   }
+
   @override
   Future performTask() async {
+    //Karena agen page tidak mengecek goals maka
+    //fungsi performTask override fungsi supercla
     Message msg = Messages.last;
     String sender = Senders.last;
     dynamic task = msg.task;
@@ -37,29 +43,35 @@ class AgentPage extends Agent {
   }
 
   static _messageSetData(task) {
+    //Menyimpan data pada list
     dataView.add(task);
   }
 
-  static Future getDataPencarian() async {
+  static Future getData() async {
+    //Fungsi untuk view mengambil data yang tersedia
+    //pada agen Page
     return dataView.last;
   }
 
   void _initAgent() {
+    //Inisialisasi identitas agen
     agentName = "Agent Page";
+    //nama agen
     plan = [
       Plan("status modifikasi data", "INFORM"), //come from agen Pendaftaran
       Plan("hasil pencarian", "INFORM"), //come from agen Pencarian
       Plan("status aplikasi", "INFORM"), //come from agen Setting
       Plan("status modifikasi/ pencarian data akun",
           "INFORM"), //come from agen Akun
-           Plan("error", "INFORM")
+      Plan("error", "INFORM")
     ];
+    //Perencanaan agen
     goals = [
       Goals("status modifikasi data", String, 5),
       Goals("hasil pencarian", String, 5),
       Goals("status aplikasi", String, 5),
       Goals("status modifikasi/ pencarian data akun", String, 5),
-            Goals("error", String, 1),
+      Goals("error", String, 1),
     ];
   }
 
@@ -76,6 +88,8 @@ class AgentPage extends Agent {
 
   @override
   addEstimatedTime(String goals) {
+    //Fungsi menambahkan batas waktu pengerjaan tugas dengan 1 detik
+
     // TODO: implement addEstimatedTime
     throw UnimplementedError();
   }

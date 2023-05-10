@@ -68,7 +68,7 @@ class _addImam extends State<addImam> {
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
-    var hasilDaftar = await AgentPage.getDataPencarian();
+    var hasilDaftar = await AgentPage.getData();
 
     completer.complete();
 
@@ -134,7 +134,7 @@ class _addImam extends State<addImam> {
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
-    var hasilPencarian = await AgentPage.getDataPencarian();
+    var hasilPencarian = await AgentPage.getData();
 
     completer.complete();
 
@@ -184,7 +184,7 @@ class _addImam extends State<addImam> {
                       gereja.add(snapshot.data[i]['nama']);
                       idGereja.add(snapshot.data[i]['_id']);
                     }
-                    print(gereja);
+
                     return Column(children: [
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
