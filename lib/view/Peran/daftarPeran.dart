@@ -1,12 +1,9 @@
 import 'dart:async';
-
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
 import 'package:admin_pelayanan_katolik/Agen/MessagePassing.dart';
 import 'package:admin_pelayanan_katolik/Agen/Task.dart';
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/view/Peran/addPeran.dart';
-
-import 'package:admin_pelayanan_katolik/view/imam/addImam.dart';
 import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -161,6 +158,7 @@ class _DaftarPeran extends State<DaftarPeran> {
       body: RefreshIndicator(
         onRefresh: pullRefresh,
         child: ListView(
+          physics: AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
           shrinkWrap: true,
           padding: EdgeInsets.only(right: 15, left: 15),
