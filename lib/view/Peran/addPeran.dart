@@ -37,10 +37,10 @@ class _addPeran extends State<addPeran> {
   TextEditingController password = new TextEditingController();
   var idGerejaSelected;
   var idRoleSelected;
-  var gereja = [];
-  var idGereja = [];
-  var role = ["Imam", "Sekretariat"];
-  var idRole = [0, 1];
+  List gereja = [];
+  List idGereja = [];
+  List role = ["Imam", "Sekretariat"];
+  List idRole = [0, 1];
 //////////////////
 
   Future callDb() async {
@@ -131,7 +131,7 @@ class _addPeran extends State<addPeran> {
               fontSize: 16.0);
           Navigator.pop(
             context,
-            MaterialPageRoute(builder: (context) => DaftarPeran(id, "Gereja")),
+            MaterialPageRoute(builder: (context) => daftarPeran(id, "Gereja")),
           );
         }
       } else {
@@ -207,7 +207,7 @@ class _addPeran extends State<addPeran> {
               fontSize: 16.0);
           Navigator.pop(
             context,
-            MaterialPageRoute(builder: (context) => DaftarPeran(id, "Gereja")),
+            MaterialPageRoute(builder: (context) => daftarPeran(id, "Gereja")),
           );
         }
       } else {

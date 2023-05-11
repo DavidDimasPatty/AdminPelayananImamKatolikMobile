@@ -560,7 +560,7 @@ class _HomePage extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => DaftarPeran(id, "User")),
+                      builder: (context) => daftarPeran(id, "User")),
                 );
               },
               child: Container(
@@ -598,7 +598,7 @@ class _HomePage extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => DaftarPeran(id, "Gereja")),
+                      builder: (context) => daftarPeran(id, "Gereja")),
                 );
               },
               child: Container(
@@ -635,7 +635,7 @@ class _HomePage extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => DaftarPeran(id, "Imam")),
+                      builder: (context) => daftarPeran(id, "Imam")),
                 );
               },
               child: Container(

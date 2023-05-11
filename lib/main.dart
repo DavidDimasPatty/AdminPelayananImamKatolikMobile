@@ -5,7 +5,7 @@ import 'package:admin_pelayanan_katolik/Agen/MessagePassing.dart';
 import 'package:admin_pelayanan_katolik/Agen/Task.dart';
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/DatabaseFolder/mongodb.dart';
-import 'package:admin_pelayanan_katolik/view/login.dart';
+import 'package:admin_pelayanan_katolik/view/logIn.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -30,7 +30,7 @@ void main() async {
   if (hasil == "oke") {
     runApp(await MaterialApp(
       title: 'Navigation Basics',
-      home: Login(),
+      home: logIn(),
     ));
   } else {
     print("Application setting error");

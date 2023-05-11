@@ -11,7 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../Agen/Task.dart';
 
-class Login extends StatelessWidget {
+class logIn extends StatelessWidget {
   Future login(email, password) async {
     Completer<void> completer = Completer<void>();
     Message message = Message('Agent Page', 'Agent Akun', "REQUEST",

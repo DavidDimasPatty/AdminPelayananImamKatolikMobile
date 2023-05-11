@@ -8,23 +8,24 @@ import 'package:anim_search_bar/anim_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class DaftarPeran extends StatefulWidget {
+class daftarPeran extends StatefulWidget {
   final id;
   String peran;
-  DaftarPeran(this.id, this.peran);
+  daftarPeran(this.id, this.peran);
   @override
-  _DaftarPeran createState() => _DaftarPeran(this.id, this.peran);
+  _daftarPeran createState() => _daftarPeran(this.id, this.peran);
 }
 
-class _DaftarPeran extends State<DaftarPeran> {
+class _daftarPeran extends State<daftarPeran> {
   List hasil = [];
   String peran;
   StreamController _controller = StreamController();
   ScrollController _scrollController = ScrollController();
+  TextEditingController searchController = TextEditingController();
   int data = 5;
   List dummyTemp = [];
   final id;
-  _DaftarPeran(this.id, this.peran);
+  _daftarPeran(this.id, this.peran);
 
   Future callDb() async {
     Completer<void> completer = Completer<void>();
@@ -133,11 +134,10 @@ class _DaftarPeran extends State<DaftarPeran> {
     });
   }
 
-  TextEditingController editingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    editingController.addListener(() async {
-      await filterSearchResults(editingController.text);
+    searchController.addListener(() async {
+      await filterSearchResults(searchController.text);
     });
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -170,10 +170,10 @@ class _DaftarPeran extends State<DaftarPeran> {
                 width: 400,
                 rtl: true,
                 helpText: 'Cari ' + peran,
-                textController: editingController,
+                textController: searchController,
                 onSuffixTap: () {
                   setState(() {
-                    editingController.clear();
+                    searchController.clear();
                   });
                 },
                 onSubmitted: (String) {},
