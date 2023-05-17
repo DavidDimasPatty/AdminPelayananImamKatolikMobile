@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
 import '../DatabaseFolder/data.dart';
 import '../DatabaseFolder/mongodb.dart';
@@ -35,12 +34,10 @@ class AgentAkun extends Agent {
   Future<Message> _login(dynamic data, String sender) async {
     var adminCollection = await MongoDatabase.db.collection(ADMIN_COLLECTION);
 
-    var conn = await adminCollection
-        .find({'user': data[0], 'password': data[1]}).toList();
+    var conn = await adminCollection.find({'user': data[0], 'password': data[1]}).toList();
     //Pencarian berdasarkan
     //password dan email
-    Message message = Message(agentName, sender, "INFORM",
-        Tasks('status modifikasi/ pencarian data akun', conn));
+    Message message = Message(agentName, sender, "INFORM", Tasks('status modifikasi/ pencarian data akun', conn));
     return message;
   }
 

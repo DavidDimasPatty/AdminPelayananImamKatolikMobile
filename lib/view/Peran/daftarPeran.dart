@@ -29,8 +29,7 @@ class _daftarPeran extends State<daftarPeran> {
 
   Future callDb() async {
     Completer<void> completer = Completer<void>();
-    Message message = Message('Agent Page', 'Agent Pencarian', "REQUEST",
-        Tasks('cari ' + peran, null));
+    Message message = Message('Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari ' + peran, null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
@@ -58,10 +57,7 @@ class _daftarPeran extends State<daftarPeran> {
     if (query.isNotEmpty) {
       List<Map<String, dynamic>> listOMaps = <Map<String, dynamic>>[];
       for (var item in dummyTemp) {
-        if (item['nama']
-            .toString()
-            .toLowerCase()
-            .contains(query.toLowerCase())) {
+        if (item['nama'].toString().toLowerCase().contains(query.toLowerCase())) {
           listOMaps.add(item);
         }
       }
@@ -79,8 +75,7 @@ class _daftarPeran extends State<daftarPeran> {
 
   Future updatePeran(idPeran, status) async {
     Completer<void> completer = Completer<void>();
-    Message message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST",
-        Tasks('update ' + peran, [idPeran, status]));
+    Message message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST", Tasks('update ' + peran, [idPeran, status]));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
@@ -92,13 +87,7 @@ class _daftarPeran extends State<daftarPeran> {
 
     if (hasilDaftar == "failed") {
       Fluttertoast.showToast(
-          msg: "Gagal Banned " + peran,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+          msg: "Gagal Banned " + peran, toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.CENTER, timeInSecForIosWeb: 2, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0);
     } else if (hasilDaftar == "oke") {
       Fluttertoast.showToast(
           msg: "Berhasil Banned " + peran,
@@ -140,8 +129,7 @@ class _daftarPeran extends State<daftarPeran> {
       await filterSearchResults(searchController.text);
     });
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
         setState(() {
           data = data + 5;
         });
@@ -193,8 +181,7 @@ class _daftarPeran extends State<daftarPeran> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => addPeran(id, peran)),
+                            MaterialPageRoute(builder: (context) => addPeran(id, peran)),
                           );
                         },
                         splashColor: Colors.blue,
@@ -229,63 +216,46 @@ class _daftarPeran extends State<daftarPeran> {
                           borderRadius: new BorderRadius.circular(24),
                           onTap: () {},
                           child: Container(
-                              margin: EdgeInsets.only(
-                                  right: 15, left: 15, bottom: 20),
+                              margin: EdgeInsets.only(right: 15, left: 15, bottom: 20),
                               decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    begin: Alignment.topRight,
-                                    end: Alignment.topLeft,
-                                    colors: [
-                                      Colors.blueGrey,
-                                      Colors.lightBlue,
-                                    ]),
+                                gradient: LinearGradient(begin: Alignment.topRight, end: Alignment.topLeft, colors: [
+                                  Colors.blueGrey,
+                                  Colors.lightBlue,
+                                ]),
                                 border: Border.all(
                                   color: Colors.lightBlue,
                                 ),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
                               ),
                               child: Column(children: <Widget>[
                                 //Color(Colors.blue);
 
                                 Text(
                                   "Nama: " + i['nama'],
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w300),
+                                  style: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w300),
                                   textAlign: TextAlign.center,
                                 ),
                                 if (peran == "Imam")
                                   Text(
                                     "Gereja: " + i['imamGereja'][0]['nama'],
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w300),
+                                    style: TextStyle(color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.w300),
                                     textAlign: TextAlign.center,
                                   ),
                                 if (peran == "User")
                                   Text(
-                                    'Tanggal Daftar: ' +
-                                        i['tanggalDaftar']
-                                            .toString()
-                                            .substring(0, 10),
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 12),
+                                    'Tanggal Daftar: ' + i['tanggalDaftar'].toString().substring(0, 10),
+                                    style: TextStyle(color: Colors.white, fontSize: 12),
                                   ),
 
                                 if (i['banned'] == 0)
                                   Text(
                                     'Banned: No',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 12),
+                                    style: TextStyle(color: Colors.white, fontSize: 12),
                                   ),
                                 if (i['banned'] == 1)
                                   Text(
                                     'Banned: Yes',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 12),
+                                    style: TextStyle(color: Colors.white, fontSize: 12),
                                   ),
                                 if (i['banned'] == 0)
                                   SizedBox(
@@ -295,33 +265,25 @@ class _daftarPeran extends State<daftarPeran> {
                                         color: Colors.lightBlue,
                                         child: Text("Banned " + peran),
                                         shape: new RoundedRectangleBorder(
-                                          borderRadius:
-                                              new BorderRadius.circular(30.0),
+                                          borderRadius: new BorderRadius.circular(30.0),
                                         ),
                                         onPressed: () async {
                                           showDialog<String>(
                                             context: context,
-                                            builder: (BuildContext context) =>
-                                                AlertDialog(
+                                            builder: (BuildContext context) => AlertDialog(
                                               title: Text('Confirm Banned'),
-                                              content: Text('Yakin ingin ban ' +
-                                                  peran +
-                                                  ' ini?'),
+                                              content: Text('Yakin ingin ban ' + peran + ' ini?'),
                                               actions: <Widget>[
                                                 TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                          context, 'Cancel'),
+                                                  onPressed: () => Navigator.pop(context, 'Cancel'),
                                                   child: const Text('Tidak'),
                                                 ),
                                                 TextButton(
                                                   onPressed: () async {
-                                                    await updatePeran(
-                                                        i["_id"], 1);
+                                                    await updatePeran(i["_id"], 1);
                                                     Navigator.pop(context);
                                                     setState(() {
-                                                      callDb()
-                                                          .then((result) {});
+                                                      callDb().then((result) {});
                                                     });
                                                   },
                                                   child: const Text('Ya'),
@@ -339,34 +301,25 @@ class _daftarPeran extends State<daftarPeran> {
                                         color: Colors.lightBlue,
                                         child: Text("Unbanned " + peran),
                                         shape: new RoundedRectangleBorder(
-                                          borderRadius:
-                                              new BorderRadius.circular(30.0),
+                                          borderRadius: new BorderRadius.circular(30.0),
                                         ),
                                         onPressed: () async {
                                           showDialog<String>(
                                             context: context,
-                                            builder: (BuildContext context) =>
-                                                AlertDialog(
+                                            builder: (BuildContext context) => AlertDialog(
                                               title: Text('Confirm Unbanned'),
-                                              content: Text(
-                                                  'Yakin ingin Unbanned ' +
-                                                      peran +
-                                                      ' ini?'),
+                                              content: Text('Yakin ingin Unbanned ' + peran + ' ini?'),
                                               actions: <Widget>[
                                                 TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                          context, 'Cancel'),
+                                                  onPressed: () => Navigator.pop(context, 'Cancel'),
                                                   child: const Text('Tidak'),
                                                 ),
                                                 TextButton(
                                                   onPressed: () async {
-                                                    await updatePeran(
-                                                        i["_id"], 0);
+                                                    await updatePeran(i["_id"], 0);
                                                     Navigator.pop(context);
                                                     setState(() {
-                                                      callDb()
-                                                          .then((result) {});
+                                                      callDb().then((result) {});
                                                     });
                                                   },
                                                   child: const Text('Ya'),

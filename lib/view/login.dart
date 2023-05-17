@@ -14,8 +14,7 @@ import '../Agen/Task.dart';
 class logIn extends StatelessWidget {
   Future login(email, password) async {
     Completer<void> completer = Completer<void>();
-    Message message = Message('Agent Page', 'Agent Akun', "REQUEST",
-        Tasks('login', [email, password]));
+    Message message = Message('Agent Page', 'Agent Akun', "REQUEST", Tasks('login', [email, password]));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
@@ -95,10 +94,7 @@ class logIn extends StatelessWidget {
                               child: Text(
                                 'Welcome Admin',
                                 style: GoogleFonts.davidLibre(
-                                  textStyle: TextStyle(
-                                      fontSize: 30,
-                                      color: Colors.white,
-                                      letterSpacing: .5),
+                                  textStyle: TextStyle(fontSize: 30, color: Colors.white, letterSpacing: .5),
                                 ),
                               ),
                             ),
@@ -119,27 +115,15 @@ class logIn extends StatelessWidget {
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Color.fromRGBO(143, 148, 251, .2),
-                                      blurRadius: 20.0,
-                                      offset: Offset(0, 10))
-                                ]),
+                                boxShadow: [BoxShadow(color: Color.fromRGBO(143, 148, 251, .2), blurRadius: 20.0, offset: Offset(0, 10))]),
                             child: Column(
                               children: <Widget>[
                                 Container(
                                   padding: EdgeInsets.all(8.0),
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                          bottom:
-                                              BorderSide(color: Colors.grey))),
+                                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey))),
                                   child: TextField(
                                     controller: emailController,
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Email or Phone number",
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey[400])),
+                                    decoration: InputDecoration(border: InputBorder.none, hintText: "Email or Phone number", hintStyle: TextStyle(color: Colors.grey[400])),
                                   ),
                                 ),
                                 Container(
@@ -149,11 +133,7 @@ class logIn extends StatelessWidget {
                                     enableSuggestions: false,
                                     autocorrect: false,
                                     controller: passwordController,
-                                    decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Password",
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey[400])),
+                                    decoration: InputDecoration(border: InputBorder.none, hintText: "Password", hintStyle: TextStyle(color: Colors.grey[400])),
                                   ),
                                 )
                               ],
@@ -174,11 +154,9 @@ class logIn extends StatelessWidget {
                                   borderRadius: new BorderRadius.circular(30.0),
                                 ),
                                 onPressed: () async {
-                                  if (emailController.text == "" ||
-                                      passwordController.text == "") {
+                                  if (emailController.text == "" || passwordController.text == "") {
                                     Fluttertoast.showToast(
-                                        msg:
-                                            "Email atau Password Tidak Boleh Kosong",
+                                        msg: "Email atau Password Tidak Boleh Kosong",
                                         toastLength: Toast.LENGTH_SHORT,
                                         gravity: ToastGravity.CENTER,
                                         timeInSecForIosWeb: 2,
@@ -188,16 +166,14 @@ class logIn extends StatelessWidget {
                                     emailController.clear();
                                     passwordController.clear();
                                   } else {
-                                    await login(emailController.text,
-                                            passwordController.text)
-                                        .then((ret) async {
+                                    await login(emailController.text, passwordController.text).then((ret) async {
                                       try {
                                         if (await ret.length > 0) {
                                           print(ret[0]["_id"]);
                                           Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) => HomePage(
+                                                builder: (context) => homePage(
                                                       ret[0]['_id'],
                                                     )),
                                           );

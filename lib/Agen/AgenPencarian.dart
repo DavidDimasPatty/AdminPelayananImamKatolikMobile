@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
 import 'package:mongo_dart/mongo_dart.dart';
-
 import '../DatabaseFolder/data.dart';
 import '../DatabaseFolder/mongodb.dart';
 import 'Agent.dart';
@@ -56,20 +54,16 @@ class AgentPencarian extends Agent {
   Future<Message> _cariGereja(String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
     var conn = await gerejaCollection.find().toList();
-    Message message =
-        Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
+    Message message = Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
     return message;
   }
 
   Future<Message> _cariGerejaTerakhir(dynamic data, String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
-    var conn = await gerejaCollection
-        .find(where.sortBy("createdAt", descending: true).limit(1))
-        .toList();
+    var conn = await gerejaCollection.find(where.sortBy("createdAt", descending: true).limit(1)).toList();
     Completer<void> completer = Completer<void>();
 
-    Message message2 = Message(agentName, sender, "INFORM",
-        Tasks('add aturan pelayanan', [data, conn]));
+    Message message2 = Message(agentName, sender, "INFORM", Tasks('add aturan pelayanan', [data, conn]));
 
     MessagePassing messagePassing = MessagePassing();
     await messagePassing.sendMessage(message2);
@@ -82,24 +76,16 @@ class AgentPencarian extends Agent {
 
   Future<Message> _cariImam(String sender) async {
     var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
-    final pipeline4 = AggregationPipelineBuilder()
-        .addStage(Lookup(
-            from: 'Gereja',
-            localField: 'idGereja',
-            foreignField: '_id',
-            as: 'imamGereja'))
-        .build();
+    final pipeline4 = AggregationPipelineBuilder().addStage(Lookup(from: 'Gereja', localField: 'idGereja', foreignField: '_id', as: 'imamGereja')).build();
     var conn = await userCollection.aggregateToStream(pipeline4).toList();
-    Message message =
-        Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
+    Message message = Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
     return message;
   }
 
   Future<Message> _cariUser(String sender) async {
     var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
     var conn = await userCollection.find().toList();
-    Message message =
-        Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
+    Message message = Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
     return message;
   }
 
@@ -126,21 +112,7 @@ class AgentPencarian extends Agent {
 
     var connUn = await userCollection.find({'banned': 0}).length;
 
-    Message message = Message(
-        agentName,
-        sender,
-        "INFORM",
-        Tasks('hasil pencarian', [
-          conn,
-          connUn,
-          connBan,
-          connG,
-          connUnG,
-          connBanG,
-          connI,
-          connUnI,
-          connBanI
-        ]));
+    Message message = Message(agentName, sender, "INFORM", Tasks('hasil pencarian', [conn, connUn, connBan, connG, connUnG, connBanG, connI, connUnI, connBanI]));
     return message;
   }
 
@@ -155,19 +127,11 @@ class AgentPencarian extends Agent {
     //Inisialisasi identitas agen
     agentName = "Agent Pencarian";
     //nama agen
-    plan = [
-      Plan("cari Gereja", "REQUEST"),
-      Plan("cari gereja terakhir", "REQUEST"),
-      Plan("cari Imam", "REQUEST"),
-      Plan("cari User", "REQUEST"),
-      Plan("cari jumlah", "REQUEST")
-    ];
+    plan = [Plan("cari Gereja", "REQUEST"), Plan("cari gereja terakhir", "REQUEST"), Plan("cari Imam", "REQUEST"), Plan("cari User", "REQUEST"), Plan("cari jumlah", "REQUEST")];
     //Perencanaan agen
     goals = [
-      Goals("cari Gereja", List<Map<String, Object?>>,
-          _timeAction["cari Gereja"]),
-      Goals(
-          "cari gereja terakhir", String, _timeAction["cari gereja terakhir"]),
+      Goals("cari Gereja", List<Map<String, Object?>>, _timeAction["cari Gereja"]),
+      Goals("cari gereja terakhir", String, _timeAction["cari gereja terakhir"]),
       Goals("cari Imam", List<Map<String, Object?>>, _timeAction["cari Imam"]),
       Goals("cari User", List<Map<String, Object?>>, _timeAction["cari User"]),
       Goals("cari jumlah", List<dynamic>, _timeAction["cari jumlah"])

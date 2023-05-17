@@ -45,8 +45,7 @@ class _addPeran extends State<addPeran> {
 
   Future callDb() async {
     Completer<void> completer = Completer<void>();
-    Message message = Message(
-        'Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari Gereja', null));
+    Message message = Message('Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari Gereja', null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
@@ -74,26 +73,9 @@ class _addPeran extends State<addPeran> {
     var hasilDaftar;
 
     if (peran == "Gereja") {
-      if (nama.text != "" &&
-          alamat.text != "" &&
-          paroki.text != "" &&
-          lingkungan.text != "" &&
-          lattitude != "" &&
-          longttitude != "") {
-        message = Message(
-            'Agent Page',
-            'Agent Pendaftaran',
-            "REQUEST",
-            Tasks('add ' + peran, [
-              nama.text,
-              alamat.text,
-              paroki.text,
-              lingkungan.text,
-              deskripsi.text,
-              double.parse(lattitude.text),
-              double.parse(longttitude.text),
-              id
-            ]));
+      if (nama.text != "" && alamat.text != "" && paroki.text != "" && lingkungan.text != "" && lattitude != "" && longttitude != "") {
+        message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST",
+            Tasks('add ' + peran, [nama.text, alamat.text, paroki.text, lingkungan.text, deskripsi.text, double.parse(lattitude.text), double.parse(longttitude.text), id]));
         MessagePassing messagePassing = MessagePassing();
         var data = await messagePassing.sendMessage(message);
         hasilDaftar = await AgentPage.getData();
@@ -104,13 +86,7 @@ class _addPeran extends State<addPeran> {
         print(hasilDaftar);
         if (hasilDaftar == "nama") {
           Fluttertoast.showToast(
-              msg: "Nama sudah digunakan",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 2,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0);
+              msg: "Nama sudah digunakan", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.CENTER, timeInSecForIosWeb: 2, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0);
         } else if (hasilDaftar == "failed") {
           Fluttertoast.showToast(
               msg: "Gagal menambahkan " + peran,
@@ -136,32 +112,11 @@ class _addPeran extends State<addPeran> {
         }
       } else {
         Fluttertoast.showToast(
-            msg: "Lengkapi semua input",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 2,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
+            msg: "Lengkapi semua input", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.CENTER, timeInSecForIosWeb: 2, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0);
       }
     } else {
-      if (email.text != "" &&
-          password.text != "" &&
-          idGerejaSelected != null &&
-          nama.text != null &&
-          idRoleSelected != null) {
-        message = Message(
-            'Agent Page',
-            'Agent Pendaftaran',
-            "REQUEST",
-            Tasks('add ' + peran, [
-              email.text,
-              password.text,
-              idGerejaSelected,
-              nama.text,
-              idRoleSelected,
-              id
-            ]));
+      if (email.text != "" && password.text != "" && idGerejaSelected != null && nama.text != null && idRoleSelected != null) {
+        message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST", Tasks('add ' + peran, [email.text, password.text, idGerejaSelected, nama.text, idRoleSelected, id]));
         MessagePassing messagePassing = MessagePassing();
         var data = await messagePassing.sendMessage(message);
         hasilDaftar = await AgentPage.getData();
@@ -171,22 +126,10 @@ class _addPeran extends State<addPeran> {
         await completer.future;
         if (hasilDaftar == "nama") {
           Fluttertoast.showToast(
-              msg: "Nama sudah digunakan",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 2,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0);
+              msg: "Nama sudah digunakan", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.CENTER, timeInSecForIosWeb: 2, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0);
         } else if (hasilDaftar == "email") {
           Fluttertoast.showToast(
-              msg: "Email sudah digunakan",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 2,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0);
+              msg: "Email sudah digunakan", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.CENTER, timeInSecForIosWeb: 2, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0);
         } else if (hasilDaftar == "failed") {
           Fluttertoast.showToast(
               msg: "Gagal menambahkan " + peran,
@@ -212,13 +155,7 @@ class _addPeran extends State<addPeran> {
         }
       } else {
         Fluttertoast.showToast(
-            msg: "Lengkapi semua input",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 2,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
+            msg: "Lengkapi semua input", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.CENTER, timeInSecForIosWeb: 2, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0);
       }
     }
   }
@@ -524,29 +461,6 @@ class _addPeran extends State<addPeran> {
                               borderRadius: BorderRadius.circular(10),
                             )),
                       ),
-                      // RaisedButton(
-                      //     textColor: Colors.white,
-                      //     color: Colors.lightBlue,
-                      //     child: Text("Generate Coordinate"),
-                      //     shape: new RoundedRectangleBorder(
-                      //       borderRadius: new BorderRadius.circular(30.0),
-                      //     ),
-                      //     onPressed: () async {
-                      //       try {
-                      //         print(alamat.text);
-                      //         GeoCode geoCode = GeoCode();
-                      //         Coordinates coordinates = await geoCode
-                      //             .forwardGeocoding(address: alamat.text);
-                      //         print("Latitude: ${coordinates.latitude}");
-                      //         print("Longitude: ${coordinates.longitude}");
-                      //         setState(() {
-                      //           lattitude = coordinates.latitude;
-                      //           longttitude = coordinates.longitude;
-                      //         });
-                      //       } catch (e) {
-                      //         print(e);
-                      //       }
-                      //     }),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 10),
                       ),
@@ -562,8 +476,7 @@ class _addPeran extends State<addPeran> {
                           Expanded(
                             child: TextField(
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp("[0-9.-]")),
+                                FilteringTextInputFormatter.allow(RegExp("[0-9.-]")),
                               ],
                               controller: lattitude,
                               style: TextStyle(color: Colors.black),
@@ -593,8 +506,7 @@ class _addPeran extends State<addPeran> {
                           Expanded(
                             child: TextField(
                               inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp("[0-9.-]")),
+                                FilteringTextInputFormatter.allow(RegExp("[0-9.-]")),
                               ],
                               controller: longttitude,
                               style: TextStyle(color: Colors.black),

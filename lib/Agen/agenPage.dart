@@ -1,11 +1,8 @@
 import 'dart:async';
-
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
-
 import 'Agent.dart';
 import 'Goals.dart';
 import 'Plan.dart';
-import 'Task.dart';
 
 class AgentPage extends Agent {
   AgentPage() {
@@ -61,8 +58,7 @@ class AgentPage extends Agent {
       Plan("status modifikasi data", "INFORM"), //come from agen Pendaftaran
       Plan("hasil pencarian", "INFORM"), //come from agen Pencarian
       Plan("status aplikasi", "INFORM"), //come from agen Setting
-      Plan("status modifikasi/ pencarian data akun",
-          "INFORM"), //come from agen Akun
+      Plan("status modifikasi/ pencarian data akun", "INFORM"), //come from agen Akun
       Plan("error", "INFORM")
     ];
     //Perencanaan agen

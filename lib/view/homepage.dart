@@ -6,21 +6,20 @@ import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/view/Peran/daftarPeran.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
+class homePage extends StatefulWidget {
   final id;
-  HomePage(this.id);
+  homePage(this.id);
   @override
-  _HomePage createState() => _HomePage(this.id);
+  _homePage createState() => _homePage(this.id);
 }
 
-class _HomePage extends State<HomePage> {
+class _homePage extends State<homePage> {
   var id;
-  _HomePage(this.id);
+  _homePage(this.id);
 
   Future callJumlah() async {
     Completer<void> completer = Completer<void>();
-    Message message = Message(
-        'Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari jumlah', null));
+    Message message = Message('Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari jumlah', null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
@@ -81,14 +80,12 @@ class _HomePage extends State<HomePage> {
                           color: Colors.white,
                           elevation: 20.0,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 7.0, vertical: 22.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 7.0, vertical: 22.0),
                             child: Row(
                               children: <Widget>[
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Text(
@@ -116,11 +113,9 @@ class _HomePage extends State<HomePage> {
                                       Row(children: <Widget>[
                                         Expanded(
                                           child: Card(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 5.0),
+                                            margin: EdgeInsets.symmetric(vertical: 5.0),
                                             shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.0),
+                                              borderRadius: BorderRadius.circular(30.0),
                                             ),
                                             clipBehavior: Clip.antiAlias,
                                             color: Colors.white,
@@ -138,21 +133,18 @@ class _HomePage extends State<HomePage> {
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 15.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       SizedBox(
                                                         height: 5.0,
                                                       ),
                                                       Text(
-                                                        snapshot.data[1]
-                                                            .toString(),
+                                                        snapshot.data[1].toString(),
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 16.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -170,11 +162,9 @@ class _HomePage extends State<HomePage> {
                                         ),
                                         Expanded(
                                           child: Card(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 5.0),
+                                            margin: EdgeInsets.symmetric(vertical: 5.0),
                                             shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.0),
+                                              borderRadius: BorderRadius.circular(30.0),
                                             ),
                                             clipBehavior: Clip.antiAlias,
                                             color: Colors.white,
@@ -192,21 +182,18 @@ class _HomePage extends State<HomePage> {
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 15.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       SizedBox(
                                                         height: 10.0,
                                                       ),
                                                       Text(
-                                                        snapshot.data[2]
-                                                            .toString(),
+                                                        snapshot.data[2].toString(),
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 16.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -239,14 +226,12 @@ class _HomePage extends State<HomePage> {
                           color: Colors.white,
                           elevation: 20.0,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 7.0, vertical: 22.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 7.0, vertical: 22.0),
                             child: Row(
                               children: <Widget>[
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Text(
@@ -274,11 +259,9 @@ class _HomePage extends State<HomePage> {
                                       Row(children: <Widget>[
                                         Expanded(
                                           child: Card(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 5.0),
+                                            margin: EdgeInsets.symmetric(vertical: 5.0),
                                             shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.0),
+                                              borderRadius: BorderRadius.circular(30.0),
                                             ),
                                             clipBehavior: Clip.antiAlias,
                                             color: Colors.white,
@@ -296,21 +279,18 @@ class _HomePage extends State<HomePage> {
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 15.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       SizedBox(
                                                         height: 5.0,
                                                       ),
                                                       Text(
-                                                        snapshot.data[4]
-                                                            .toString(),
+                                                        snapshot.data[4].toString(),
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 16.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -328,11 +308,9 @@ class _HomePage extends State<HomePage> {
                                         ),
                                         Expanded(
                                           child: Card(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 5.0),
+                                            margin: EdgeInsets.symmetric(vertical: 5.0),
                                             shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.0),
+                                              borderRadius: BorderRadius.circular(30.0),
                                             ),
                                             clipBehavior: Clip.antiAlias,
                                             color: Colors.white,
@@ -350,21 +328,18 @@ class _HomePage extends State<HomePage> {
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 15.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       SizedBox(
                                                         height: 10.0,
                                                       ),
                                                       Text(
-                                                        snapshot.data[5]
-                                                            .toString(),
+                                                        snapshot.data[5].toString(),
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 16.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -397,14 +372,12 @@ class _HomePage extends State<HomePage> {
                           color: Colors.white,
                           elevation: 20.0,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 7.0, vertical: 22.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 7.0, vertical: 22.0),
                             child: Row(
                               children: <Widget>[
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Text(
@@ -432,11 +405,9 @@ class _HomePage extends State<HomePage> {
                                       Row(children: <Widget>[
                                         Expanded(
                                           child: Card(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 5.0),
+                                            margin: EdgeInsets.symmetric(vertical: 5.0),
                                             shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.0),
+                                              borderRadius: BorderRadius.circular(30.0),
                                             ),
                                             clipBehavior: Clip.antiAlias,
                                             color: Colors.white,
@@ -454,21 +425,18 @@ class _HomePage extends State<HomePage> {
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 15.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       SizedBox(
                                                         height: 5.0,
                                                       ),
                                                       Text(
-                                                        snapshot.data[7]
-                                                            .toString(),
+                                                        snapshot.data[7].toString(),
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 16.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -486,11 +454,9 @@ class _HomePage extends State<HomePage> {
                                         ),
                                         Expanded(
                                           child: Card(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 5.0),
+                                            margin: EdgeInsets.symmetric(vertical: 5.0),
                                             shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30.0),
+                                              borderRadius: BorderRadius.circular(30.0),
                                             ),
                                             clipBehavior: Clip.antiAlias,
                                             color: Colors.white,
@@ -508,21 +474,18 @@ class _HomePage extends State<HomePage> {
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 15.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       SizedBox(
                                                         height: 10.0,
                                                       ),
                                                       Text(
-                                                        snapshot.data[8]
-                                                            .toString(),
+                                                        snapshot.data[8].toString(),
                                                         style: TextStyle(
                                                           color: Colors.blue,
                                                           fontSize: 16.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       SizedBox(
@@ -559,20 +522,16 @@ class _HomePage extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => daftarPeran(id, "User")),
+                  MaterialPageRoute(builder: (context) => daftarPeran(id, "User")),
                 );
               },
               child: Container(
                   margin: EdgeInsets.only(right: 15, left: 15, bottom: 20),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.topLeft,
-                        colors: [
-                          Colors.blueGrey,
-                          Colors.lightBlue,
-                        ]),
+                    gradient: LinearGradient(begin: Alignment.topRight, end: Alignment.topLeft, colors: [
+                      Colors.blueGrey,
+                      Colors.lightBlue,
+                    ]),
                     border: Border.all(
                       color: Colors.lightBlue,
                     ),
@@ -583,10 +542,7 @@ class _HomePage extends State<HomePage> {
 
                     Text(
                       "Daftar User",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 26.0,
-                          fontWeight: FontWeight.w300),
+                      style: TextStyle(color: Colors.white, fontSize: 26.0, fontWeight: FontWeight.w300),
                       textAlign: TextAlign.left,
                     ),
                   ])),
@@ -597,20 +553,16 @@ class _HomePage extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => daftarPeran(id, "Gereja")),
+                  MaterialPageRoute(builder: (context) => daftarPeran(id, "Gereja")),
                 );
               },
               child: Container(
                   margin: EdgeInsets.only(right: 15, left: 15, bottom: 20),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.topLeft,
-                        colors: [
-                          Colors.blueGrey,
-                          Colors.lightBlue,
-                        ]),
+                    gradient: LinearGradient(begin: Alignment.topRight, end: Alignment.topLeft, colors: [
+                      Colors.blueGrey,
+                      Colors.lightBlue,
+                    ]),
                     border: Border.all(
                       color: Colors.lightBlue,
                     ),
@@ -621,10 +573,7 @@ class _HomePage extends State<HomePage> {
 
                     Text(
                       "Daftar Gereja",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 26.0,
-                          fontWeight: FontWeight.w300),
+                      style: TextStyle(color: Colors.white, fontSize: 26.0, fontWeight: FontWeight.w300),
                       textAlign: TextAlign.left,
                     ),
                   ])),
@@ -634,20 +583,16 @@ class _HomePage extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => daftarPeran(id, "Imam")),
+                  MaterialPageRoute(builder: (context) => daftarPeran(id, "Imam")),
                 );
               },
               child: Container(
                   margin: EdgeInsets.only(right: 15, left: 15, bottom: 20),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.topLeft,
-                        colors: [
-                          Colors.blueGrey,
-                          Colors.lightBlue,
-                        ]),
+                    gradient: LinearGradient(begin: Alignment.topRight, end: Alignment.topLeft, colors: [
+                      Colors.blueGrey,
+                      Colors.lightBlue,
+                    ]),
                     border: Border.all(
                       color: Colors.lightBlue,
                     ),
@@ -658,10 +603,7 @@ class _HomePage extends State<HomePage> {
 
                     Text(
                       "Daftar Imam",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 26.0,
-                          fontWeight: FontWeight.w300),
+                      style: TextStyle(color: Colors.white, fontSize: 26.0, fontWeight: FontWeight.w300),
                       textAlign: TextAlign.left,
                     ),
                   ])),

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../DatabaseFolder/mongodb.dart';
 import 'Agent.dart';
 import 'Goals.dart';
-import 'MessagePassing.dart';
 import 'Plan.dart';
 import 'Task.dart';
 
@@ -17,7 +15,7 @@ class AgentSetting extends Agent {
     //Konstruktor agen memanggil fungsi initAgent
     _initAgent();
   }
-  static int _estimatedTime = 10;
+  static int _estimatedTime = 20;
   //Batas waktu awal pengerjaan seluruh tugas agen
   static Map<String, int> _timeAction = {"setting user": _estimatedTime};
 
@@ -41,8 +39,7 @@ class AgentSetting extends Agent {
     var statusM = await MongoDatabase.connect();
     WidgetsFlutterBinding.ensureInitialized();
 
-    Message message =
-        Message(agentName, sender, "INFORM", Tasks('status aplikasi', "oke"));
+    Message message = Message(agentName, sender, "INFORM", Tasks('status aplikasi', "oke"));
     return message;
   }
 

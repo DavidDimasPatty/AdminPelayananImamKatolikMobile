@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:admin_pelayanan_katolik/Agen/Message.dart';
 import 'package:admin_pelayanan_katolik/DatabaseFolder/modelDB.dart';
 import 'package:mongo_dart/mongo_dart.dart';
-
 import '../DatabaseFolder/data.dart';
 import '../DatabaseFolder/mongodb.dart';
 import 'Agent.dart';
@@ -56,16 +54,13 @@ class AgentPendaftaran extends Agent {
   Future<Message> _updateUser(dynamic data, String sender) async {
     var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
 
-    var update = await userCollection.updateOne(where.eq('_id', data[0]),
-        modify.set('banned', data[1]).set("updatedAt", DateTime.now()));
+    var update = await userCollection.updateOne(where.eq('_id', data[0]), modify.set('banned', data[1]).set("updatedAt", DateTime.now()));
 
     if (update.isSuccess) {
-      Message message = Message(
-          agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
+      Message message = Message(agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
       return message;
     } else {
-      Message message = Message(agentName, sender, "INFORM",
-          Tasks('status modifikasi data', "failed"));
+      Message message = Message(agentName, sender, "INFORM", Tasks('status modifikasi data', "failed"));
       return message;
     }
   }
@@ -73,15 +68,12 @@ class AgentPendaftaran extends Agent {
   Future<Message> _updateImam(dynamic data, String sender) async {
     var imamCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
 
-    var update = await imamCollection.updateOne(where.eq('_id', data[0]),
-        modify.set('banned', data[1]).set("updatedAt", DateTime.now()));
+    var update = await imamCollection.updateOne(where.eq('_id', data[0]), modify.set('banned', data[1]).set("updatedAt", DateTime.now()));
     if (update.isSuccess) {
-      Message message = Message(
-          agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
+      Message message = Message(agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
       return message;
     } else {
-      Message message = Message(agentName, sender, "INFORM",
-          Tasks('status modifikasi data', "failed"));
+      Message message = Message(agentName, sender, "INFORM", Tasks('status modifikasi data', "failed"));
       return message;
     }
   }
@@ -89,16 +81,13 @@ class AgentPendaftaran extends Agent {
   Future<Message> _updateGereja(dynamic data, String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
 
-    var update = await gerejaCollection.updateOne(where.eq('_id', data[0]),
-        modify.set('banned', data[1]).set("updatedAt", DateTime.now()));
+    var update = await gerejaCollection.updateOne(where.eq('_id', data[0]), modify.set('banned', data[1]).set("updatedAt", DateTime.now()));
 
     if (update.isSuccess) {
-      Message message = Message(
-          agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
+      Message message = Message(agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
       return message;
     } else {
-      Message message = Message(agentName, sender, "INFORM",
-          Tasks('status modifikasi data', "failed"));
+      Message message = Message(agentName, sender, "INFORM", Tasks('status modifikasi data', "failed"));
       return message;
     }
   }
@@ -106,99 +95,70 @@ class AgentPendaftaran extends Agent {
   Future<Message> _addImam(dynamic data, String sender) async {
     var imamCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
 
-    var checkName =
-        await imamCollection.find(where.eq('nama', data[3])).toList();
+    var checkName = await imamCollection.find(where.eq('nama', data[3])).toList();
 
-    var checkEmail =
-        await imamCollection.find(where.eq('email', data[0])).toList();
+    var checkEmail = await imamCollection.find(where.eq('email', data[0])).toList();
 
     if (checkName.length > 0) {
-      Message message = Message(agentName, sender, "INFORM",
-          Tasks("status modifikasi/ pencarian data akun", "nama"));
+      Message message = Message(agentName, sender, "INFORM", Tasks("status modifikasi/ pencarian data akun", "nama"));
       return message;
     } else if (checkEmail.length > 0) {
-      Message message = Message(agentName, sender, "INFORM",
-          Tasks("status modifikasi/ pencarian data akun", "email"));
+      Message message = Message(agentName, sender, "INFORM", Tasks("status modifikasi/ pencarian data akun", "email"));
       return message;
     }
-    var configJson = modelDB.imam(data[0], data[1], data[2], data[3], "", "", 0,
-        data[4], 1, 1, 1, 1, DateTime.now(), DateTime.now(), data[5], data[5]);
+    var configJson = modelDB.imam(data[0], data[1], data[2], data[3], "", "", 0, data[4], 1, 1, 1, 1, DateTime.now(), DateTime.now(), data[5], data[5]);
 
     var addImam = await imamCollection.insertOne(configJson);
 
     if (addImam.isSuccess) {
-      Message message = Message(
-          agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
+      Message message = Message(agentName, sender, "INFORM", Tasks('status modifikasi data', "oke"));
       return message;
     } else {
-      Message message = Message(agentName, sender, "INFORM",
-          Tasks('status modifikasi data', "failed"));
+      Message message = Message(agentName, sender, "INFORM", Tasks('status modifikasi data', "failed"));
       return message;
     }
   }
 
   Future<Message> _addGereja(dynamic data, String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
-    var checkName =
-        await gerejaCollection.find(where.eq('nama', data[0])).toList();
+    var checkName = await gerejaCollection.find(where.eq('nama', data[0])).toList();
 
     if (checkName.length > 0) {
-      Message message = Message(agentName, sender, "INFORM",
-          Tasks("status modifikasi/ pencarian data akun", "nama"));
+      Message message = Message(agentName, sender, "INFORM", Tasks("status modifikasi/ pencarian data akun", "nama"));
       return message;
     }
-    var configJson = modelDB.Gereja(
-        data[0],
-        data[1],
-        data[2],
-        data[3],
-        data[4],
-        data[5],
-        data[6],
-        0,
-        "",
-        DateTime.now(),
-        data[7],
-        DateTime.now(),
-        data[7]);
+    var configJson = modelDB.Gereja(data[0], data[1], data[2], data[3], data[4], data[5], data[6], 0, "", DateTime.now(), data[7], DateTime.now(), data[7]);
 
     var addGereja = await gerejaCollection.insertOne(configJson);
 
     if (addGereja.isSuccess) {
       Completer<void> completer = Completer<void>();
-      Message message2 = Message(agentName, 'Agent Pencarian', "REQUEST",
-          Tasks('cari gereja terakhir', data[7]));
+      Message message2 = Message(agentName, 'Agent Pencarian', "REQUEST", Tasks('cari gereja terakhir', data[7]));
       MessagePassing messagePassing = MessagePassing();
       await messagePassing.sendMessage(message2);
-      Message message =
-          Message(agentName, sender, "INFORM", Tasks('done', null));
+      Message message = Message(agentName, sender, "INFORM", Tasks('done', null));
       completer.complete();
 
       await completer.future;
       return message;
     } else {
-      Message message = Message(agentName, sender, "INFORM",
-          Tasks('status modifikasi data', "failed"));
+      Message message = Message(agentName, sender, "INFORM", Tasks('status modifikasi data', "failed"));
       return message;
     }
   }
 
   Future<Message> _addAturanPelayanan(dynamic data, String sender) async {
-    var aturanPelayananCollection =
-        MongoDatabase.db.collection(ATURAN_PELAYANAN_COLLECTION);
+    var aturanPelayananCollection = MongoDatabase.db.collection(ATURAN_PELAYANAN_COLLECTION);
 
-    var configJson = modelDB.aturanPelayanan(data[1][0]["_id"], "", "", "", "",
-        "", "", "", DateTime.now(), data[0], DateTime.now(), data[0]);
+    var configJson = modelDB.aturanPelayanan(data[1][0]["_id"], "", "", "", "", "", "", "", DateTime.now(), data[0], DateTime.now(), data[0]);
 
     var addAturan = await aturanPelayananCollection.insertOne(configJson);
 
     if (addAturan.isSuccess) {
-      Message message = Message(agentName, 'Agent Page', "INFORM",
-          Tasks('status modifikasi data', "oke"));
+      Message message = Message(agentName, 'Agent Page', "INFORM", Tasks('status modifikasi data', "oke"));
       return message;
     } else {
-      Message message = Message(agentName, 'Agent Page', "INFORM",
-          Tasks('status modifikasi data', "failed"));
+      Message message = Message(agentName, 'Agent Page', "INFORM", Tasks('status modifikasi data', "failed"));
       return message;
     }
   }
@@ -229,8 +189,7 @@ class AgentPendaftaran extends Agent {
       Goals("update Gereja", String, _timeAction["update gereja"]),
       Goals("add Imam", String, _timeAction["add Imam"]),
       Goals("add Gereja", String, _timeAction["add Gereja"]),
-      Goals(
-          "add aturan pelayanan", String, _timeAction["add aturan pelayanan"]),
+      Goals("add aturan pelayanan", String, _timeAction["add aturan pelayanan"]),
     ];
   }
 }

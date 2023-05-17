@@ -30,9 +30,7 @@ class FadeAnimation extends StatelessWidget {
       child: child,
       builder: (context, child, value) => Opacity(
         opacity: value.get(AnimationType.opacity),
-        child: Transform.translate(
-            offset: Offset(value.get(AnimationType.translateX), 0),
-            child: child),
+        child: Transform.translate(offset: Offset(value.get(AnimationType.translateX), 0), child: child),
       ),
     );
   }
