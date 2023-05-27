@@ -1,11 +1,11 @@
 import 'Task.dart';
 
-class Message {
+class Messages {
   //Kelas merepresentasikan pesan
   String sender; //Pengirim pesan
   String receiver; //Penerima pesan
   Tasks task; //Tugas dengan kelas Tasks
   dynamic protocol; //INFORM atau REQUEST
   //Konstruktor
-  Message(this.sender, this.receiver, this.protocol, this.task);
+  Messages(this.sender, this.receiver, this.protocol, this.task);
 }

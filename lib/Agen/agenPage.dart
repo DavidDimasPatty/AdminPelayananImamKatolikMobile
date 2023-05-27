@@ -11,7 +11,7 @@ class AgentPage extends Agent {
   }
   static List<dynamic> dataView = [];
   @override
-  int canPerformTask(Message message) {
+  int canPerformTask(Messages message) {
     //Karena data error tetap diterima oleh agen Page maka
     //fungsi canPerformTask di override oleh agen Page
     if (message.task.action == "error") {
@@ -30,7 +30,7 @@ class AgentPage extends Agent {
   Future performTask() async {
     //Karena agen page tidak mengecek goals maka
     //fungsi performTask override fungsi supercla
-    Message msg = Messages.last;
+    Messages msg = MessageList.last;
     String sender = Senders.last;
     dynamic task = msg.task;
     for (var p in plan) {
@@ -77,7 +77,7 @@ class AgentPage extends Agent {
   }
 
   @override
-  Message overTime(task, sender) {
+  Messages overTime(task, sender) {
     // TODO: implement overTime
     throw UnimplementedError();
   }

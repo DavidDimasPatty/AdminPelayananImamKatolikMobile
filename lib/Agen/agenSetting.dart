@@ -15,13 +15,13 @@ class AgentSetting extends Agent {
     //Konstruktor agen memanggil fungsi initAgent
     _initAgent();
   }
-  static int _estimatedTime = 20;
+  static int _estimatedTime = 30;
   //Batas waktu awal pengerjaan seluruh tugas agen
   static Map<String, int> _timeAction = {"setting user": _estimatedTime};
 
   //Daftar batas waktu pengerjaan masing-masing tugas
 
-  Future<Message> action(String goals, dynamic data, String sender) async {
+  Future<Messages> action(String goals, dynamic data, String sender) async {
     //Daftar tindakan yang bisa dilakukan oleh agen, fungsi ini memilih tindakan
     //berdasarkan tugas yang berada pada isi pesan
     switch (goals) {
@@ -33,13 +33,13 @@ class AgentSetting extends Agent {
     }
   }
 
-  Future<Message> _settingUser(dynamic data, String sender) async {
+  Future<Messages> _settingUser(dynamic data, String sender) async {
     await dotenv.load(fileName: ".env");
     var statusF = await Firebase.initializeApp();
     var statusM = await MongoDatabase.connect();
     WidgetsFlutterBinding.ensureInitialized();
 
-    Message message = Message(agentName, sender, "INFORM", Tasks('status aplikasi', "oke"));
+    Messages message = Messages(agentName, sender, "INFORM", Tasks('status aplikasi', "oke"));
     return message;
   }
 

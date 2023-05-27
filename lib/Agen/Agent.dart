@@ -1,23 +1,22 @@
 import 'dart:async';
 
 import 'package:admin_pelayanan_katolik/Agen/Goals.dart';
+import 'package:admin_pelayanan_katolik/Agen/Message.dart';
 import 'package:admin_pelayanan_katolik/Agen/MessagePassing.dart';
 import 'package:admin_pelayanan_katolik/Agen/Plan.dart';
 import 'package:admin_pelayanan_katolik/Agen/Task.dart';
-
-import 'Message.dart';
 
 abstract class Agent {
   List<Plan> //nama agen
       plan = [];
   List<Goals> //Perencanaan agen
       goals = [];
-  List Messages = [];
+  List MessageList = [];
   List Senders = [];
   String agentName = "";
   bool stop = false;
 
-  int canPerformTask(Message message) {
+  int canPerformTask(Messages message) {
     //Fungsi untuk melakukan pengecekan pada plan agen terhadap
     //tugas yang berada dalam pesan
     if (message.task.action == "error") {
@@ -35,11 +34,11 @@ abstract class Agent {
     return -1;
   }
 
-  Future<dynamic> receiveMessage(Message msg, String sender) {
+  Future<dynamic> receiveMessage(Messages msg, String sender) {
     //Fungsi agen menerima pesan yang dikirim oleh agen pengirim
     print(agentName + ' received message from $sender');
     //Menambahkan pesan dan nama pengirim ke variabel
-    Messages.add(msg);
+    MessageList.add(msg);
     Senders.add(sender);
     //Mengembalikan fungsi performTask
     return performTask();
@@ -47,33 +46,29 @@ abstract class Agent {
 
   Future<dynamic> performTask() async {
     //Fungsi agen mengerjakan tugas yang berada dalam pesan
-    Message msgCome = Messages.last;
+    Messages msgCome = MessageList.last;
     String sender = Senders.last;
     dynamic task = msgCome.task;
     //Mengektifitaskan pemanggilan variabel
-    var goalsQuest =
-        goals.where((element) => element.request == task.action).toList();
+    var goalsQuest = goals.where((element) => element.request == task.action).toList();
     int clock = goalsQuest[0].time as int;
     //Mendapatkan batas waktu pengerjaan dalam goals terhadap tugas
 
     Timer timer = Timer.periodic(Duration(seconds: clock), (timer) {
       stop = true;
       timer.cancel(); //memberhentikan timer
-      addEstimatedTime(
-          task.action); //menambahkan waktu pengerjaan terhadap tugas tersebut
-      MessagePassing messagePassing =
-          MessagePassing(); //Memanggil distributor pesan
-      Message msg = overTime(msgCome, sender); //Mengirim pesan overtime
+      addEstimatedTime(task.action); //menambahkan waktu pengerjaan terhadap tugas tersebut
+      MessagePassing messagePassing = MessagePassing(); //Memanggil distributor pesan
+      Messages msg = overTime(msgCome, sender); //Mengirim pesan overtime
       messagePassing.sendMessage(msg);
     });
     //Timer pengerjaan tugas agen
-    Message message;
+    Messages message;
     try {
       message = await action(task.action, msgCome, sender);
       //Memanggil fungsi action untuk memilih tindakan yang dikerjakan
     } catch (e) {
-      message = Message(
-          agentName, sender, "INFORM", Tasks('lack of parameters', "failed"));
+      message = Messages(agentName, sender, "INFORM", Tasks('lack of parameters', "failed"));
       //Jika terdapat error dalam pengerjaan maka pesan gagal
     }
 
@@ -81,23 +76,20 @@ abstract class Agent {
       if (timer.isActive) {
         timer.cancel();
         bool checkGoals = false;
-        if (message.task.data.runtimeType == String &&
-            message.task.data == "failed") {
+        if (message.task.data.runtimeType == String && message.task.data == "failed") {
           MessagePassing messagePassing = MessagePassing();
-          Message msg = rejectTask(msgCome, sender);
+          Messages msg = rejectTask(msgCome, sender);
           return messagePassing.sendMessage(msg);
         } else {
           for (var g in goals) {
-            if (g.request == task.action &&
-                g.goals == message.task.data.runtimeType) {
+            if (g.request == task.action && g.goals == message.task.data.runtimeType) {
               checkGoals = true;
               break;
             }
           }
 
           if (message.task.action == "done") {
-            print(agentName +
-                " Success doing coordination with another agent for task ${task.action}");
+            print(agentName + " Success doing coordination with another agent for task ${task.action}");
             return null;
           } else if (checkGoals == true) {
             print(agentName + ' returning data to ${message.receiver}');
@@ -105,7 +97,7 @@ abstract class Agent {
             return messagePassing.sendMessage(message);
           } else if (checkGoals == false) {
             MessagePassing messagePassing = MessagePassing();
-            Message msg = failedGoal(msgCome, sender);
+            Messages msg = failedGoal(msgCome, sender);
             return messagePassing.sendMessage(msg);
           }
         }
@@ -113,9 +105,9 @@ abstract class Agent {
     }
   }
 
-  Message rejectTask(dynamic task, sender) {
+  Messages rejectTask(dynamic task, sender) {
     print(task.task.action);
-    Message message = Message(
+    Messages message = Messages(
         agentName,
         sender,
         "INFORM",
@@ -123,13 +115,12 @@ abstract class Agent {
           ['failed']
         ]));
 
-    print(agentName +
-        ' rejected task from $sender because not capable of doing: ${task.task.action} with protocol ${task.protocol}');
+    print(agentName + ' rejected task from $sender because not capable of doing: ${task.task.action} with protocol ${task.protocol}');
     return message;
   }
 
-  Message overTime(dynamic task, sender) {
-    Message message = Message(
+  Messages overTime(dynamic task, sender) {
+    Messages message = Messages(
         agentName,
         sender,
         "INFORM",
@@ -137,17 +128,14 @@ abstract class Agent {
           ['failed']
         ]));
 
-    print(agentName +
-        ' rejected task from $sender because takes time too long: ${task.task.action}');
+    print(agentName + ' rejected task from $sender because takes time too long: ${task.task.action}');
     return message;
   }
 
-  Message failedGoal(dynamic task, sender) {
-    Message message =
-        Message(agentName, sender, "INFORM", Tasks('error', 'failed'));
+  Messages failedGoal(dynamic task, sender) {
+    Messages message = Messages(agentName, sender, "INFORM", Tasks('error', 'failed'));
 
-    print(agentName +
-        " rejecting task from $sender because the result of ${task.task.action} dataType does'nt suit the goal from ${agentName}");
+    print(agentName + " rejecting task from $sender because the result of ${task.task.action} dataType does'nt suit the goal from ${agentName}");
     return message;
   }
 

@@ -29,7 +29,7 @@ class _daftarPeran extends State<daftarPeran> {
 
   Future callDb() async {
     Completer<void> completer = Completer<void>();
-    Message message = Message('Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari ' + peran, null));
+    Messages message = Messages('Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari ' + peran, null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
@@ -74,8 +74,9 @@ class _daftarPeran extends State<daftarPeran> {
   }
 
   Future updatePeran(idPeran, status) async {
+    print(peran);
     Completer<void> completer = Completer<void>();
-    Message message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST", Tasks('update ' + peran, [idPeran, status]));
+    Messages message = Messages('Agent Page', 'Agent Pendaftaran', "REQUEST", Tasks('update ' + peran, [idPeran, status]));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);

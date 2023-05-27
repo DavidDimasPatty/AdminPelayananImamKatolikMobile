@@ -45,7 +45,7 @@ class _addPeran extends State<addPeran> {
 
   Future callDb() async {
     Completer<void> completer = Completer<void>();
-    Message message = Message('Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari Gereja', null));
+    Messages message = Messages('Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari Gereja', null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
@@ -69,12 +69,12 @@ class _addPeran extends State<addPeran> {
 
   Future submit() async {
     Completer<void> completer = Completer<void>();
-    Message message;
+    Messages message;
     var hasilDaftar;
 
     if (peran == "Gereja") {
       if (nama.text != "" && alamat.text != "" && paroki.text != "" && lingkungan.text != "" && lattitude != "" && longttitude != "") {
-        message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST",
+        message = Messages('Agent Page', 'Agent Pendaftaran', "REQUEST",
             Tasks('add ' + peran, [nama.text, alamat.text, paroki.text, lingkungan.text, deskripsi.text, double.parse(lattitude.text), double.parse(longttitude.text), id]));
         MessagePassing messagePassing = MessagePassing();
         var data = await messagePassing.sendMessage(message);
@@ -116,7 +116,7 @@ class _addPeran extends State<addPeran> {
       }
     } else {
       if (email.text != "" && password.text != "" && idGerejaSelected != null && nama.text != null && idRoleSelected != null) {
-        message = Message('Agent Page', 'Agent Pendaftaran', "REQUEST", Tasks('add ' + peran, [email.text, password.text, idGerejaSelected, nama.text, idRoleSelected, id]));
+        message = Messages('Agent Page', 'Agent Pendaftaran', "REQUEST", Tasks('add ' + peran, [email.text, password.text, idGerejaSelected, nama.text, idRoleSelected, id]));
         MessagePassing messagePassing = MessagePassing();
         var data = await messagePassing.sendMessage(message);
         hasilDaftar = await AgentPage.getData();
@@ -198,6 +198,7 @@ class _addPeran extends State<addPeran> {
                               padding: EdgeInsets.symmetric(vertical: 5),
                             ),
                             TextField(
+                              maxLength: 20,
                               controller: nama,
                               style: TextStyle(color: Colors.black),
                               decoration: InputDecoration(
@@ -404,6 +405,7 @@ class _addPeran extends State<addPeran> {
                     padding: EdgeInsets.symmetric(vertical: 5),
                   ),
                   TextField(
+                    maxLength: 20,
                     controller: nama,
                     style: TextStyle(color: Colors.black),
                     decoration: InputDecoration(

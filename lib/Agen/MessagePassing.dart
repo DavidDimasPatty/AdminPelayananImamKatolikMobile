@@ -12,15 +12,9 @@ class MessagePassing {
   //Kelas distributor pengiriman pesan antara agen
   //
   //Kumpulan agen yang dibuat pada sistem
-  Map<String, Agent> agents = {
-    'Agent Pencarian': AgentPencarian(),
-    'Agent Pendaftaran': AgentPendaftaran(),
-    'Agent Setting': AgentSetting(),
-    'Agent Akun': AgentAkun(),
-    'Agent Page': AgentPage()
-  };
+  Map<String, Agent> agents = {'Agent Pencarian': AgentPencarian(), 'Agent Pendaftaran': AgentPendaftaran(), 'Agent Setting': AgentSetting(), 'Agent Akun': AgentAkun(), 'Agent Page': AgentPage()};
 
-  Future<dynamic> sendMessage(Message message) async {
+  Future<dynamic> sendMessage(Messages message) async {
     //Fungsi pengiriman pesan dari agen pengirim kepada agen penerima
     if (agents.containsKey(message.receiver)) {
       //Jika agen penerima terdaftar pada map agents
@@ -32,7 +26,7 @@ class MessagePassing {
       } else if (agent.canPerformTask(message) == -1) {
         //jika agen tidak bisa melakukan tugas yang berada dalam pesan yang dikirim
         //oleh agen pengirim, maka agen akan menerima pesan
-        Message msg = agent.rejectTask(message, message.sender);
+        Messages msg = agent.rejectTask(message, message.sender);
         return await sendMessage(msg);
       }
     } else {

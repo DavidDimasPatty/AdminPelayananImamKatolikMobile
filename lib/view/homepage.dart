@@ -19,7 +19,7 @@ class _homePage extends State<homePage> {
 
   Future callJumlah() async {
     Completer<void> completer = Completer<void>();
-    Message message = Message('Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari jumlah', null));
+    Messages message = Messages('Agent Page', 'Agent Pencarian', "REQUEST", Tasks('cari jumlah', null));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);

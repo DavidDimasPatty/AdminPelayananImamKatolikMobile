@@ -14,7 +14,7 @@ import '../Agen/Task.dart';
 class logIn extends StatelessWidget {
   Future login(email, password) async {
     Completer<void> completer = Completer<void>();
-    Message message = Message('Agent Page', 'Agent Akun', "REQUEST", Tasks('login', [email, password]));
+    Messages message = Messages('Agent Page', 'Agent Akun', "REQUEST", Tasks('login', [email, password]));
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);

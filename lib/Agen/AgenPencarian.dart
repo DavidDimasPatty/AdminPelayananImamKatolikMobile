@@ -27,7 +27,7 @@ class AgentPencarian extends Agent {
 
   //Daftar batas waktu pengerjaan masing-masing tugas
 
-  Future<Message> action(String goals, dynamic data, String sender) async {
+  Future<Messages> action(String goals, dynamic data, String sender) async {
     //Daftar tindakan yang bisa dilakukan oleh agen, fungsi ini memilih tindakan
     //berdasarkan tugas yang berada pada isi pesan
     switch (goals) {
@@ -51,45 +51,45 @@ class AgentPencarian extends Agent {
     }
   }
 
-  Future<Message> _cariGereja(String sender) async {
+  Future<Messages> _cariGereja(String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
     var conn = await gerejaCollection.find().toList();
-    Message message = Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
+    Messages message = Messages(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
     return message;
   }
 
-  Future<Message> _cariGerejaTerakhir(dynamic data, String sender) async {
+  Future<Messages> _cariGerejaTerakhir(dynamic data, String sender) async {
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
     var conn = await gerejaCollection.find(where.sortBy("createdAt", descending: true).limit(1)).toList();
     Completer<void> completer = Completer<void>();
 
-    Message message2 = Message(agentName, sender, "INFORM", Tasks('add aturan pelayanan', [data, conn]));
+    Messages message2 = Messages(agentName, sender, "INFORM", Tasks('add aturan pelayanan', [data, conn]));
 
     MessagePassing messagePassing = MessagePassing();
     await messagePassing.sendMessage(message2);
-    Message message = Message(agentName, sender, "INFORM", Tasks('done', null));
+    Messages message = Messages(agentName, sender, "INFORM", Tasks('done', null));
     completer.complete();
 
     await completer.future;
     return message;
   }
 
-  Future<Message> _cariImam(String sender) async {
+  Future<Messages> _cariImam(String sender) async {
     var userCollection = MongoDatabase.db.collection(IMAM_COLLECTION);
     final pipeline4 = AggregationPipelineBuilder().addStage(Lookup(from: 'Gereja', localField: 'idGereja', foreignField: '_id', as: 'imamGereja')).build();
     var conn = await userCollection.aggregateToStream(pipeline4).toList();
-    Message message = Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
+    Messages message = Messages(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
     return message;
   }
 
-  Future<Message> _cariUser(String sender) async {
+  Future<Messages> _cariUser(String sender) async {
     var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
     var conn = await userCollection.find().toList();
-    Message message = Message(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
+    Messages message = Messages(agentName, sender, "INFORM", Tasks('hasil pencarian', conn));
     return message;
   }
 
-  Future<Message> _cariJumlah(String sender) async {
+  Future<Messages> _cariJumlah(String sender) async {
     var userCollection = MongoDatabase.db.collection(USER_COLLECTION);
     var gerejaCollection = MongoDatabase.db.collection(GEREJA_COLLECTION);
 
@@ -112,7 +112,7 @@ class AgentPencarian extends Agent {
 
     var connUn = await userCollection.find({'banned': 0}).length;
 
-    Message message = Message(agentName, sender, "INFORM", Tasks('hasil pencarian', [conn, connUn, connBan, connG, connUnG, connBanG, connI, connUnI, connBanI]));
+    Messages message = Messages(agentName, sender, "INFORM", Tasks('hasil pencarian', [conn, connUn, connBan, connG, connUnG, connBanG, connI, connUnI, connBanI]));
     return message;
   }
 
