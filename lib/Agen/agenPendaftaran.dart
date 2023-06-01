@@ -10,8 +10,8 @@ import 'MessagePassing.dart';
 import 'Plan.dart';
 import 'Task.dart';
 
-class AgentPendaftaran extends Agent {
-  AgentPendaftaran() {
+class agenPendaftaran extends Agent {
+  agenPendaftaran() {
     //Konstruktor agen memanggil fungsi initAgent
     _initAgent();
   }

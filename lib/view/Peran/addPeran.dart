@@ -49,7 +49,7 @@ class _addPeran extends State<addPeran> {
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
-    var hasilPencarian = await AgentPage.getData();
+    var hasilPencarian = await agenPage.getData();
 
     completer.complete();
 
@@ -78,7 +78,7 @@ class _addPeran extends State<addPeran> {
             Tasks('add ' + peran, [nama.text, alamat.text, paroki.text, lingkungan.text, deskripsi.text, double.parse(lattitude.text), double.parse(longttitude.text), id]));
         MessagePassing messagePassing = MessagePassing();
         var data = await messagePassing.sendMessage(message);
-        hasilDaftar = await AgentPage.getData();
+        hasilDaftar = await agenPage.getData();
 
         completer.complete();
 
@@ -119,7 +119,7 @@ class _addPeran extends State<addPeran> {
         message = Messages('Agent Page', 'Agent Pendaftaran', "REQUEST", Tasks('add ' + peran, [email.text, password.text, idGerejaSelected, nama.text, idRoleSelected, id]));
         MessagePassing messagePassing = MessagePassing();
         var data = await messagePassing.sendMessage(message);
-        hasilDaftar = await AgentPage.getData();
+        hasilDaftar = await agenPage.getData();
 
         completer.complete();
 

@@ -23,7 +23,7 @@ class _homePage extends State<homePage> {
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
-    var hasilPencarian = await AgentPage.getData();
+    var hasilPencarian = await agenPage.getData();
 
     completer.complete();
 

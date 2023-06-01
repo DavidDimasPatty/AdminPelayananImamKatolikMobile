@@ -33,7 +33,7 @@ class _daftarPeran extends State<daftarPeran> {
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
-    var hasilPencarian = await AgentPage.getData();
+    var hasilPencarian = await agenPage.getData();
 
     completer.complete();
 
@@ -80,7 +80,7 @@ class _daftarPeran extends State<daftarPeran> {
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
-    var hasilDaftar = await AgentPage.getData();
+    var hasilDaftar = await agenPage.getData();
 
     completer.complete();
 

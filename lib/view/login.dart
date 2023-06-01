@@ -4,7 +4,7 @@ import 'package:admin_pelayanan_katolik/Agen/Message.dart';
 import 'package:admin_pelayanan_katolik/Agen/MessagePassing.dart';
 import 'package:admin_pelayanan_katolik/Agen/agenPage.dart';
 import 'package:admin_pelayanan_katolik/FadeAnimation.dart';
-import 'package:admin_pelayanan_katolik/view/homepage.dart';
+import 'package:admin_pelayanan_katolik/view/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -18,7 +18,7 @@ class logIn extends StatelessWidget {
 
     MessagePassing messagePassing = MessagePassing();
     var data = await messagePassing.sendMessage(message);
-    var hasilPencarian = await AgentPage.getData();
+    var hasilPencarian = await agenPage.getData();
 
     completer.complete();
 
